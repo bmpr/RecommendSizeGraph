@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            max-height: 100%;
+        }
+        
+        #container {
+            display: block;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        #container .section_top .text_left {
+            margin-bottom: 30px;
+        }
+        
+        #container .section_top .text_left .item_name {
+            display: block;
+            padding-top: 10px;
+            padding-left: 10px;
+        }
+        
+        #container .section_top .text_left .item_price {
+            display: block;
+            padding-top: 10px;
+            padding-left: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: red;
+        }
+        
+        #container .section_top .text_left .item_number {
+            display: block;
+            padding-top: 10px;
+            padding-left: 10px;
+        }
+        
+        #container .section_top .text_right {
+            display: inline-block;
+            position: absolute;
+            top: 50px;
+            right: 0;
+        }
+        
+        #container .section_top .text_right .star {
+            display: block;
+            padding-top: 10px;
+            padding-left: 10px;
+        }
+        
+        #container .section_top .text_right .star span {
+            margin-right: 5px;
+            color: gold;
+        }
+        
+        #container .section_top .text_right .review {
+            display: block;
+            padding-top: 10px;
+            padding-left: 10px;
+            margin-right: 10px;
+        }
+        
+        #container .section_middle_cover {
+            direction: block;
+            height: 350px;
+            width: 100%;
+        }
+        
+        #container .section_middle_img {
+            width: 100%;
+            height: 100%;
+            margin-left: 3px;
+            background-image: url(https://s3.ap-northeast-2.amazonaws.com/jaem/app/172351557_COL_COL04_570.jpg);
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+        
+        #container .slide_button {
+            display: block;
+            height: 50px;
+            text-align: center;
+            font-size: 33px;
+            margin-top: 10px;
+            color: #edeef2;
+        }
+        
+        #container .slide_button .choice_button {
+            color: red;
+        }
+        
+        #container .slide_button .slide_next {
+            position: absolute;
+            right: 25px;
+            font-weight: bold;
+            color: red;
+        }
+        
+        #container .slide_button .slide_next:hover {
+            cursor: pointer;
+        }
+        
+        #container .section_bottom {
+            clear: both;
+            height: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0px 0px 1px gray;
+        }
+        
+        #container .bottom_bar {
+            display: block;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #D40000;
+            cursor: pointer;
+            text-align: center;
+            font-size: 18px;
+            color: #ffffff;
+        }
+        
+        #container .bottom_bar .bottom_bar_text {
+            display: block;
+            margin: 20px auto;
+        }
+        
+        #container #cover #mysidenav {
+            background-color: #fafafa;
+            height: 100%;
+            width: 0;
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            background-color: #fff;
+            overflow-y: hidden;
+            padding-top: 60px;
+            border-top: 0px;
+            box-shadow: 0px -20px 30px gray;
+        }
+        
+        #container #cover #mysidenav.sidenav_active {
+            height: 100%;
+            width: 320px;
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            background-color: #fff;
+            padding-top: 60px;
+            border-top: 0px;
+            box-shadow: 0px -20px 30px gray;
+            margin-bottom: -100px;
+        }
+        
+        #container #cover #mysidenav.sidenav_close {
+            display: none;
+        }
+        
+        #container #cover #mysidenav h3 {
+            font-size: 14px;
+            position: absolute;
+            top: 0;
+            left: 7px;
+            margin: 20px;
+            color: #2E3148;
+        }
+        
+        #container #cover #mysidenav span {
+            padding-left: 20px;
+        }
+        
+        #container #cover #mysidenav .size_content {
+            position: absolute;
+            top: 30%;
+            width: 100%;
+            height: 200px;
+        }
+        
+        #container #cover #mysidenav .size_content .size_text {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 22px;
+            margin-bottom: 12px;
+        }
+        
+        #container #cover #mysidenav .size_content .size-bar {
+            display: flex;
+            width: 90%;
+            height: 15px;
+            margin: 0 auto;
+            margin-bottom: 5px;
+            background-color: #EFEFEF;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #414141;
+            text-align: center;
+            justify-content: space-between;
+        }
+        
+        #container #cover #mysidenav .size_content .size-bar {
+            display: flex;
+            width: 90%;
+            height: 15px;
+            margin: 0 auto;
+            margin-bottom: 5px;
+            background-color: #EFEFEF;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #414141;
+            text-align: center;
+            justify-content: space-between;
+        }
+        
+        #container #cover #mysidenav .size_content .size-bar span {
+            display: inline-block;
+            width: 10%;
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        #container #cover #mysidenav .size_content .size-bar span {
+            padding-left: 0;
+        }
+        
+        #container #cover #mysidenav .size_content .size-bar .xs {
+            flex: 1;
+            text-align: left;
+            padding-left: 10px;
+        }
+        
+        #container #cover #mysidenav .size_content .size-bar .s {
+            flex: 1;
+            padding-left: 10%;
+        }
+        
+        #container #cover #mysidenav .size_content .size-bar .m {
+            flex: 1;
+            text-align: center;
+        }
+        
+        #container #cover #mysidenav .size_content .size-bar .l {
+            flex: 1;
+            text-align: right;
+            padding-right: 10%;
+        }
+        
+        #container #cover #mysidenav .size_content .size-bar .xl {
+            flex: 1;
+            text-align: right;
+            padding-right: 10px;
+        }
+        
+        #container #cover #mysidenav .size_content .size_this {
+            display: block;
+            width: 82%;
+            height: 10px;
+            margin: -5px auto;
+            margin-bottom: 5px;
+            padding: 0 10px 0 10px;
+        }
+        
+        #container #cover #mysidenav .size_content .size_this #canvasBar {
+            width: 100%;
+        }
+        
+        #container #cover #mysidenav .size_content .size_this_box {
+            display: block;
+            width: 82%;
+            height: 10px;
+            margin: -9px auto;
+        }
+        
+        #container #cover #mysidenav .size_content .size_this_box #size_line_text {
+            display: inline-block;
+            height: 13px;
+            width: calc(0% - -5%);
+            text-align: right;
+            font-size: 10px;
+            font-weight: bold;
+            color: red;
+        }
+        
+        #container #cover #mysidenav .size_content .size_this .point {
+            clear: both;
+            padding: 0;
+            margin-top: -7px;
+        }
+        
+        #container #cover #mysidenav .size_content .size_this .point #canvasFont {
+            width: 100%;
+        }
+        
+        #container #cover #mysidenav .size_content .size_this .point #canvasFont.canvasFontImg {
+            display: inline-block;
+            width: 20px;
+            height: 11px;
+            background-image: url("https://s3.ap-northeast-2.amazonaws.com/jaem/app/This.png");
+            background-repeat: no-repeat;
+            background-size: contain;
+            border: 1px solid blue;
+        }
+        
+        #container #cover #mysidenav .text_content {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            height: 200px;
+        }
+        
+        #container #cover #mysidenav .text_content .text_info {
+            display: block;
+            width: 69%;
+            height: auto;
+            margin: 0 auto;
+            color: #2E3148;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        #container #cover #mysidenav .text_content #dif_button {
+            display: block;
+            color: #2E3148;
+            width: 120px;
+            height: 20px;
+            margin: 0 auto;
+            margin-top: 10px;
+            border-radius: 30px;
+            border: 1px solid #F3EDED;
+            cursor: pointer;
+            padding: 5px 5px;
+            text-align: center;
+        }
+        
+        #container #cover #mysidenav .text_content #dif_button a {
+            color: black;
+            font-size: 10px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        #container #cover #mysidenav .closebtn {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 0;
+            right: 0;
+            font-size: 25px !important;
+            margin-top: 20px;
+            background-image: url(https://s3.ap-northeast-2.amazonaws.com/jaem/app/close.png);
+            background-repeat: no-repeat;
+            cursor: pointer;
+        }
+        
+        #container #cover_2 #mysidenav_2 {
+            height: 100%;
+            width: 0;
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            background-color: #fafafa;
+            overflow-y: hidden;
+            padding-top: 60px;
+            border-top: 0px;
+            color: 2E3148;
+        }
+        
+        #container #cover_2 #mysidenav_2.sidenav_2_active {
+            height: 100%;
+            width: 320px;
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            background-color: #fff;
+            overflow-y: hidden;
+            padding-top: 60px;
+            border-top: 0px;
+            color: 2E3148;
+            margin-bottom: -100px;
+        }
+        
+        #container #cover_2 #mysidenav_2.sidenav_2_close {
+            display: none;
+        }
+        
+        #container #cover_2 #mysidenav_2 h3 {
+            font-size: 14px;
+            position: absolute;
+            top: 0;
+            left: 7px;
+            margin: 20px;
+            color: #2E3148;
+        }
+        
+        #container #cover_2 #mysidenav_2 span {
+            padding-left: 20px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .closebtn_2 {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 0;
+            right: 0;
+            font-size: 25px !important;
+            margin-top: 20px;
+            background-image: url(https://s3.ap-northeast-2.amazonaws.com/jaem/app/close.png);
+            background-repeat: no-repeat;
+            cursor: pointer;
+        }
+        
+        #container #cover_2 #mysidenav_2 .size_content_2 {
+            position: absolute;
+            top: 20%;
+            width: 100%;
+            height: 200px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .size_content_2 .my_size {
+            color: #edeef2;
+        }
+        
+        #container #cover_2 #mysidenav_2 .size_content_2 .my_size .big_text {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        #container #cover_2 #mysidenav_2 .size_content_2 .my_size .small_text {
+            font-size: 12px;
+            padding-left: 15px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .size_content_2 .recommend_size {
+            margin-top: 25px;
+            font-size: 12px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .size_content_2 .recommend_size .recommend_size_table {
+            width: 100%;
+            text-align: center;
+            border-spacing: 0px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .size_content_2 .recommend_size .recommend_size_table .subject_size {
+            height: 40px;
+            margin-bottom: 10px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .size_content_2 .recommend_size .recommend_size_table .subject_size th {
+            width: 16.5%;
+        }
+        
+        #container #cover_2 #mysidenav_2 .size_content_2 .recommend_size .recommend_size_table .my_size {
+            color: black;
+            height: 30px;
+            background-color: #edece6;
+        }
+        
+        #container #cover_2 #mysidenav_2 .size_content_2 .recommend_size .recommend_size_table #recommend-size {
+            height: 30px;
+            color: red;
+            background-color: #edece6;
+            margin-bottom: 10px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .size_content_2 .recommend_size .recommend_size_table #cal-size {
+            color: red;
+            height: 40px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .size_content_2 .example {
+            display: block;
+            font-size: 10px;
+            padding-left: 20px;
+            margin-top: 6px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .size_content_2 .example .line_a {
+            display: inline-block;
+            width: 10px;
+            background-color: #2E3147;
+            height: 1px;
+            padding-left: 10px;
+            margin: 0px -17px 2px 0px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .size_content_2 .example .line_b {
+            display: inline-block;
+            width: 10px;
+            background-color: red;
+            height: 1px;
+            padding-left: 10px;
+            margin: 0px -17px 2px 20px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .text_content_2 {
+            position: absolute;
+            top: 55%;
+            width: 100%;
+            height: 200px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .text_content_2 .text_info_2 {
+            display: flex;
+            width: 100%;
+            height: auto;
+            margin: 0 auto;
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .text_content_2 .text_info_2 .before_button {
+            flex: 1;
+            font-size: 40px;
+            font-weight: bold;
+            color: white;
+            margin-top: 15px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .text_content_2 .text_info_2 .before_button #left_button {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            background-image: url(https://s3.ap-northeast-2.amazonaws.com/jaem/app/left_button.png);
+            background-repeat: no-repeat;
+            padding-left: 0;
+            cursor: pointer;
+        }
+        
+        #container #cover_2 #mysidenav_2 .text_content_2 .text_info_2 .before_button #left_button.left_white_button {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            background-image: url(https://s3.ap-northeast-2.amazonaws.com/jaem/app/left_button.png);
+            background-repeat: no-repeat;
+            padding-left: 0;
+            cursor: pointer;
+        }
+        
+        #container #cover_2 #mysidenav_2 .text_content_2 .text_info_2 .before_button #left_button.left_black_button {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            background-image: url(https://s3.ap-northeast-2.amazonaws.com/jaem/app/leftBlackButton.png);
+            background-repeat: no-repeat;
+            padding-left: 0;
+            cursor: pointer;
+        }
+        
+        #container #cover_2 #mysidenav_2 .text_content_2 .text_info_2 .comments {
+            flex: 3;
+            color: #2E3148;
+            height: 20px;
+            font-size: 12px;
+            padding-top: 15px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .text_content_2 .after_button {
+            flex: 1;
+            font-size: 40px;
+            font-weight: bold;
+            color: white;
+            margin-top: 15px;
+        }
+        
+        #container #cover_2 #mysidenav_2 .text_content_2 .after_button #right_button {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            background-image: url(https://s3.ap-northeast-2.amazonaws.com/jaem/app/right_button.png);
+            background-repeat: no-repeat;
+            padding-left: 0;
+            cursor: pointer;
+        }
+        
+        #container #cover_2 #mysidenav_2 .text_content_2 .after_button #right_button.right_black_button {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            background-image: url(https://s3.ap-northeast-2.amazonaws.com/jaem/app/right_button.png);
+            background-repeat: no-repeat;
+            padding-left: 0;
+            cursor: pointer;
+        }
+        
+        #container #cover_2 #mysidenav_2 .text_content_2 .after_button #right_button.right_white_button {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            background-image: url(https://s3.ap-northeast-2.amazonaws.com/jaem/app/rightWhiteButton.png);
+            background-repeat: no-repeat;
+            padding-left: 0;
+            cursor: pointer;
+        }
+        
+        #container #cover_2 #mysidenav_2 #dif_button_2 {
+            display: block;
+            width: 120px;
+            height: 20px;
+            margin: 0 auto;
+            margin-top: 10px;
+            border-radius: 30px;
+            border: 1px solid #F3EDED;
+            cursor: pointer;
+            padding: 5px 5px;
+            text-align: center;
+        }
+        
+        #container #cover_2 #mysidenav_2 #dif_button_2 a {
+            color: black;
+            font-size: 10px !important;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div class="section_top">
+            <div class="text_left">
+                <span class="item_name">램스울크루스웨터(긴팔)</span>
+                <span class="item_price">19,900원</span>
+                <span class="item_number">상품번호:173221</span>
+            </div>
+            <div class="text_right">
+                <span class="star">
+                    <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                </span>
+                <span class="review"><a href="#">고객 상품평 보기</a></span>
+            </div>
+        </div>
+
+        <div class="section_middle_cover">
+            <div class="section_middle_img"></div>
+        </div>
+
+        <div class="slide_button">
+            <span class="choice_button">&#149;</span><span>&#149;</span><span>&#149;</span><span>&#149;</span><span>&#149;</span>
+            <span class="slide_next">&gt;</span>
+        </div>
+        <div class="section_bottom"><span>색상: 34 BROWN</span></div>
+        <div class="bottom_bar" onclick='showRecommendSizePage(1)'><span class="bottom_bar_text">사이즈 추천 받기</span></div>
+
+        <!-- side menu-1-->
+        <div id="cover">
+            <div id="mysidenav">
+
+                <h3>User님 안녕하세요</h3>
+                <span class="closebtn" onclick='closeRecommendSizePage()'></span>
+
+                <div class="size_content">
+                    <div class="size_text">
+                        <p>Faunee 님에게 맞는 사이즈 범위 입니다.</p>
+                    </div>
+                    <div class="size-bar" id="size-bar"></div>
+
+                    <div class="size_this">
+                        <canvas id="canvasBar" height="10"></canvas>
+                    </div>
+                    <div class="size_this_box">
+                        <div id="size_line_text">This!</div>
+                    </div>
+                </div>
+
+                <div class="text_content">
+                    <div class="text_info">
+                        <p>L 도 맞을 것 같지만 younmo 님은 평소 크게 입으 시네요. XL 가 좋겠어요.</p>
+                    </div>
+                    <div id="dif_button"><a href="#" onclick='showRecommendSizePage(2)'>다른체형과 비교하기</a></div>
+                </div>
+            </div>
+        </div>
+        <!-- side menu end-->
+
+        <!-- side menu_2-->
+        <div id="cover_2">
+            <div id="mysidenav_2">
+
+                <h3>User님 안녕하세요</h3>
+                <span class="closebtn_2" onclick='closeRecommendSizePage()'></span>
+
+                <div class="size_content_2">
+                    <div class="my_size">
+                        <span class="big_text">XL</span>
+                        <span class="small_text">164cm 52kg</span>
+                    </div>
+
+                    <div class="recommend_size">
+                        <table class="recommend_size_table" style="cellspacing:0px;">
+                            <tr class="subject_size">
+                                <th>어깨</th>
+                                <th>가슴</th>
+                                <th>허리</th>
+                                <th>골반</th>
+                                <th>엉덩이</th>
+                                <th>허벅지</th>
+                            </tr>
+                            <tr id="my-size"></tr>
+                            <tr id="recommend-size"></tr>
+                            <tr id="cal-size"></tr>
+                        </table>
+                    </div>
+
+                    <div class="example">
+                        <span class="line_a"></span>
+                        <span>내 사이즈</span>
+                        <span class="line_b"></span>
+                        <span>다른 사람 사이즈</span>
+                    </div>
+                </div>
+
+                <div class="text_content_2">
+                    <div class="text_info_2">
+                        <div class="before_button">
+                            <span id="left_button" onclick="changeButtonValue(false)"></span>
+                        </div>
+
+                        <div class="comments">
+                            <p id="recommend-message"></p>
+                        </div>
+
+                        <div class="after_button">
+                            <span id="right_button" onclick="changeButtonValue(true)"></span>
+                        </div>
+                    </div>
+                    <div id="dif_button_2"><a href="#" onclick='showRecommendSizePage(1)'>내체형 분석하기</a></div>
+                </div>
+            </div>
+        </div>
+        <!-- side menu_2 end-->
+    </div>
+
+    <script>
+        var recommendSizeData = {
+            recommendSize: 'M',
+            isCorrectGender: true,
+            recommendRate: 0,
+            status: true,
+            sizes: ['XS', 'S', 'M', 'L', 'XL']
+        };
+
+        var mySize = {
+            '어깨': 34,
+            '가슴': 45,
+            '허리': 76,
+            '골반': 83,
+            '엉덩이': 67,
+            '허벅지': 92
+        };
+
+        var recommendSize = {
+            XL: {
+                '어깨': 959,
+                '가슴': 66,
+                '허리': 76,
+                '골반': 13,
+                '엉덩이': 97,
+                '허벅지': 93
+            },
+            L: {
+                '어깨': 88,
+                '가슴': 757,
+                '허리': 88,
+                '골반': 83,
+                '엉덩이': 77,
+                '허벅지': 91
+            },
+            M: {
+                '어깨': 77,
+                '가슴': 85,
+                '허리': 77,
+                '골반': 633,
+                '엉덩이': 97,
+                '허벅지': 78
+            },
+            S: {
+                '어깨': 66,
+                '가슴': 88,
+                '허리': 27,
+                '골반': 53,
+                '엉덩이': 60,
+                '허벅지': 552
+            },
+            XS: {
+                '어깨': 55,
+                '가슴': 857,
+                '허리': 27,
+                '골반': 53,
+                '엉덩이': 61,
+                '허벅지': 50
+            }
+        };
+
+        var recommendMessage = {
+            XL: '어깨와 허리가 좀 얇지만 가슴은 더 큰 분은 XL 를 적당하다고 했어요',
+            L: '허리리 사이즈가 차이가 있어 L 를 적당하다고 했어요',
+            M: '허벅지가 얇아서 M 를 적당하다고 했어요',
+            S: '골반이 좁아서 S 를 적당하다고 했어요',
+            XS: '어깨가 좁아서 XS 를 적당하다고 했어요'
+        };
+
+        var elIds = {
+            recommendPage_myBody: 'mysidenav',
+            recommendPage_outherBody: 'mysidenav_2',
+            textUnderLine: 'size_line_text',
+            my_Size: 'my-size',
+            cal_size: 'cal-size',
+            recommend_size: 'recommend-size',
+            recommend_message: 'recommend-message',
+            size_bar: 'size-bar',
+            canvas_bar: 'canvasBar',
+            leftButton: 'left_button',
+            rightButton: 'right_button'
+        };
+
+        var activeClass = {
+            recommendPage_myBody_open: 'sidenav_active',
+            recommendPage_otherBody_open: 'sidenav_2_active',
+            recommendPage_myBody_close: 'sidenav_close',
+            recommendPage_otherBody_close: 'sidenav_2_close',
+            right_white_button: 'right_white_button',
+            right_black_button: 'right_black_button',
+            left_white_button: 'left_white_button',
+            left_black_button: 'left_black_button'
+        };
+
+        var recommendedSizeData = {
+            sizeRate: recommendSizeData.recommendRate,
+            sizeName: recommendSizeData.recommendSize,
+            totalSizes: recommendSizeData.sizes
+        };
+
+        //        ============================
+        //           recommendSize - myBody  
+        //        ============================        
+
+        function getRecommendSizeList() {
+            var recommendedSizeList = [];
+            var listAdd = "";
+            var totalSizeList = recommendedSizeData.totalSizes;
+            var selectoerSize = recommendedSizeData.sizeName;
+            var sizeListLength = totalSizeList.length;
+            var minCount = 0;
+            var maxCount = 0;
+
+            for (var i = 0; i < sizeListLength; i++) {
+                if (totalSizeList[i] == selectoerSize) {
+                    selectIndex = i;
+                }
+            }
+
+            if (selectIndex < 3 && sizeListLength < 5) {
+                minCount = 0;
+                maxCount = sizeListLength - 1;
+            } else if (selectIndex < 3 && sizeListLength > 4) {
+                maxCount = 4;
+            } else if (selectIndex == 3 && sizeListLength == 4) {
+                maxCount = selectIndex;
+            } else if (selectIndex == sizeListLength - 1) {
+                minCount = selectIndex - 4;
+                maxCount = selectIndex;
+            } else if (selectIndex == sizeListLength - 2) {
+                minCount = selectIndex - 3;
+                maxCount = selectIndex + 1;
+            } else if (sizeListLength > 4) {
+                minCount = selectIndex - 2;
+                maxCount = selectIndex + 2;
+            }
+
+            for (var i = minCount; i <= maxCount; i++) {
+                recommendedSizeList.push(totalSizeList[i]);
+                listAdd += '<span>' + recommendSizeData.sizes[i] + '</span>';
+            }
+            document.getElementById(elIds.size_bar).innerHTML = listAdd;
+
+            return recommendedSizeList;
+        };
+
+        function initCanvas(canvasId) {
+            var canvas = document.getElementById(canvasId);
+            var canvasContext = canvas.getContext('2d');
+            var canvasWidth = canvas.width;
+            var canvasHeight = canvas.height;
+
+            return {
+                canvasContext: canvasContext,
+                canvasWidth: canvasWidth,
+                canvasHeight: canvasHeight
+            }
+        };
+
+        function calRecommendLineLocation(canvasInfo, sizeName, sizeRate, sizeList) { // 그래프 위치 값 구하는 계산부분 - 함수형태로 변경.
+            var sizeListLength = sizeList.length - 1;
+            var sizeCount = sizeList.indexOf(sizeName);
+            var dividedCanvasWidth = canvasInfo.canvasWidth / sizeListLength;
+            var centerLine = (dividedCanvasWidth * sizeCount) + (dividedCanvasWidth / 10 * sizeRate);
+            var startLine = centerLine - (dividedCanvasWidth / 2);
+            var endLine = centerLine + (dividedCanvasWidth / 2);
+
+            var dividedLineCanvasWidth = dividedCanvasWidth / 3;
+            var rateRange = dividedLineCanvasWidth / 10 * sizeRate;
+            var textLocation = (dividedLineCanvasWidth * sizeCount) + rateRange + 4;
+
+            return {
+                sizeListLength: sizeListLength,
+                textLocation: textLocation,
+                sizeCount: sizeCount,
+                centerLine: centerLine,
+                startLine: startLine,
+                endLine: endLine,
+                sizeRate: sizeRate
+            }
+        };
+
+        function RecommendSizeLineGraph(canvasInfo, LocationValue, lineGraphControl) { 
+            var lineGraphNomalProperties = { // 그래프 속성 표준값 
+                lineColor: 'red',
+                lineHeight: 4,
+                motionValue: 30,
+                standardSpeed: 200,
+                speedReduce: 200
+            }
+            
+            for (var value in lineGraphControl) { // 그래프 인스턴스 생성시 예외 처리
+                if (typeof lineGraphControl === "object" && lineGraphControl[value] !== null) {
+                    this.lineGraphControl = lineGraphControl;
+                    break;
+                } else if (typeof lineGraphControl !== "object" || lineGraphControl[value] == null) {
+                    this.lineGraphControl = lineGraphNomalProperties;
+                    break;
+                }
+            }
+
+            this.canvasInfomation = canvasInfo || {};
+            this.variableValues = LocationValue || {};
+
+        };
+        RecommendSizeLineGraph.prototype = {
+
+            drawRecommendLine: function () {
+                var c = this.lineGraphControl;
+                var f = this.canvasInfomation;
+                var v = this.variableValues;
+                var lineIncrease = 0;
+
+                var intervalStrat = setInterval(function () {
+                    var lineLength = v.startLine + lineIncrease;
+                    var centerLine = v.startLine + ((v.endLine - v.startLine) / 2);
+
+                    f.canvasContext.clearRect(0, 0, f.canvasWidth, f.canvasHeight);
+                    f.canvasContext.beginPath();
+                    f.canvasContext.strokeStyle = c.lineColor;
+                    f.canvasContext.lineWidth = c.lineHeight;
+                    f.canvasContext.moveTo(v.startLine, 1);
+                    f.canvasContext.lineTo(lineLength, 1);
+                    f.canvasContext.stroke();
+
+                    if (lineLength < centerLine) {
+                        lineIncrease += c.standardSpeed / c.speedReduce * 2;
+                    } else if (lineLength > centerLine) {
+                        lineIncrease += c.standardSpeed / c.speedReduce;
+                    }
+
+                    if (lineLength > v.endLine) {
+                        clearInterval(intervalStrat);
+                    }
+                }, c.motionValue);
+            },
+
+            moveTextLocation: function () {
+                var v = this.variableValues;
+
+                if (v.sizeCount == v.sizeListLength && sizeRate == 0) {
+                    document.getElementById(elIds.textUnderLine).style.width = '100%';
+                } else if (v.sizeCount == 0 && sizeRate == 0) {
+                    document.getElementById(elIds.textUnderLine).style.width = '0';
+                } else {
+                    document.getElementById(elIds.textUnderLine).style.width = v.textLocation + '%';
+                }
+            }
+        };
+
+        //        ================================
+        //           recommendSize - otherBody  
+        //        ================================
+
+        var slideButton = 0;
+
+        function getRecommendSize() {
+            var sizeKey = [];
+            var sizeKeyCount = "";
+
+            for (var recommendSizeList in recommendSize) {
+                sizeKey.push(recommendSizeList);
+            }
+            sizeKeyCount = sizeKey[slideButton];
+            calSizeGap(recommendSize[sizeKeyCount], recommendMessage[sizeKeyCount]);
+        };
+
+        function calSizeGap(recommendedSize, recommendedMessage) {
+            var myDimensions = [],
+                recommendDimensions = [],
+                dimensionsGap = [];
+
+            for (var i in mySize) {
+                var myDimensionsList = mySize[i];
+                var recommendDimensionsList = recommendedSize[i];
+                var dimensionsGapList = myDimensionsList - recommendDimensionsList;
+
+                myDimensions += addTag(myDimensionsList);
+                recommendDimensions += addTag(recommendDimensionsList);
+                dimensionsGap += addSignAndTag(dimensionsGapList);
+            }
+
+            document.getElementById(elIds.my_Size).innerHTML = myDimensions;
+            document.getElementById(elIds.recommend_size).innerHTML = recommendDimensions;
+            document.getElementById(elIds.cal_size).innerHTML = dimensionsGap;
+            document.getElementById(elIds.recommend_message).innerHTML = recommendedMessage;
+        };
+
+        function addSignAndTag(value) {
+            return value < 0 ? '<td>' + value + '</td>' : '<td>' + "+" + value + '</td>';
+        };
+
+        function addTag(value) {
+            var tagText = '<td>' + value + '</td>';
+            return tagText;
+        };
+
+        function changeButtonValue(isAdd) {
+            var recommendSizeKeyLength = Object.keys(recommendSize).length - 1;
+
+            slideButton += isAdd ? 1 : -1;
+            if (slideButton - 1 == recommendSizeKeyLength) {
+                slideButton--;
+            } else if (slideButton - 1 == -2) {
+                slideButton++;
+            }
+
+            chageButtonColor(recommendSizeKeyLength);
+            getRecommendSize();
+        };
+
+        function chageButtonColor(sizeListLength) {
+            if (slideButton == sizeListLength) {
+                document.getElementById(elIds.rightButton).className = activeClass.right_white_button;
+            } else if (slideButton == -1) {
+                document.getElementById(elIds.leftButton).className = activeClass.left_white_button;
+            } else if (slideButton == 0) {
+                document.getElementById(elIds.leftButton).className = activeClass.left_white_button;
+            } else {
+                document.getElementById(elIds.leftButton).className = activeClass.left_black_button;
+                document.getElementById(elIds.rightButton).className = activeClass.right_black_button;
+            }
+        };
+
+        //        ====================================
+        //           movePage - myBody & otherBody
+        //        ====================================        
+
+        function showRecommendSizePage(pageCount) {
+            if (pageCount == 1) {
+                document.getElementById(elIds.recommendPage_outherBody).className = activeClass.recommendPage_otherBody_close;
+                document.getElementById(elIds.recommendPage_myBody).className = activeClass.recommendPage_myBody_open;
+                init();
+            } else if (pageCount == 2) {
+                document.getElementById(elIds.recommendPage_outherBody).className = activeClass.recommendPage_otherBody_open;
+                getRecommendSize();
+            }
+        };
+
+        function closeRecommendSizePage() {
+            document.getElementById(elIds.recommendPage_myBody).className = activeClass.recommendPage_myBody_close;
+            document.getElementById(elIds.recommendPage_outherBody).className = activeClass.recommendPage_otherBody_close;
+        };
+
+        //        ===================================
+        //           recommendPage_myBody - init
+        //        ===================================
+
+        function init() {
+            var receivedSizeList = getRecommendSizeList();
+
+            var canvasInfo = initCanvas(elIds.canvas_bar);
+            var LocationValue = calRecommendLineLocation(canvasInfo, recommendedSizeData.sizeName, recommendedSizeData.sizeRate, receivedSizeList);
+            var lineDraw = new RecommendSizeLineGraph(canvasInfo, LocationValue, {
+                lineColor: 'red',
+                lineHeight: 4,
+                motionValue: 30,
+                standardSpeed: 200,
+                speedReduce: 200
+            });
+            lineDraw.drawRecommendLine();
+            lineDraw.moveTextLocation();
+        };
+    </script>
+</body>
+
+</html>

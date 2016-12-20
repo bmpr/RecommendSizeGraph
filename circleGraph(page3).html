@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: black;
+        }
+        #canvas {
+            display: inline-block;
+            position: absolute;
+            top: 10%;
+            left: 10%;
+        }
+        #canvasShadow {
+            display: inline-block;
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            background-color: aliceblue;
+        }
+    </style>
+</head>
+
+<body>
+        
+<canvas id="canvasShadow" width="270" height="270"></canvas>        
+        <canvas id="canvas" width="270" height="270"></canvas>
+<!--        <canvas id="canvasShadow" width="270" height="270"></canvas>        -->
+
+    <script>
+        var recommendSizeData = {
+            recommendSize: 'M',
+            isCorrectGender: true,
+            recommendRate: 0,
+            status: true,
+            sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
+        }
+
+        //-------------------------------------------background shadow----------------------------------------------------------        
+
+
+        function pieGraphDraw(canvasId, drawOption) {
+            var canvas = document.getElementById(canvasId);
+            var cx = canvas.getContext("2d");
+            var canvasHalfWidth = canvas.width / 2;
+            
+            // 인자값에 따른 분기 실행
+            if (drawOption == "motion") {
+                // 모션을 위한 각도 보정값 추가
+                var i = 0;
+                var motionValue = 15;
+                var piePieceAllMotion = 9 * motionValue; // (8 * 20) 전체조각                
+                var piePieceMotion = 3 * motionValue; // (2 * 20) 부분조각
+
+                // setInterval
+                var pieGraphInterval = setInterval(function () {
+                    i = i + 1;
+                    cx.clearRect(0, 0, canvas.width, canvas.height);
+                    var drawRad = ((2 * Math.PI) / piePieceAllMotion) * i;
+                    pieGraphDrawInner(drawRad);
+                    
+                    if (i == piePieceMotion) {
+                        
+                        clearInterval(pieGraphInterval);
+                    }
+                }, motionValue);
+            }else {
+            var drawRad = ((2 * Math.PI) / 8 * 3);
+            pieGraphDrawInner(drawRad);
+        }
+
+            // 원형 그래프 그리는 부분 - 공통
+            function pieGraphDrawInner(rad) {
+                cx.beginPath();
+                cx.shadowOffsetX = 0;
+                cx.shadowOffsetY = 0;
+                
+                cx.moveTo(canvasHalfWidth, canvasHalfWidth);
+                
+//                cx.arc(canvasHalfWidth, canvasHalfWidth, canvasHalfWidth / 1.4 + 15, 0.5 * Math.PI, rad + 0.5 * Math.PI, false);//XS 
+//                cx.arc(canvasHalfWidth, canvasHalfWidth, canvasHalfWidth / 1.4 + 15, 0.85 * Math.PI, rad + 0.85 * Math.PI, false);//S 
+                cx.arc(canvasHalfWidth, canvasHalfWidth, canvasHalfWidth / 1.4 + 15, 1.15 * Math.PI, rad + 1.15 * Math.PI, false);//M                
+//                cx.arc(canvasHalfWidth, canvasHalfWidth, canvasHalfWidth / 1.4 + 15, 1.5 * Math.PI, rad + 1.5 * Math.PI, false);//L
+//                cx.arc(canvasHalfWidth, canvasHalfWidth, canvasHalfWidth / 1.4 + 15, 1.8 * Math.PI, rad + 1.8 * Math.PI, false);//XL
+                
+                cx.shadowColor = "#FE7E84";
+                cx.shadowBlur = 50;
+                
+                cx.closePath();
+                cx.fillStyle = "red";
+                cx.fill();
+                
+            }
+        }
+
+        //-------------------------------------------text align----------------------------------------------------------
+
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        var radius = canvas.height / 2;
+        ctx.translate(radius, radius);
+        radius = radius * 0.79;
+
+        function drawFace(ctx, radius) {
+
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+
+        }
+
+        function drawNumbers(ctx, radius) {
+            var ang, num;
+            var numLabel;
+            var sizeLabel;
+            var labelCount = 0;
+            var sizeLabelList = recommendSizeData.sizes; // [xs,s,m,l...]
+
+            ctx.font = "16px arial";
+            ctx.textBaseline = "middle";
+            ctx.textAlign = "center";
+
+            for (num = 12; num < 25; num++) {
+                numLabel = num.toString() - 9;
+                ang = num * 3.14 / 9;
+
+                ctx.rotate(ang);
+                ctx.translate(0, -radius * 0.85);
+                ctx.rotate(-ang);
+
+                if (num > 6 && num < 12) {
+                    ctx.fillText("", 0, 0);
+                } else if (numLabel % 3 == 0) {
+                    ctx.fillStyle = "#FE7E84";
+                    ctx.fillText(sizeLabelList[labelCount], 0, 0);
+                    labelCount++;
+                } else if (numLabel % 3 !== 0) {
+                    ctx.fillStyle = "gray";
+                    ctx.fillText(".", 0, 0);
+                }
+
+                ctx.rotate(ang);
+                ctx.translate(0, radius * 0.85);
+                ctx.rotate(-ang);
+            }
+        }
+
+        function moveText(ctx, radius) {
+            var ang, num;
+            var numLabel;
+            var sizeLabelList = recommendSizeData.sizes.indexOf(recommendSizeData.recommendSize);
+
+            ctx.font = "11px arial"; // 
+            ctx.textAlign = "center";
+
+            for (num = 12; num < 25; num++) {
+                numLabel = num.toString() - 9;
+                ang = num * 3.14 / 9;
+
+                ctx.rotate(ang);
+                ctx.translate(0, -radius * 0.65);
+                ctx.rotate(-ang);
+
+                if (numLabel % 3 == 0 && numLabel / 3 - 1 == sizeLabelList) {
+                    ctx.fillStyle = "#FE7E84";
+                    ctx.fillText("this!", 0, 0);
+                } else {
+                    ctx.fillText("", 0, 0);
+                }
+
+                ctx.rotate(ang);
+                ctx.translate(0, radius * 0.65);
+                ctx.rotate(-ang);
+            }
+        }
+
+
+        function drawClock() {
+            drawFace(ctx, radius);
+            drawNumbers(ctx, radius);
+            moveText(ctx, radius);
+            // 인자 : 캔버스ID, 조각갯수, 그래프영역, 그래프색상, 모션
+            pieGraphDraw("canvasShadow", "motion");
+        }
+
+        drawClock();
+    </script>
+
+</body>
+
+</html>
