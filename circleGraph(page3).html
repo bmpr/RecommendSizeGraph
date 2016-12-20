@@ -7,30 +7,34 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
-        body {
-            background-color: black;
-        }
         #canvas {
             display: inline-block;
             position: absolute;
             top: 10%;
             left: 10%;
         }
+        
         #canvasShadow {
             display: inline-block;
             position: absolute;
             top: 10%;
             left: 10%;
-            background-color: aliceblue;
+        }
+        
+        #canvasTest {
+            display: inline-block;
+            position: absolute;
+            top: 10%;
+            left: 10%;
         }
     </style>
 </head>
 
 <body>
-        
-<canvas id="canvasShadow" width="270" height="270"></canvas>        
-        <canvas id="canvas" width="270" height="270"></canvas>
-<!--        <canvas id="canvasShadow" width="270" height="270"></canvas>        -->
+
+    <!--    <canvas id="canvasTest" width="270" height="270"></canvas>-->
+    <canvas id="canvasShadow" width="270" height="270"></canvas>
+    <canvas id="canvas" width="270" height="270"></canvas>
 
     <script>
         var recommendSizeData = {
@@ -41,157 +45,149 @@
             sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
         }
 
-        //-------------------------------------------background shadow----------------------------------------------------------        
+        //-------------------------------------------background shadow---------------------------------------------------------
 
-
-        function pieGraphDraw(canvasId, drawOption) {
-            var canvas = document.getElementById(canvasId);
+        function circleGraphDraw() {
+            var canvas = document.getElementById("canvasShadow");
             var cx = canvas.getContext("2d");
             var canvasHalfWidth = canvas.width / 2;
-            
-            // 인자값에 따른 분기 실행
-            if (drawOption == "motion") {
-                // 모션을 위한 각도 보정값 추가
-                var i = 0;
-                var motionValue = 15;
-                var piePieceAllMotion = 9 * motionValue; // (8 * 20) 전체조각                
-                var piePieceMotion = 3 * motionValue; // (2 * 20) 부분조각
+            var recommendedSizeIndex = recommendSizeData.sizes.indexOf(recommendSizeData.recommendSize);
 
-                // setInterval
+            
+                var i = 0;
+                var motionValue = 10;
+                var piePieceAllMotion = 20 * motionValue; 
+                var piePieceMotion = 5 * motionValue; 
+
                 var pieGraphInterval = setInterval(function () {
                     i = i + 1;
                     cx.clearRect(0, 0, canvas.width, canvas.height);
-                    var drawRad = ((2 * Math.PI) / piePieceAllMotion) * i;
-                    pieGraphDrawInner(drawRad);
-                    
+                    var drawRad = ((2 * Math.PI) / piePieceAllMotion) * i + 0.5;
+                    circleGraphDrawInner(drawRad);
+
                     if (i == piePieceMotion) {
-                        
                         clearInterval(pieGraphInterval);
                     }
                 }, motionValue);
-            }else {
-            var drawRad = ((2 * Math.PI) / 8 * 3);
-            pieGraphDrawInner(drawRad);
-        }
+            
 
-            // 원형 그래프 그리는 부분 - 공통
-            function pieGraphDrawInner(rad) {
+            function circleGraphDrawInner(rad) {
                 cx.beginPath();
-                cx.shadowOffsetX = 0;
-                cx.shadowOffsetY = 0;
-                
                 cx.moveTo(canvasHalfWidth, canvasHalfWidth);
-                
-//                cx.arc(canvasHalfWidth, canvasHalfWidth, canvasHalfWidth / 1.4 + 15, 0.5 * Math.PI, rad + 0.5 * Math.PI, false);//XS 
-//                cx.arc(canvasHalfWidth, canvasHalfWidth, canvasHalfWidth / 1.4 + 15, 0.85 * Math.PI, rad + 0.85 * Math.PI, false);//S 
-                cx.arc(canvasHalfWidth, canvasHalfWidth, canvasHalfWidth / 1.4 + 15, 1.15 * Math.PI, rad + 1.15 * Math.PI, false);//M                
-//                cx.arc(canvasHalfWidth, canvasHalfWidth, canvasHalfWidth / 1.4 + 15, 1.5 * Math.PI, rad + 1.5 * Math.PI, false);//L
-//                cx.arc(canvasHalfWidth, canvasHalfWidth, canvasHalfWidth / 1.4 + 15, 1.8 * Math.PI, rad + 1.8 * Math.PI, false);//XL
-                
+                cx.arc(canvasHalfWidth, canvasHalfWidth, canvasHalfWidth / 1.4 + 10, ((recommendedSizeIndex * 0.33) + 0.505) * Math.PI, rad + ((recommendedSizeIndex * 0.33) + 0.505) * Math.PI, false);
                 cx.shadowColor = "#FE7E84";
-                cx.shadowBlur = 50;
-                
+                cx.shadowBlur = 40;
                 cx.closePath();
                 cx.fillStyle = "red";
                 cx.fill();
-                
             }
         }
 
         //-------------------------------------------text align----------------------------------------------------------
 
-        var canvas = document.getElementById("canvas");
-        var ctx = canvas.getContext("2d");
-        var radius = canvas.height / 2;
-        ctx.translate(radius, radius);
-        radius = radius * 0.79;
+        (function () {
 
-        function drawFace(ctx, radius) {
+            var canvas = document.getElementById("canvas");
+            var ctx = canvas.getContext("2d");
+            var radius = canvas.height / 2;
+            
+            ctx.translate(radius, radius);
+            radius = radius * 0.79;
 
-            ctx.beginPath();
-            ctx.arc(0, 0, radius, 0, 2 * Math.PI);
-            ctx.fillStyle = 'white';
-            ctx.fill();
+            function drawSizeText() { // 캔버스 안 사이즈 배치
+                var angle, num;
+                var sizeNameCount;
+                var labelCount = 0;
+                var sizeLabelList = recommendSizeData.sizes;
 
-        }
+                ctx.beginPath();
+                ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = 'white';
+                ctx.fill();
 
-        function drawNumbers(ctx, radius) {
-            var ang, num;
-            var numLabel;
-            var sizeLabel;
-            var labelCount = 0;
-            var sizeLabelList = recommendSizeData.sizes; // [xs,s,m,l...]
+                ctx.font = "16px arial";
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "center";
 
-            ctx.font = "16px arial";
-            ctx.textBaseline = "middle";
-            ctx.textAlign = "center";
+                for (num = 12; num < 25; num++) {
+                    sizeNameCount = num.toString() - 9;
+                    angle = num * 3.14 / 9;
 
-            for (num = 12; num < 25; num++) {
-                numLabel = num.toString() - 9;
-                ang = num * 3.14 / 9;
+                    ctx.rotate(angle);
+                    ctx.translate(0, -radius * 0.85);
+                    ctx.rotate(-angle);
 
-                ctx.rotate(ang);
-                ctx.translate(0, -radius * 0.85);
-                ctx.rotate(-ang);
+                    if (num > 6 && num < 12) {
+                        ctx.fillText("", 0, 0);
+                    } else if (sizeNameCount % 3 == 0) {
+                        ctx.fillStyle = "#FE7E84";
+                        ctx.fillText(sizeLabelList[labelCount], 0, 0);
+                        labelCount++;
+                    } else if (sizeNameCount % 3 !== 0) {
+                        ctx.fillStyle = "gray";
+                        ctx.fillText(".", 0, 0);
+                    }
 
-                if (num > 6 && num < 12) {
-                    ctx.fillText("", 0, 0);
-                } else if (numLabel % 3 == 0) {
-                    ctx.fillStyle = "#FE7E84";
-                    ctx.fillText(sizeLabelList[labelCount], 0, 0);
-                    labelCount++;
-                } else if (numLabel % 3 !== 0) {
-                    ctx.fillStyle = "gray";
-                    ctx.fillText(".", 0, 0);
+                    ctx.rotate(angle);
+                    ctx.translate(0, radius * 0.85);
+                    ctx.rotate(-angle);
+                }
+            }
+
+            function drawThisText() { // This! 
+                var angle, num;
+                var sizeNameCount;
+                var recommendedSizeIndex = recommendSizeData.sizes.indexOf(recommendSizeData.recommendSize);
+
+                ctx.font = "11px arial";
+                ctx.textAlign = "center";
+
+                for (num = 12; num < 25; num++) {
+                    sizeNameCount = num.toString() - 9;
+                    angle = num * 3.14 / 9;
+
+                    ctx.rotate(angle);
+                    ctx.translate(0, -radius * 0.65);
+                    ctx.rotate(-angle);
+
+                    if (sizeNameCount % 3 == 0 && sizeNameCount / 3 - 1 == recommendedSizeIndex) {
+                        ctx.fillStyle = "#FE7E84";
+                        ctx.fillText("this!", 0, 0);
+                    } else {
+                        ctx.fillText("", 0, 0);
+                    }
+
+                    ctx.rotate(angle);
+                    ctx.translate(0, radius * 0.65);
+                    ctx.rotate(-angle);
                 }
 
-                ctx.rotate(ang);
-                ctx.translate(0, radius * 0.85);
-                ctx.rotate(-ang);
+                //        (function test() { // 테스트 라인 
+                //            var canvas = document.getElementById("canvasTest");
+                //            var cx = canvas.getContext("2d");
+                //            var canvasHalfWidth = canvas.width / 2;
+                //            var j = 0.11;
+                //
+                //            cx.beginPath();
+                //            for (var i = 1; i < 19; i++) {
+                //                cx.moveTo(canvasHalfWidth, canvasHalfWidth); // 중심점
+                //                cx.arc(canvasHalfWidth, canvasHalfWidth, canvasHalfWidth, -0.825 + j * Math.PI, -0.825 + j * Math.PI, false);   
+                //                j += 0.11;
+                //            }
+                //            cx.closePath();
+                //            cx.strokeStyle = "red";
+                //            cx.stroke();
+                //        })();
             }
-        }
 
-        function moveText(ctx, radius) {
-            var ang, num;
-            var numLabel;
-            var sizeLabelList = recommendSizeData.sizes.indexOf(recommendSizeData.recommendSize);
-
-            ctx.font = "11px arial"; // 
-            ctx.textAlign = "center";
-
-            for (num = 12; num < 25; num++) {
-                numLabel = num.toString() - 9;
-                ang = num * 3.14 / 9;
-
-                ctx.rotate(ang);
-                ctx.translate(0, -radius * 0.65);
-                ctx.rotate(-ang);
-
-                if (numLabel % 3 == 0 && numLabel / 3 - 1 == sizeLabelList) {
-                    ctx.fillStyle = "#FE7E84";
-                    ctx.fillText("this!", 0, 0);
-                } else {
-                    ctx.fillText("", 0, 0);
-                }
-
-                ctx.rotate(ang);
-                ctx.translate(0, radius * 0.65);
-                ctx.rotate(-ang);
+            function drawCircleGraph() {
+                drawSizeText();
+                drawThisText();
+                circleGraphDraw();
             }
-        }
-
-
-        function drawClock() {
-            drawFace(ctx, radius);
-            drawNumbers(ctx, radius);
-            moveText(ctx, radius);
-            // 인자 : 캔버스ID, 조각갯수, 그래프영역, 그래프색상, 모션
-            pieGraphDraw("canvasShadow", "motion");
-        }
-
-        drawClock();
+            drawCircleGraph();
+        })();
     </script>
-
 </body>
 
 </html>
