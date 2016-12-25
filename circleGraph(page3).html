@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +12,6 @@
             top: 10%;
             left: 10%;
         }
-        
         #canvasShadow {
             display: inline-block;
             position: absolute;
@@ -24,19 +22,19 @@
 </head>
 
 <body>
-   
-    <canvas id="canvasShadow" width="270" height="270"></canvas>
+
+    <canvas id="canvasShadow" width="270" height="270"></canvas>    
     <canvas id="canvas" width="270" height="270"></canvas>
 
     <script>
         var recommendSizeData = {
-            recommendSize: 'L',
+            recommendSize: 'M',
             isCorrectGender: true,
             recommendRate: 5,
             status: true,
             sizes: ['XS', 'S', 'M', 'L', 'XL']
         }
-
+        
         var recommendedSizeData = {
             sizeRate: recommendSizeData.recommendRate,
             sizeName: recommendSizeData.recommendSize,
@@ -133,6 +131,7 @@
                 canvasContext.shadowColor = "rgba(32,96,122," + blurUp + ")";
                 canvasContext.shadowBlur = 40;
                 canvasContext.closePath();
+                canvasContext.fillStyle = "white";
                 canvasContext.fill();
 
                 canvasContext.beginPath();
@@ -140,83 +139,111 @@
                 canvasContext.arc(canvasHalfWidth, canvasHalfWidth, canvasHalfWidth / 1.35, stratPoint, stratPoint + drawRadian, true);
                 canvasContext.shadowColor = "rgba(227,237,168," + blurUp + ")";
                 canvasContext.shadowBlur = 30;
+                canvasContext.fillStyle = "white";
                 canvasContext.fill();
             }
-
         }
 
         //-------------------------------------------text align----------------------------------------------------------
 
 
         function drawSizeText(canvasContext, sizeList, recommendedSize) {
-            var angle, num;
-            var sizeNameCount;
-            var labelCount = 0;
+            var angle, sizeNameValue;
             var radius = canvas.height / 2;
-            var sizeCount = sizeList.indexOf(recommendedSize);
-            var sizeCountUp = sizeCount + 1;
+            var sizeIndexValue = sizeList.indexOf(recommendedSize);
+            var sizeLocationValue = (sizeIndexValue + 1) * 3;
+            var labelCount = 0;
+            var fontSize = 16;
+            var circleLocation = 12;
 
             canvasContext.translate(radius, radius);
             radius = radius * 0.79;
-
             canvasContext.beginPath();
             canvasContext.arc(0, 0, radius / 1.06, 0, 2 * Math.PI);
-            canvasContext.fillStyle = 'white';
+            canvasContext.fillStyle = "#ffffff";
             canvasContext.fill();
-
-            canvasContext.font = "16px arial";
+            
+            canvasContext.font = ""+fontSize+"px arial";
             canvasContext.textBaseline = "middle";
             canvasContext.textAlign = "center";
 
-            for (num = 12; num < 25; num++) {
-                sizeNameCount = num.toString() - 9;
-                angle = num * 3.14 / 9;
+            for (i = 11; i < 25; i++) {
+                sizeNameValue = i - 9;
+                angle = i * 3.14 / 9;
 
                 canvasContext.rotate(angle);
                 canvasContext.translate(0, -radius * 0.8);
                 canvasContext.rotate(-angle);
-                canvasContext.fillStyle = "#F6F5F3";
-
-                if (num > 6 && num < 12) {
-                    canvasContext.fillText("", 0, 0);
-
-                } else if (sizeNameCount % 3 == 0) {
-                    if (sizeList[labelCount] == recommendedSize) {
-                        canvasContext.fillStyle = "rgba(0,255,176,1)";
-                        canvasContext.fillText(sizeList[labelCount], 0, 0);
-                    }
+                if (sizeNameValue % 3 == 0) {
                     canvasContext.fillText(sizeList[labelCount], 0, 0);
                     labelCount++;
-                } else if (sizeCountUp * 3 - 2 <= sizeNameCount && sizeCountUp * 3 + 2 >= sizeNameCount) {
-                    canvasContext.fillStyle = "rgba(32,96,122,1)";
-                    canvasContext.fillText(".", 0, 0);
-                } else if (sizeNameCount % 3 !== 0) {
+                } else if (sizeNameValue % 3 !== 0) {
+                    canvasContext.fillStyle = "#F6F5F3";
                     canvasContext.fillText(".", 0, 0);
                 }
                 canvasContext.rotate(angle);
                 canvasContext.translate(0, radius * 0.8);
                 canvasContext.rotate(-angle);
             }
+
+            var changeSizeTextColor = setInterval(function () {  
+                circleLocationValue = circleLocation - 9;
+                angle = circleLocation * 3.14 / 9;
+
+                canvasContext.rotate(angle);
+                canvasContext.translate(0, -radius * 0.8);
+                canvasContext.rotate(-angle);
+
+                if (circleLocationValue > sizeLocationValue - 3 && circleLocationValue < sizeLocationValue + 3) {
+                    if (circleLocationValue % 3 == 0) {
+                        canvasContext.clearRect(-angle,-angle,fontSize,fontSize);
+                        canvasContext.fillStyle = "rgba(32,96,122,1)";
+                        canvasContext.fillText(sizeList[sizeIndexValue], 0, 0);console.log(circleLocation);
+                    } else if (circleLocationValue % 3 !== 0) {
+                        canvasContext.fillStyle = "rgba(32,96,122,1)";
+                        canvasContext.fillText(".", 0, 0);
+                    }
+                }
+                canvasContext.rotate(angle);
+                canvasContext.translate(0, radius * 0.8);
+                canvasContext.rotate(-angle);
+                
+                circleLocation++;
+
+                if (circleLocationValue == sizeLocationValue + 3) {
+                    clearInterval(changeSizeTextColor);
+                    
+                    circleLocation -= 4;
+                    circleLocationValue = circleLocation - 10;
+                    angle = circleLocation * 3.14 / 9;
+                    
+                    canvasContext.rotate(angle);
+                    canvasContext.translate(0, -radius * 0.8);
+                    canvasContext.rotate(-angle);
+                    canvasContext.clearRect(-angle,-angle,fontSize,fontSize);
+                    canvasContext.fillStyle = "#00FFB0";
+                    canvasContext.fillText(sizeList[sizeIndexValue], 0, 0);   
+                }
+            }, 200);
         }
 
         function drawPointerText(canvasContext, sizeList, recommendedSize, recommendedSizeRate) {
-            var angle, num;
-            var sizeNameCount;
+            var angle, sizeNameValue;
             var recommendedSizeIndex = sizeList.indexOf(recommendedSize);
             var radius = canvas.height / 2 * 0.5;
 
             canvasContext.font = "14px arial";
             canvasContext.textAlign = "center";
 
-            for (num = 12; num < 25; num++) {
-                sizeNameCount = num.toString() - 9;
-                angle = (num * Math.PI / 9) + (recommendedSizeRate * 0.1);
+            for (i = 12; i < 25; i++) {
+                sizeNameValue = i - 9;
+                angle = (i * Math.PI / 9) + (recommendedSizeRate * 0.1);
 
                 canvasContext.rotate(angle);
                 canvasContext.translate(0, -radius * 1.8);
                 canvasContext.rotate(-angle);
 
-                if (sizeNameCount % 3 == 0 && sizeNameCount / 3 - 1 == recommendedSizeIndex) {
+                if (sizeNameValue % 3 == 0 && sizeNameValue / 3 - 1 == recommendedSizeIndex) {
                     canvasContext.fillStyle = "#00FFB0";
                     canvasContext.fillText("ME!", 0, 0);
                 }
@@ -227,14 +254,16 @@
             }
         }
 
+        
+        //-------------------------------------------draw graph----------------------------------------------------------        
+        
         function drawCircleGraph() {
             var canvasInfo = initCircleGraphCanvas();
             var selectedSizeList = getRecommendSizeList(recommendedSizeData.totalSizes, recommendedSizeData.sizeName);
 
+            drawCircleGraphShadow(canvasInfo.shadowCanvas, canvasInfo.shadowContext, selectedSizeList, recommendedSizeData.sizeName, recommendedSizeData.sizeRate);
             drawSizeText(canvasInfo.textContext, selectedSizeList, recommendedSizeData.sizeName);
             drawPointerText(canvasInfo.textContext, selectedSizeList, recommendedSizeData.sizeName, recommendedSizeData.sizeRate);
-
-            drawCircleGraphShadow(canvasInfo.shadowCanvas, canvasInfo.shadowContext, selectedSizeList, recommendedSizeData.sizeName, recommendedSizeData.sizeRate);
         }
 
         drawCircleGraph();
