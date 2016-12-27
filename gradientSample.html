@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Violet → orange (modified)</title>
+</head>
+
+<style>
+    #myPrettyCanvas {
+        position: absolute;
+        top: 10%;
+        left: 100px;
+        width: 270px;
+        height: 270px;
+    }
+    
+    #myPrettyCanvas2 {
+        position: absolute;
+        top: 10%;
+        left: 100px;
+        width: 270px;
+        height: 270px;
+    }
+    
+    #myPrettyCanvas3 {
+        position: absolute;
+        top: 45%;
+        left: 150px;
+        width: 270px;
+        height: 270px;
+    }
+    #myPrettyCanvas4 {
+        position: absolute;
+        top: 45%;
+        left: 100px;
+        width: 270px;
+        height: 270px;
+    }
+</style>
+
+<body>
+
+    <canvas id="myPrettyCanvas2" width="540" height="540"></canvas>
+    <canvas id="myPrettyCanvas" width="540" height="540"></canvas>
+
+    <canvas id="myPrettyCanvas4" width="540" height="540"></canvas>
+    <canvas id="myPrettyCanvas3" width="540" height="540"></canvas>
+
+
+    <script type="text/javascript">
+        var canvasId = 'myPrettyCanvas',
+            canvas = document.getElementById(canvasId),
+            canvasHalf = canvas.width / 2,
+            ctx = canvas.getContext('2d'),
+            grd;
+        ctx.beginPath();
+        // Create gradient
+        grd = ctx.createRadialGradient(270.000, 270.000, 0.000, 270.000, 270.000, 270.000);
+
+        // Add colors
+        grd.addColorStop(0.514, 'rgba(252, 249, 249, 1.000)');
+        grd.addColorStop(0.786, 'rgba(237, 242, 208, 1.000)');
+        grd.addColorStop(0.913, 'rgba(255, 255, 255, 1.000)');
+        ctx.globalAlpha = 0.7;
+        // Fill with gradient
+        ctx.fillStyle = grd;
+        ctx.arc(canvasHalf, canvasHalf, canvasHalf, 0.5 * Math.PI, -0.5 * Math.PI);
+        ctx.fill();
+
+        //---------------------------------
+
+        var canvasIdd = 'myPrettyCanvas2',
+            canvass = document.getElementById(canvasIdd),
+            canvasHalff = canvass.width / 2,
+            ctxx = canvass.getContext('2d'),
+            grdd;
+
+        ctxx.beginPath();
+        // Create gradient
+        grdd = ctxx.createRadialGradient(270.000, 270.000, 0.000, 270.000, 270.000, 270.000);
+
+        // Add colors
+        grdd.addColorStop(0.514, 'rgba(252, 249, 249, 1.000)');
+        grdd.addColorStop(0.775, 'rgba(32, 96, 122, 1.000)');
+        grdd.addColorStop(0.913, 'rgba(255, 255, 255, 1.000)');
+        ctxx.globalAlpha = 0.7;
+        // Fill with gradient
+        ctxx.fillStyle = grdd;
+        ctxx.arc(canvasHalff, canvasHalff, canvasHalff, -0.5 * Math.PI, 0.5 * Math.PI);
+        ctxx.fill();
+
+        var canvasIdd = 'myPrettyCanvas4',
+            canvas = document.getElementById(canvasIdd),
+            canvasHalff = canvas.width / 2,
+            ctx = canvas.getContext('2d');
+
+        var radgrad = ctx.createRadialGradient(270, 270, 0, 270, 270, 270);
+        radgrad.addColorStop(0, 'rgba(237, 242, 208, 1)');
+        radgrad.addColorStop(0.8, 'rgba(237, 242, 208, 0.8)');
+        radgrad.addColorStop(1, 'rgba(237, 242, 208, 0)');
+
+
+        ctx.fillStyle = radgrad;
+        ctx.fillRect(0, 0, 540, 540);
+
+
+        var canvasIdd = 'myPrettyCanvas3',
+            canvas = document.getElementById(canvasIdd),
+            canvasHalff = canvas.width / 2,
+            ctx = canvas.getContext('2d');
+
+        var radgrad = ctx.createRadialGradient(270, 270, 0, 270, 270, 270);
+        radgrad.addColorStop(0, 'rgba(32, 96, 122, 1)');
+        radgrad.addColorStop(0.8, 'rgba(32, 96, 122, 0.8)');
+        radgrad.addColorStop(1, 'rgba(32, 96, 122, 0)');
+
+
+        ctx.fillStyle = radgrad;
+        ctx.fillRect(0, 0, 540, 540);
+    </script>
+</body>
+</html>
