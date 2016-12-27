@@ -914,7 +914,7 @@
             }
         };
 
-        function calRecommendLineLocation(canvasInfo, sizeName, sizeRate, sizeList) { // 그래프 위치 값 구하는 계산부분 - 함수형태로 변경.
+        function calRecommendLineLocation(canvasInfo, sizeName, sizeRate, sizeList) { 
             var sizeListLength = sizeList.length - 1;
             var sizeCount = sizeList.indexOf(sizeName);
             var dividedCanvasWidth = canvasInfo.canvasWidth / sizeListLength;
@@ -946,7 +946,7 @@
                 speedReduce: 200
             }
             
-            for (var value in lineGraphControl) { // 그래프 인스턴스 생성시 예외 처리
+            for (var value in lineGraphControl) { 
                 if (typeof lineGraphControl === "object" && lineGraphControl[value] !== null) {
                     this.lineGraphControl = lineGraphControl;
                     break;
