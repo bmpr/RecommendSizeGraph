@@ -24,30 +24,26 @@
             top: 10%;
             left: 10%;
         }
-        
-        #canvasTest {
-            width: 270px;
-            height: 270px;
-            display: inline-block;
-            position: absolute;
-            top: 10%;
-            left: 10%;
-        }
     </style>
 </head>
 
 <body>
-    <canvas id="canvasTest" width="540" height="540"></canvas>
+
     <canvas id="canvasShadow" width="540" height="540"></canvas>
     <canvas id="canvasText" width="540" height="540"></canvas>
 
     <script>
         var recommendSizeData = {
-            recommendSize: 'L',
+            recommendSize: 'M',
             isCorrectGender: true,
             recommendRate: 0,
             status: true,
             sizes: ['XS', 'S', 'M', 'L', 'XL']
+        }
+
+        var elIds = {
+            canvasShadow: 'canvasShadow',
+            canvasText: 'canvasText'
         }
 
         var recommendedSizeData = {
@@ -56,17 +52,9 @@
             totalSizes: recommendSizeData.sizes
         };
 
-        var elIds = {
-            canvasShadow: 'canvasShadow',
-            canvasText: 'canvasText'
-        }
-
-
-        //-------------------------------------------get list---------------------------------------------------------        
-
-
         function getRecommendSizeList(totalSizeList, selectedSize) {
             var recommendedSizeList = [];
+
             var listAdd = "";
             var sizeListLength = totalSizeList.length;
             var minCount = 0;
@@ -101,263 +89,278 @@
             }
             return recommendedSizeList;
         };
-        
-        //-----------------------------------------------------------------------------------------------------------
 
-        function initCircleGraphCanvas(canvasShadow, canvasText) {
-            var shadowCanvas = document.getElementById(canvasShadow);
-            var textCanvas = document.getElementById(canvasText);
+        function initCircleGraph(canvas) {
+            var shadowCanvas = document.getElementById(canvas.canvasShadow);
+            var textCanvas = document.getElementById(canvas.canvasText);
             var textContext = textCanvas.getContext("2d");
             var shadowContext = shadowCanvas.getContext("2d");
+
+            var circleGraphControl = {
+                motionValue: 200,
+                shadowBlurGene: 60,
+                textSize: 16 * 2,
+                textColor: '#F6F5F3',
+                BrightTextColor: '#20607A',
+                pointerText: 'ME!',
+                pointerSize: 14 * 2,
+                pointerTextColor: '#00FFB0',
+                circleColor: '#ffffff',
+                shadowReversalIn: false,
+                shadowReversalOut: true
+            }
 
             return {
                 textCanvas: textCanvas,
                 textContext: textContext,
                 shadowCanvas: shadowCanvas,
-                shadowContext: shadowContext
+                shadowContext: shadowContext,
+                circleGraphControl: circleGraphControl
             };
         };
 
-        function calCircleGraphShadow(canvas, canvasContext, selectedSizeList, recommendedSize, recommendedSizeRate) {
-            var canvasHalfWidth = canvas.width / 2;
-            var recommendedSizeIndex = selectedSizeList.indexOf(recommendedSize);
-            var motionCount = 100;
-            var piePieceAllMotion = 18 * motionCount;
-            var piePieceMotion = 5 * motionCount;
+        function calCircleGraphLocation(canvasInfo, sizeList, recommendedSize, recommendedSizeRate) {
+            var c = canvasInfo || {};
+
+            var canvasHalfWidth = c.shadowCanvas.width / 2;
+            var recommendedSizeIndex = sizeList.indexOf(recommendedSize);
+            var piePieceAllMotion = 18 * c.circleGraphControl.motionValue;
+            var piePieceMotion = 5 * c.circleGraphControl.motionValue;
             var drawRadian = ((2 * Math.PI) / piePieceAllMotion) * piePieceMotion;
             var calculatedsizeIndex = (Math.PI / 18) * (recommendedSizeIndex * 6 + 3);
 
-            return {
-                canvas: canvas,
-                canvasContext: canvasContext,
-                canvasHalfWidth: canvasHalfWidth,
-                drawRadian: drawRadian,
-                calculatedsizeIndex: calculatedsizeIndex,
-                recommendedSizeRate: recommendedSizeRate
-            };
-        };
-
-        function drawCircleGraphShadow(shadowGraphInfo) {
-            var s = shadowGraphInfo || {};
-            var stratPoint;
-            var motionVaule = 100;
-            var startValue = 0.4;
-            var blurIncrease = 0;
-            
-            if (s.recommendedSizeRate >= 3) {
-                startValue += 0.1;
-            } else if (s.recommendedSizeRate <= -3) {
-                
-                startValue -= 0.1;
-            }
-            stratPoint = (startValue * Math.PI) + s.calculatedsizeIndex;
-
-            var pieGraphInterval = setInterval(function () {
-                s.canvasContext.clearRect(0, 0, s.canvas.width, s.canvas.height);
-
-                s.canvasContext.beginPath();
-                s.canvasContext.moveTo(s.canvasHalfWidth, s.canvasHalfWidth);
-                s.canvasContext.arc(s.canvasHalfWidth, s.canvasHalfWidth, s.canvasHalfWidth / 1.35, stratPoint, stratPoint + s.drawRadian, false);
-                s.canvasContext.shadowColor = "rgba(32,96,122," + blurIncrease + ")";
-                s.canvasContext.shadowBlur = 50;
-                s.canvasContext.closePath();
-                s.canvasContext.fillStyle = "white";
-                s.canvasContext.fill();
-
-                s.canvasContext.beginPath();
-                s.canvasContext.moveTo(s.canvasHalfWidth, s.canvasHalfWidth);
-                s.canvasContext.arc(s.canvasHalfWidth, s.canvasHalfWidth, s.canvasHalfWidth / 1.35, stratPoint, stratPoint + s.drawRadian, true);
-                s.canvasContext.shadowColor = "rgba(227,237,168," + blurIncrease + ")";
-                s.canvasContext.shadowBlur = 50;
-                s.canvasContext.fillStyle = "white";
-                s.canvasContext.fill();
-
-                s.canvasContext.beginPath();
-                s.canvasContext.arc(s.canvasHalfWidth, s.canvasHalfWidth, s.canvasHalfWidth - 70, 0, 2 * Math.PI);
-                s.canvasContext.shadowBlur = 0;
-                s.canvasContext.fillStyle = "white";
-                s.canvasContext.fill();
-
-                blurIncrease += 0.05;
-
-                if (blurIncrease > 1) {
-                    clearInterval(pieGraphInterval);
-                }
-
-            }, motionVaule);
-        };
-
-
-        //-----------------------------------------------------------------------------------------------------------
-
-
-        function calRecommendSizeText(canvas, canvasContext, sizeList, recommendedSize, recommendedSizeRate) {
-
-            var radius = canvas.height / 2;
-            var pointerRadius = canvas.height / 4;
+            var radius = c.textCanvas.height / 2;
+            var pointerRadius = c.textCanvas.height / 4;
             var sizeIndexValue = sizeList.indexOf(recommendedSize);
             var sizeListLength = sizeList.length - 1;
             var sizeLocationValue = (sizeIndexValue + 1) * 3;
             var circleLocation = sizeLocationValue + 6;
 
             return {
-                recommendedSizeRate: recommendedSizeRate,
-                canvasContext: canvasContext,
-                sizeList: sizeList,
+                canvas: c.shadowCanvas,
+                shadowContext: c.shadowContext,
+                textContext: c.textContext,
+                canvasHalfWidth: canvasHalfWidth,
+                drawRadian: drawRadian,
                 radius: radius,
                 pointerRadius: pointerRadius,
+                calculatedsizeIndex: calculatedsizeIndex,
                 sizeIndexValue: sizeIndexValue,
                 sizeListLength: sizeListLength,
                 sizeLocationValue: sizeLocationValue,
-                circleLocation: circleLocation
-            }
+                circleLocation: circleLocation,
+                sizeList: sizeList,
+                recommendedSizeRate: recommendedSizeRate,
+            };
         }
 
-        function drawRecommendSizeText(textLocationInfo) {
-            var t = textLocationInfo || {};
+        function drawCircleGraphShadow(canvasInfo, locationValueInfo) {
+            var l = locationValueInfo || {};
+            var t = canvasInfo.circleGraphControl || {};
+            var stratPoint;
+            var startValue = 0.4;
+            var blurIncrease = 0;
 
-            var angle, sizeNameValue, circleLocationValue;
-            var labelCount = 0;
-            var sizeRateValue = 0;
-            var locationValueIncrease = 0;
-            var indexIncrease = 0;
-            var motionValue = 200;
-
-            t.canvasContext.translate(t.radius, t.radius);
-            t.radius = t.radius * 0.79;
-
-            t.canvasContext.beginPath();
-            t.canvasContext.arc(0, 0, t.radius / 1.06, 0, 2 * Math.PI);
-            t.canvasContext.fillStyle = "#ffffff";
-            t.canvasContext.fill();
-
-            t.canvasContext.font = "32px arial";
-            t.canvasContext.textBaseline = "middle";
-            t.canvasContext.textAlign = "center";
-            t.canvasContext.fillStyle = "#F6F5F3";
-
-            for (var i = 12; i < 25; i++) { // draw text
-                sizeNameValue = i - 9; 
-                angle = i * Math.PI / 9;
-
-                t.canvasContext.rotate(angle);
-                t.canvasContext.translate(0, -t.radius * 0.8);
-                t.canvasContext.rotate(-angle);
-
-                if (sizeNameValue % 3 == 0) {
-                    t.canvasContext.fillText(t.sizeList[labelCount], 0, 0);
-                    labelCount++;
-                } else if (sizeNameValue % 3 !== 0) {
-                    t.canvasContext.fillText(".", 0, 0);
-                }
-
-                t.canvasContext.rotate(angle);
-                t.canvasContext.translate(0, t.radius * 0.8);
-                t.canvasContext.rotate(-angle);
+            if (l.recommendedSizeRate >= 3) {
+                startValue += 0.1;
+            } else if (l.recommendedSizeRate <= -3) {
+                startValue -= 0.1;
             }
+            stratPoint = (startValue * Math.PI) + l.calculatedsizeIndex;
 
-            var lightOnText = setInterval(function () { // light on text
-                circleLocationValue = t.circleLocation - 9;
-                angle = t.circleLocation * Math.PI / 9;
+            var pieGraphInterval = setInterval(function () {
+                l.shadowContext.clearRect(0, 0, l.canvas.width, l.canvas.height);
 
-                if (t.recommendedSizeRate >= 3) {
-                    locationValueIncrease = +1;
-                } else if (t.recommendedSizeRate <= -3) {
-                    locationValueIncrease = -1;
+                l.shadowContext.beginPath();
+                l.shadowContext.moveTo(l.canvasHalfWidth, l.canvasHalfWidth);
+                l.shadowContext.arc(l.canvasHalfWidth, l.canvasHalfWidth, l.canvasHalfWidth / 1.35, stratPoint, stratPoint + l.drawRadian, t.shadowReversalIn);
+                l.shadowContext.shadowColor = "rgba(32,96,122," + blurIncrease + ")";
+                l.shadowContext.shadowBlur = t.shadowBlurGene;
+                l.shadowContext.closePath();
+                l.shadowContext.fillStyle = t.circleColor;
+                l.shadowContext.fill();
+
+                l.shadowContext.beginPath();
+                l.shadowContext.moveTo(l.canvasHalfWidth, l.canvasHalfWidth);
+                l.shadowContext.arc(l.canvasHalfWidth, l.canvasHalfWidth, l.canvasHalfWidth / 1.35, stratPoint, stratPoint + l.drawRadian, t.shadowReversalOut);
+                l.shadowContext.shadowColor = "rgba(227,237,168," + blurIncrease + ")";
+                l.shadowContext.shadowBlur = t.shadowBlurGene;
+                l.shadowContext.fillStyle = t.circleColor;
+                l.shadowContext.fill();
+
+                l.shadowContext.beginPath();
+                l.shadowContext.arc(l.canvasHalfWidth, l.canvasHalfWidth, l.canvasHalfWidth - 70, 0, 2 * Math.PI);
+                l.shadowContext.shadowBlur = 0;
+                l.shadowContext.fillStyle = t.circleColor;
+                l.shadowContext.fill();
+
+                blurIncrease += 0.05;
+
+                if (blurIncrease > 1) {
+                    clearInterval(pieGraphInterval);
                 }
-
-                t.canvasContext.rotate(angle);
-                t.canvasContext.translate(0, -t.radius * 0.8);
-                t.canvasContext.rotate(-angle);
-
-                if (circleLocationValue > t.sizeLocationValue + locationValueIncrease - 3 && circleLocationValue < t.sizeLocationValue + locationValueIncrease + 3) {
-                    if (circleLocationValue >= 3 && circleLocationValue <= 15) {
-                        if (circleLocationValue % 3 == 0) {
-                            t.canvasContext.clearRect(-25, -15, 50, 30);
-                            t.canvasContext.fillStyle = "rgba(32,96,122,1)";
-                            if (t.recommendedSizeRate >= 3) {
-                                t.canvasContext.fillText(t.sizeList[t.sizeIndexValue + indexIncrease], 0, 0);
-                                indexIncrease++;
-                            } else if (t.recommendedSizeRate <= -3) {
-                                indexIncrease--;
-                                t.canvasContext.fillText(t.sizeList[t.sizeIndexValue + indexIncrease], 0, 0);
-                                indexIncrease += 2;
-                            } else {
-                                t.canvasContext.fillText(t.sizeList[t.sizeIndexValue + indexIncrease], 0, 0);
-                            }
-                        } else if (circleLocationValue % 3 !== 0) {
-                            t.canvasContext.clearRect(-angle, -angle, 20, 20);
-                            t.canvasContext.fillStyle = "rgba(32,96,122,1)";
-                            t.canvasContext.fillText(".", 0, 0);
-                        }
-                    }
-                }
-
-                t.canvasContext.rotate(angle);
-                t.canvasContext.translate(0, t.radius * 0.8);
-                t.canvasContext.rotate(-angle);
-
-                t.circleLocation++;
-
-                if (circleLocationValue == t.sizeLocationValue + 3) { // draw "ME!"
-                    t.canvasContext.font = "28px arial";
-                    t.canvasContext.textAlign = "center";
-                    t.canvasContext.fillStyle = "#00FFB0";
-
-                    for (var i = 6; i < 25; i++) {
-
-                        if (t.recommendedSizeRate >= 3 && t.sizeIndexValue !== t.sizeListLength) {
-                            sizeRateValue = 0.4;
-                        } else if (t.recommendedSizeRate <= -3 && t.sizeIndexValue !== 0) {
-                            sizeRateValue = -0.4;
-                        } else {
-                            sizeRateValue = 0;
-                        }
-
-                        var pointerSizeNameValue = i - 9;
-                        var pointerAngle = i * Math.PI / 9 + sizeRateValue;
-
-                        t.canvasContext.rotate(pointerAngle);
-                        t.canvasContext.translate(0, -t.pointerRadius * 1.8);
-                        t.canvasContext.rotate(-pointerAngle);
-
-                        if (pointerSizeNameValue % 3 == 0 && pointerSizeNameValue / 3 == t.sizeIndexValue + 1) {
-                            t.canvasContext.fillText("ME!", 0, 0);
-                        }
-
-                        t.canvasContext.rotate(pointerAngle);
-                        t.canvasContext.translate(0, t.pointerRadius * 1.8);
-                        t.canvasContext.rotate(-pointerAngle);
-                    }
-
-                } else if (circleLocationValue == t.sizeLocationValue + 4) { // stop interval & change text color
-                    clearInterval(lightOnText);
-
-                    t.circleLocation -= 5;
-                    angle = t.circleLocation * 3.14 / 9;
-
-                    t.canvasContext.rotate(angle);
-                    t.canvasContext.translate(0, -t.radius * 0.8);
-                    t.canvasContext.rotate(-angle);
-                    t.canvasContext.clearRect(-25, -15, 50, 30);
-                    t.canvasContext.font = "32px arial";
-                    t.canvasContext.fillStyle = "#00FFB0";
-                    t.canvasContext.fillText(t.sizeList[t.sizeIndexValue], 0, 0);
-                }
-            }, motionValue);
+            }, t.motionValue);
         };
 
-        //-----------------------------------------------------------------------------------------------------------    
-        
+        function drawRecommendSizeText(canvasInfo, locationValueInfo) {
+            var l = locationValueInfo || {};
+            var t = canvasInfo.circleGraphControl || {};
+            var s = this;
+
+            s.drawCircleGraphText = function () {
+                var labelCount = 0;
+                l.textContext.translate(l.radius, l.radius);
+                l.radius = l.radius * 0.79;
+
+                l.textContext.beginPath();
+                l.textContext.arc(0, 0, l.radius / 1.06, 0, 2 * Math.PI);
+                l.textContext.fillStyle = t.circleColor;
+                l.textContext.fill();
+
+                l.textContext.font = "" + t.textSize + "px arial";
+                l.textContext.textAlign = "center";
+
+                for (var i = 12; i < 25; i++) {
+                    var sizeNameValue = i - 9;
+                    var textAngle = i * Math.PI / 9;
+
+                    l.textContext.rotate(textAngle);
+                    l.textContext.translate(0, -l.radius * 0.8);
+                    l.textContext.rotate(-textAngle);
+                    l.textContext.fillStyle = t.textColor;
+                    if (sizeNameValue % 3 == 0) {
+                        l.textContext.fillText(l.sizeList[labelCount], 0, 0);
+                        labelCount++;
+                    } else if (sizeNameValue % 3 !== 0) {
+                        l.textContext.fillText(".", 0, 0);
+                    }
+
+                    l.textContext.rotate(textAngle);
+                    l.textContext.translate(0, l.radius * 0.8);
+                    l.textContext.rotate(-textAngle);
+                }
+            };
+
+            s.drawColorText = function () {
+                var indexIncrease = 0;
+                var locationValueIncrease = 0;
+                var textRange = 3;
+
+                var brightColorText = setInterval(function () {
+                    var circleLocationValue = l.circleLocation - 9;
+                    var lightTextAngle = l.circleLocation * Math.PI / 9;
+
+                    if (l.recommendedSizeRate >= 3) {
+                        locationValueIncrease = +1;
+                    } else if (l.recommendedSizeRate <= -3) {
+                        locationValueIncrease = -1;
+                    }
+
+                    l.textContext.rotate(lightTextAngle);
+                    l.textContext.translate(0, -l.radius * 0.8);
+                    l.textContext.rotate(-lightTextAngle);
+
+                    if (circleLocationValue > l.sizeLocationValue + locationValueIncrease - textRange && circleLocationValue < l.sizeLocationValue + locationValueIncrease + textRange) {
+
+                        if (circleLocationValue >= textRange && circleLocationValue <= 15) {
+
+                            if (circleLocationValue % textRange == 0) {
+                                l.textContext.clearRect(-25, -15, 50, 30);
+                                l.textContext.fillStyle = t.BrightTextColor;
+                                if (l.recommendedSizeRate >= textRange) {
+                                    l.textContext.fillText(l.sizeList[l.sizeIndexValue + indexIncrease], 0, 0);
+                                    indexIncrease++;
+                                } else if (l.recommendedSizeRate <= -textRange) {
+                                    indexIncrease--;
+                                    l.textContext.fillText(l.sizeList[l.sizeIndexValue + indexIncrease], 0, 0);
+                                    indexIncrease += 2;
+                                } else {
+                                    l.textContext.fillText(l.sizeList[l.sizeIndexValue + indexIncrease], 0, 0);
+                                }
+
+                            } else if (circleLocationValue % textRange !== 0) {
+                                l.textContext.clearRect(-lightTextAngle, -lightTextAngle, 20, 20);
+                                l.textContext.fillStyle = t.BrightTextColor;
+                                l.textContext.fillText(".", 0, 0);
+                            }
+                        }
+                    }
+
+                    l.textContext.rotate(lightTextAngle);
+                    l.textContext.translate(0, l.radius * 0.8);
+                    l.textContext.rotate(-lightTextAngle);
+
+                    l.circleLocation++;
+
+                    if (circleLocationValue == l.sizeLocationValue + textRange) {
+                        s.drawPointerText();
+                    } else if (circleLocationValue == l.sizeLocationValue + textRange + 1) {
+                        clearInterval(brightColorText);
+                        s.drawBrightPointerText();
+                    }
+                }, t.motionValue);
+
+            };
+
+            s.drawPointerText = function () {
+                var sizeRateValue = 0;
+
+                l.textContext.font = "" + t.pointerSize + "px arial";
+                l.textContext.textAlign = "center";
+                l.textContext.fillStyle = t.pointerTextColor;
+
+                for (var i = 6; i < 25; i++) {
+
+                    if (l.recommendedSizeRate >= 3 && l.sizeIndexValue !== l.sizeListLength) {
+                        sizeRateValue = 0.4;
+                    } else if (l.recommendedSizeRate <= -3 && l.sizeIndexValue !== 0) {
+                        sizeRateValue = -0.4;
+                    } else {
+                        sizeRateValue = 0;
+                    }
+
+                    var pointerSizeNameValue = i - 9;
+                    var pointerAngle = i * Math.PI / 9 + sizeRateValue;
+
+                    l.textContext.rotate(pointerAngle);
+                    l.textContext.translate(0, -l.pointerRadius * 1.8);
+                    l.textContext.rotate(-pointerAngle);
+
+                    if (pointerSizeNameValue % 3 == 0 && pointerSizeNameValue / 3 == l.sizeIndexValue + 1) {
+                        l.textContext.fillText(t.pointerText, 0, 5);
+                    }
+
+                    l.textContext.rotate(pointerAngle);
+                    l.textContext.translate(0, l.pointerRadius * 1.8);
+                    l.textContext.rotate(-pointerAngle);
+                }
+            };
+
+            s.drawBrightPointerText = function () {
+
+                l.circleLocation -= 5;
+                var lightOnTextAngle = l.circleLocation * Math.PI / 9;
+
+                l.textContext.rotate(lightOnTextAngle);
+                l.textContext.translate(0, -l.radius * 0.8);
+                l.textContext.rotate(-lightOnTextAngle);
+                l.textContext.clearRect(-25, -15, 50, 30);
+                l.textContext.font = "" + t.textSize + "px arial";
+                l.textContext.fillStyle = t.pointerTextColor;
+                l.textContext.fillText(l.sizeList[l.sizeIndexValue], 0, 0);
+            };
+
+            s.drawCircleGraphText();
+            s.drawColorText();
+        };
+
         function drawCircleGraph() {
-            var canvasInfo = initCircleGraphCanvas(elIds.canvasShadow, elIds.canvasText);
+            var canvasInfo = initCircleGraph(elIds);
             var selectedSizeList = getRecommendSizeList(recommendedSizeData.totalSizes, recommendedSizeData.sizeName);
+            var circleGraphLocationValue = calCircleGraphLocation(canvasInfo, selectedSizeList, recommendedSizeData.sizeName, recommendedSizeData.sizeRate);
 
-            var craculatedshadowGraph = calCircleGraphShadow(canvasInfo.shadowCanvas, canvasInfo.shadowContext, selectedSizeList, recommendedSizeData.sizeName, recommendedSizeData.sizeRate);
-            drawCircleGraphShadow(craculatedshadowGraph);
-
-            var craculatedTextLocation = calRecommendSizeText(canvasInfo.textCanvas, canvasInfo.textContext, selectedSizeList, recommendedSizeData.sizeName, recommendedSizeData.sizeRate);
-            drawRecommendSizeText(craculatedTextLocation);
+            drawCircleGraphShadow(canvasInfo, circleGraphLocationValue);
+            drawRecommendSizeText(canvasInfo, circleGraphLocationValue);
         }
 
         drawCircleGraph();
