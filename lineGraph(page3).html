@@ -757,11 +757,11 @@
 
     <script>
         var recommendSizeData = {
-            recommendSize: 'L',
+            recommendSize: 'S',
             isCorrectGender: true,
-            recommendRate: -2,
+            recommendRate: -3,
             status: true,
-            sizes: ['XS', 'S', 'M', 'L', 'XL']
+            sizes: ['XS', 'S']
         };
 
         var mySize = {
@@ -860,6 +860,7 @@
         //        ============================        
 
         function getRecommendSizeList() {
+            var selectIndex;
             var recommendedSizeList = [];
             var listAdd = "";
             var totalSizeList = recommendedSizeData.totalSizes;
@@ -867,13 +868,13 @@
             var sizeListLength = totalSizeList.length;
             var minCount = 0;
             var maxCount = 0;
-
+            
             for (var i = 0; i < sizeListLength; i++) {
                 if (totalSizeList[i] == selectoerSize) {
                     selectIndex = i;
                 }
             }
-
+            
             if (selectIndex < 3 && sizeListLength < 5) {
                 minCount = 0;
                 maxCount = sizeListLength - 1;
@@ -995,9 +996,9 @@
             moveTextLocation: function () {
                 var v = this.variableValues;
 
-                if (v.sizeCount == v.sizeListLength && sizeRate == 0) {
+                if (v.sizeCount == v.sizeListLength && v.sizeRate == 0) {
                     document.getElementById(elIds.textUnderLine).style.width = '100%';
-                } else if (v.sizeCount == 0 && sizeRate == 0) {
+                } else if (v.sizeCount == 0 && v.sizeRate == 0) { 
                     document.getElementById(elIds.textUnderLine).style.width = '0';
                 } else {
                     document.getElementById(elIds.textUnderLine).style.width = v.textLocation + '%';
