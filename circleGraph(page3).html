@@ -24,6 +24,7 @@
             top: 10%;
             left: 10%;
         }
+        
     </style>
 </head>
 
@@ -49,45 +50,76 @@
         var recommendedSizeData = {
             sizeRate: recommendSizeData.recommendRate,
             sizeName: recommendSizeData.recommendSize,
-            totalSizes: recommendSizeData.sizes
+            sizeIndex: recommendSizeData.sizes.indexOf(recommendSizeData.recommendSize),
+            totalSizes: recommendSizeData.sizes,
+            totalSizesLength: recommendSizeData.sizes.length
         };
 
-        function getRecommendSizeList(totalSizeList, selectedSize) {
-            var recommendedSizeList = [];
 
-            var listAdd = "";
-            var sizeListLength = totalSizeList.length;
-            var minCount = 0;
-            var maxCount = 0;
+        var getList = recommendedSizeData.totalSizes.filter(function (item, index) { // 
+            var r = recommendedSizeData || {};
 
-            for (var i = 0; i < sizeListLength; i++) {
-                if (totalSizeList[i] == selectedSize) {
-                    selectIndex = i;
+            if (r.sizeIndex === 0) {
+                if (index < r.sizeIndex + 5) {
+                    return item;
+                }
+            } else if (r.sizeIndex == 1) {
+                if (index < r.sizeIndex + 4) {
+                    return item;
+                }
+            } else if (r.sizeIndex == r.totalSizesLength - 1) {
+                if (index > r.sizeIndex - 5) {
+                    return item;
+                }
+            } else if (r.sizeIndex == r.totalSizesLength - 2) {
+                if (index > r.sizeIndex - 4) {
+                    return item;
+                }
+            } else {
+                if (index > r.sizeIndex - 3 && index < r.sizeIndex + 3) {
+                    return item;
                 }
             }
+        });
+        
 
-            if (selectIndex < 3 && sizeListLength < 5) {
-                minCount = 0;
-                maxCount = sizeListLength - 1;
-            } else if (selectIndex < 3 && sizeListLength > 4) {
-                maxCount = 4;
-            } else if (selectIndex == 3 && sizeListLength == 4) {
-                maxCount = selectIndex;
-            } else if (selectIndex == sizeListLength - 1) {
-                minCount = selectIndex - 4;
-                maxCount = selectIndex;
-            } else if (selectIndex == sizeListLength - 2) {
-                minCount = selectIndex - 3;
-                maxCount = selectIndex + 1;
-            } else if (sizeListLength > 4) {
-                minCount = selectIndex - 2;
-                maxCount = selectIndex + 2;
+        var recommendedRateValue = function () {
+            var r = recommendedSizeData || {};
+
+            if (r.totalSizesLength == 5) {
+
+                if (r.sizeRate >= 3 && r.sizeRate > 0 || r.sizeRate < 0 && r.sizeRate <= -3) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+
+            } else if (r.totalSizesLength == 4) {
+
+                if (r.sizeRate <= 3 && r.sizeRate > 0 || r.sizeRate < 0 && r.sizeRate >= -3) {
+                    return 1;
+                } else if (r.sizeRate >= 4 && r.sizeRate > 0 || r.sizeRate < 0 && r.sizeRate <= -4) {
+                    return 2;
+                } else {
+                    return 0;
+                }
+
+            } else if (r.totalSizesLength == 3) {
+
+                if (r.sizeRate <= 2 && r.sizeRate > 0 || r.sizeRate < 0 && r.sizeRate >= -2) {
+                    return 1;
+                } else if (r.sizeRate == 3 && r.sizeRate > 0 || r.sizeRate < 0 && r.sizeRate == -3) {
+                    return 2;
+                } else if (r.sizeRate >= 4 && r.sizeRate > 0 || r.sizeRate < 0 && r.sizeRate <= -4) {
+                    return 3;
+                } else {
+                    return 0;
+                }
+
+            } else if (r.totalSizesLength == 2) {
+                return r.sizeRate;
             }
 
-            for (var i = minCount; i <= maxCount; i++) {
-                recommendedSizeList.push(totalSizeList[i]);
-            }
-            return recommendedSizeList;
         };
 
         function initCircleGraph(canvas) {
@@ -97,8 +129,8 @@
             var shadowContext = shadowCanvas.getContext("2d");
 
             var circleGraphControl = {
-                motionValue: 200,
-                shadowBlurGene: 60,
+                motionValue: 100,
+                shadowBlurGene: 50,
                 textSize: 32,
                 textColor: '#F6F5F3',
                 BrightTextColor: '#20607A',
@@ -119,21 +151,19 @@
             };
         };
 
-        function calCircleGraphLocation(canvasInfo, sizeList, recommendedSize, recommendedSizeRate) {
+        function calCircleGraphLocation(canvasInfo, sizeList) {
             var c = canvasInfo || {};
-
-            var canvasHalfWidth = c.shadowCanvas.width / 2;
-            var recommendedSizeIndex = sizeList.indexOf(recommendedSize);
+            var r = recommendedSizeData || {};
+            
+            var piePieceCount = 5;
             var piePieceAllMotion = 18 * c.circleGraphControl.motionValue;
-            var piePieceMotion = 5 * c.circleGraphControl.motionValue;
+            var piePieceMotion = piePieceCount * c.circleGraphControl.motionValue;
             var drawRadian = ((2 * Math.PI) / piePieceAllMotion) * piePieceMotion;
-            var calculatedsizeIndex = (Math.PI / 18) * (recommendedSizeIndex * 6 + 3);
-
+            var calculatedsizeIndex = (Math.PI / 18) * (r.sizeIndex * 6 +3);
+            
+            var canvasHalfWidth = c.shadowCanvas.width / 2;
             var radius = c.textCanvas.height / 2;
             var pointerRadius = c.textCanvas.height / 4;
-            var sizeListLength = sizeList.length;
-            var sizeLocationValue = (recommendedSizeIndex + 1) * 3;
-            var circleLocation = sizeLocationValue + 6;
 
             return {
                 canvas: c.shadowCanvas,
@@ -144,26 +174,19 @@
                 radius: radius,
                 pointerRadius: pointerRadius,
                 calculatedsizeIndex: calculatedsizeIndex,
-                recommendedSizeIndex: recommendedSizeIndex,
-                sizeListLength: sizeListLength,
-                sizeLocationValue: sizeLocationValue,
-                circleLocation: circleLocation,
                 sizeList: sizeList,
-                recommendedSizeRate: recommendedSizeRate,
             };
         }
 
-        function drawCircleGraphShadow(canvasInfo, locationValueInfo) {
+        function drawCircleGraphShadow(canvasInfo, rateIncreaseCount, locationValueInfo) {
             var l = locationValueInfo || {};
             var t = canvasInfo.circleGraphControl || {};
+            var r = recommendedSizeData || {};
             var stratPoint;
             var startValue = 0.4;
             var blurIncrease = 0;
-            if (l.recommendedSizeRate >= 3) {
-                startValue += 0.1;
-            } else if (l.recommendedSizeRate <= -3) {
-                startValue -= 0.1;
-            }
+            var increaseCount = rateIncreaseCount / 10;
+
             stratPoint = (startValue * Math.PI) + l.calculatedsizeIndex;
 
             var pieGraphInterval = setInterval(function () {
@@ -171,7 +194,7 @@
 
                 l.shadowContext.beginPath();
                 l.shadowContext.moveTo(l.canvasHalfWidth, l.canvasHalfWidth);
-                l.shadowContext.arc(l.canvasHalfWidth, l.canvasHalfWidth, l.canvasHalfWidth / 1.35, stratPoint, stratPoint + l.drawRadian, t.shadowReversalIn);
+                l.shadowContext.arc(l.canvasHalfWidth, l.canvasHalfWidth, l.canvasHalfWidth / 1.35 , stratPoint, stratPoint + l.drawRadian, t.shadowReversalIn);
                 l.shadowContext.shadowColor = "rgba(32,96,122," + blurIncrease + ")";
                 l.shadowContext.shadowBlur = t.shadowBlurGene;
                 l.shadowContext.closePath();
@@ -200,55 +223,60 @@
             }, t.motionValue);
         };
 
-        function drawRecommendSizeText(canvasInfo, locationValueInfo) {
-            var l = locationValueInfo || {};
-            var t = canvasInfo.circleGraphControl || {};
+        function drawRecommendSizeText(canvasInfo, rateIncreaseCount, locationValueInfo) {
             var s = this;
-            var recommendSizeList = [];
+            var l = locationValueInfo || {};
+            var r = recommendedSizeData || {};
+            var t = canvasInfo.circleGraphControl || {};
+            var recommendSizeLocationCount = [];
+            var recommendSizePointerValue;
+            var recommendSizePointerText;
+            var rateIncrease = rateIncreaseCount;
+            var rateDecrease = -rateIncreaseCount;
+            var rangeCount = 3;
+            var avgCount = 3;
 
             for (var i = 0; i < 13; i++) {
-                recommendSizeList[i] = i + 3;
+                recommendSizeLocationCount[i] = i + 3;
             }
 
-            recommendSizeListLength = recommendSizeList.length;
+            if (r.totalSizesLength == 4) {
+                avgCount = 4;
+            } else if (r.totalSizesLength == 3) {
+                rangeCount = 4;
+                avgCount = 6;
+            } else if (r.totalSizesLength == 2) {
+                rangeCount = 6;
+                avgCount = 12;
+            }
 
-            var recommendedSizeList = recommendSizeList.filter(function (item, index) { // 텍스트 번호 3 6 9 12 15
-                if (l.sizeListLength >= 5) {
-                    if (index % 3 === 0) {
-                        return item;
-                    }
-                } else if (l.sizeListLength == 4) {
-                    if (index % 4 === 0) {
-                        return item;
-                    }
-                } else if (l.sizeListLength == 3) {
-                    if (index % 6 === 0) {
-                        return item;
-                    }
-                } else if (l.sizeListLength == 2) {
-                    if (index % 12 === 0) {
-                        return item;
+            var recommendedSizeList = recommendSizeLocationCount.filter(function (item, index) {
+                if (index % avgCount === 0) {
+                    return item;
+                }
+            });
+
+            var recommendedSizeRangeList = recommendSizeLocationCount.filter(function (item, index) {
+                if (index % avgCount !== 0) {
+                    return item;
+                }
+            });
+
+            var pointerIndexValue = recommendedSizeList.filter(function (item, index) {
+                if (index == r.sizeIndex) {
+                    recommendSizePointerText = item;
+
+                    if (r.sizeRate >= 0) {
+                        recommendSizePointerValue = item + rateIncrease;
+                    } else if (r.sizeRate < 0) {
+                        recommendSizePointerValue = item + rateDecrease;
                     }
                 }
             });
 
-            var recommendedSizeRangeList = recommendSizeList.filter(function (item, index) { // 텍스트 외 번호 4 5 7 8 10 11 13 14
-                if (l.sizeListLength >= 5) {
-                    if (index % 3 !== 0) {
-                        return item;
-                    }
-                } else if (l.sizeListLength == 4) {
-                    if (index % 4 !== 0) {
-                        return item;
-                    }
-                } else if (l.sizeListLength == 3) {
-                    if (index % 6 !== 0) {
-                        return item;
-                    }
-                } else if (l.sizeListLength == 2) {
-                    if (index % 12 !== 0) {
-                        return item;
-                    }
+            var rangeValue = recommendSizeLocationCount.filter(function (item) {
+                if (recommendSizePointerValue - rangeCount < item && item < recommendSizePointerValue + rangeCount) {
+                    return item;
                 }
             });
 
@@ -270,148 +298,168 @@
 
                 for (var i = 0, length = recommendedSizeList.length; i < length; i++) {
                     sizeTextAngle = (recommendedSizeList[i] + 9) * Math.PI / 9;
+
                     l.textContext.rotate(sizeTextAngle);
                     l.textContext.translate(0, -l.radius * 0.8);
                     l.textContext.rotate(-sizeTextAngle);
+
                     l.textContext.fillText(l.sizeList[labelCount], 0, 0);
+
                     l.textContext.rotate(sizeTextAngle);
                     l.textContext.translate(0, l.radius * 0.8);
                     l.textContext.rotate(-sizeTextAngle);
+
                     labelCount++;
                 }
 
                 for (var i = 0, length = recommendedSizeRangeList.length; i < length; i++) {
                     dotTextAngle = (recommendedSizeRangeList[i] + 9) * Math.PI / 9;
+
                     l.textContext.rotate(dotTextAngle);
                     l.textContext.translate(0, -l.radius * 0.8);
                     l.textContext.rotate(-dotTextAngle);
+
                     l.textContext.fillText(".", 0, 0);
+
                     l.textContext.rotate(dotTextAngle);
                     l.textContext.translate(0, l.radius * 0.8);
                     l.textContext.rotate(-dotTextAngle);
                 }
             };
 
-            s.drawColorText = function () {
-                var indexIncrease = 0;
-                var locationValueIncrease = 0;
-                var textRange = 3;
+            s.drawCircleGraphColorText = function () {
+                var intervalCount = 0;
+                var pointerTextCount = 0;
+                var intervalStopCount = 0;
 
-                var brightColorText = setInterval(function () {
-                    var circleLocationValue = l.circleLocation - 9;
-                    var lightTextAngle = l.circleLocation * Math.PI / 9;
+                var colorTextInterval = setInterval(function () {
 
-                    if (l.recommendedSizeRate >= 3) {
-                        locationValueIncrease = +1;
-                    } else if (l.recommendedSizeRate <= -3) {
-                        locationValueIncrease = -1;
-                    }
+                    var circleLocationValue = rangeValue[intervalCount];
+                    var textIndex = recommendedSizeList.indexOf(circleLocationValue);
+                    var lightTextAngle = (circleLocationValue + 9) * Math.PI / 9;
+
+                    var sizeTextLocation = recommendedSizeList.filter(function (item) {
+                        if (circleLocationValue == item) {
+                            return item;
+                        }
+                    });
 
                     l.textContext.rotate(lightTextAngle);
                     l.textContext.translate(0, -l.radius * 0.8);
                     l.textContext.rotate(-lightTextAngle);
 
-                    if (circleLocationValue > l.sizeLocationValue + locationValueIncrease - textRange && circleLocationValue < l.sizeLocationValue + locationValueIncrease + textRange) {
+                    l.textContext.fillStyle = t.BrightTextColor;
 
-                        if (circleLocationValue >= textRange && circleLocationValue <= 15) {
+                    if (typeof circleLocationValue !== 'undefined') {
 
-                            if (circleLocationValue % textRange == 0) {
-                                l.textContext.clearRect(-25, -15, 50, 30);
-                                l.textContext.fillStyle = t.BrightTextColor;
-                                if (l.recommendedSizeRate >= textRange) {
-                                    l.textContext.fillText(l.sizeList[l.recommendedSizeIndex + indexIncrease], 0, 0);
-                                    indexIncrease++;
-                                } else if (l.recommendedSizeRate <= -textRange) {
-                                    indexIncrease--;
-                                    l.textContext.fillText(l.sizeList[l.recommendedSizeIndex + indexIncrease], 0, 0);
-                                    indexIncrease += 2;
+                        if (r.totalSizesLength == 2) {
+
+                            if (intervalCount < 13) {
+                                if (circleLocationValue == sizeTextLocation) {
+                                    l.textContext.clearRect(-20, -25, 45, 30);
+                                    l.textContext.fillText(l.sizeList[textIndex], 0, 0);
                                 } else {
-                                    l.textContext.fillText(l.sizeList[l.recommendedSizeIndex + indexIncrease], 0, 0);
+                                    l.textContext.clearRect(-lightTextAngle, -lightTextAngle, 20, 20);
+                                    l.textContext.fillText(".", 0, 0);
                                 }
-
-                            } else if (circleLocationValue % textRange !== 0) {
-                                l.textContext.clearRect(-lightTextAngle, -lightTextAngle, 20, 20);
-                                l.textContext.fillStyle = t.BrightTextColor;
-                                l.textContext.fillText(".", 0, 0);
                             }
+
+                        } else if (r.totalSizesLength == 3) {
+
+                            if (intervalCount < 7) {
+                                if (circleLocationValue == sizeTextLocation) {
+                                    l.textContext.clearRect(-20, -25, 45, 30);
+                                    l.textContext.fillText(l.sizeList[textIndex], 0, 0);
+                                } else {
+                                    l.textContext.clearRect(-lightTextAngle, -lightTextAngle, 20, 20);
+                                    l.textContext.fillText(".", 0, 0);
+                                }
+                            }
+
+                        } else {
+
+                            if (intervalCount < 5) {
+                                if (circleLocationValue == sizeTextLocation) {
+                                    l.textContext.clearRect(-20, -25, 45, 30);
+                                    l.textContext.fillText(l.sizeList[textIndex], 0, 0);
+                                } else {
+                                    l.textContext.clearRect(-lightTextAngle, -lightTextAngle, 20, 20);
+                                    l.textContext.fillText(".", 0, 0);
+                                }
+                            }
+
                         }
+
+                        l.textContext.rotate(lightTextAngle);
+                        l.textContext.translate(0, l.radius * 0.8);
+                        l.textContext.rotate(-lightTextAngle);
+
+                        intervalCount++;
+
+                    } else {
+                        pointerTextCount++;
                     }
 
-                    l.textContext.rotate(lightTextAngle);
-                    l.textContext.translate(0, l.radius * 0.8);
-                    l.textContext.rotate(-lightTextAngle);
-
-                    l.circleLocation++;
-
-                    if (circleLocationValue == l.sizeLocationValue + textRange) {
-                        s.drawPointerText();
-                    } else if (circleLocationValue == l.sizeLocationValue + textRange + 1) {
-                        clearInterval(brightColorText);
-                        s.drawBrightPointerText();
+                    if (pointerTextCount == 1) {
+                        s.drawPointerSizeText();
+                        intervalStopCount++;
+                    } else if (intervalStopCount == 1) {
+                        s.drawPointerDotText();
+                        clearInterval(colorTextInterval);
                     }
+
                 }, t.motionValue);
-
             };
 
-            s.drawPointerText = function () {
-                var sizeRateValue = 0;
+            s.drawPointerSizeText = function () {
+                var colorTextIndex = recommendedSizeList.indexOf(recommendSizePointerText);
+                var pointerAngle = (recommendSizePointerText + 9) * Math.PI / 9;
+
+                l.textContext.translate(0, l.radius / 1.25);
+
+                l.textContext.rotate(pointerAngle);
+                l.textContext.translate(0, -l.radius * 0.8);
+                l.textContext.rotate(-pointerAngle);
+
+                l.textContext.clearRect(-20, -25, 45, 30);
+                l.textContext.fillStyle = t.pointerTextColor;
+                l.textContext.fillText(l.sizeList[colorTextIndex], 0, 0);
+
+                l.textContext.rotate(pointerAngle);
+                l.textContext.translate(0, l.radius * 0.8);
+                l.textContext.rotate(-pointerAngle);
+            };
+
+            s.drawPointerDotText = function () {
+                var pointerAngle = (recommendSizePointerValue + 9) * Math.PI / 9;
+
+                l.textContext.translate(0, l.radius / 1.25);
+
+                l.textContext.rotate(pointerAngle);
+                l.textContext.translate(0, -l.pointerRadius * 1.8);
+                l.textContext.rotate(-pointerAngle);
 
                 l.textContext.font = "" + t.pointerSize + "px arial";
-                l.textContext.textAlign = "center";
                 l.textContext.fillStyle = t.pointerTextColor;
+                l.textContext.fillText(t.pointerText, 0, 5);
 
-                for (var i = 6; i < 25; i++) {
-
-                    if (l.recommendedSizeRate >= 3 && l.recommendedSizeIndex !== l.sizeListLength - 1) {
-                        sizeRateValue = 0.4;
-                    } else if (l.recommendedSizeRate <= -3 && l.recommendedSizeIndex !== 0) {
-                        sizeRateValue = -0.4;
-                    } else {
-                        sizeRateValue = 0;
-                    }
-
-                    var pointerSizeNameValue = i - 9;
-                    var pointerAngle = i * Math.PI / 9 + sizeRateValue;
-
-                    l.textContext.rotate(pointerAngle);
-                    l.textContext.translate(0, -l.pointerRadius * 1.8);
-                    l.textContext.rotate(-pointerAngle);
-
-                    if (pointerSizeNameValue % 3 == 0 && pointerSizeNameValue / 3 == l.recommendedSizeIndex + 1) {
-                        l.textContext.fillText(t.pointerText, 0, 5);
-                    }
-
-                    l.textContext.rotate(pointerAngle);
-                    l.textContext.translate(0, l.pointerRadius * 1.8);
-                    l.textContext.rotate(-pointerAngle);
-                }
-            };
-
-            s.drawBrightPointerText = function () {
-
-                l.circleLocation -= 5;
-                var lightOnTextAngle = l.circleLocation * Math.PI / 9;
-
-                l.textContext.rotate(lightOnTextAngle);
-                l.textContext.translate(0, -l.radius * 0.8);
-                l.textContext.rotate(-lightOnTextAngle);
-                l.textContext.clearRect(-25, -15, 50, 30);
-                l.textContext.font = "" + t.textSize + "px arial";
-                l.textContext.fillStyle = t.pointerTextColor;
-                l.textContext.fillText(l.sizeList[l.recommendedSizeIndex], 0, 0);
+                l.textContext.rotate(pointerAngle);
+                l.textContext.translate(0, l.pointerRadius * 1.8);
+                l.textContext.rotate(-pointerAngle);
             };
 
             s.drawCircleGraphText();
-            s.drawColorText();
+            s.drawCircleGraphColorText();
+
         };
 
         function drawCircleGraph() {
             var canvasInfo = initCircleGraph(elIds);
-            var selectedSizeList = getRecommendSizeList(recommendedSizeData.totalSizes, recommendedSizeData.sizeName);
-            var circleGraphLocationValue = calCircleGraphLocation(canvasInfo, selectedSizeList, recommendedSizeData.sizeName, recommendedSizeData.sizeRate);
+            var rateIncreaseValue = recommendedRateValue();
+            var circleGraphLocationValue = calCircleGraphLocation(canvasInfo, getList, recommendedSizeData.sizeName);
 
-            drawCircleGraphShadow(canvasInfo, circleGraphLocationValue);
-            drawRecommendSizeText(canvasInfo, circleGraphLocationValue);
+            drawCircleGraphShadow(canvasInfo, rateIncreaseValue, circleGraphLocationValue);
+            drawRecommendSizeText(canvasInfo, rateIncreaseValue, circleGraphLocationValue);
         }
 
         drawCircleGraph();
