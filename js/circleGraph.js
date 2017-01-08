@@ -18,7 +18,7 @@ function CircleGraph(elIds, circleGraphProperties) {
     
     this.circleGraphNomalProperties = {
         textMotionValue: 1000,
-        shadowMotionValue: 100,
+        shadowMotionValue: 1000,
         shadowBlurGene: 40,
         textSize: 16,
         textColor: '#F6F5F3',
@@ -317,12 +317,12 @@ CircleGraph.prototype = {
             canvasInfo.shadowContext.fillStyle = graphController.circleColor;
             canvasInfo.shadowContext.fill();
             
-            blurIncrease += 0.05;
+            blurIncrease += 0.01;
 
             if (blurIncrease > 1) {
                 clearInterval(pieGraphInterval);
             }
-        }, graphController.shadowMotionValue);
+        }, graphController.shadowMotionValue / 30);
 
     },
 
