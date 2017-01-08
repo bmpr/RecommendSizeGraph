@@ -17,8 +17,9 @@ function CircleGraph(elIds, circleGraphProperties) {
     this.textSizeRatio = 2.5;
     
     this.circleGraphNomalProperties = {
-        motionValue: 100,
-        shadowBlurGene: 10,
+        textMotionValue: 1000,
+        shadowMotionValue: 100,
+        shadowBlurGene: 40,
         textSize: 16,
         textColor: '#F6F5F3',
         brightTextColor: '#20607A',
@@ -167,7 +168,7 @@ CircleGraph.prototype = {
         var canvasInfo = this.canvasContext();
         var sizeData = this.recommendedSizeData();
 
-        var piePieceAllMotion = 18 * this.circleGraphProperty.motionValue;
+        var piePieceAllMotion = 18 * this.circleGraphProperty.shadowMotionValue;
         var piePieceCount = 5;
 
         if (sizeData.totalSizesLength == 3) {
@@ -176,7 +177,7 @@ CircleGraph.prototype = {
             piePieceCount += 5;
         }
 
-        var piePieceMotion = piePieceCount * this.circleGraphProperty.motionValue;
+        var piePieceMotion = piePieceCount * this.circleGraphProperty.shadowMotionValue;
         var radian = ((2 * Math.PI) / piePieceAllMotion) * piePieceMotion;
         var calculatedsizeIndex = (Math.PI / 18) * (sizeData.sizeIndex * 6 + 3);
 
@@ -321,7 +322,7 @@ CircleGraph.prototype = {
             if (blurIncrease > 1) {
                 clearInterval(pieGraphInterval);
             }
-        }, graphController.motionValue);
+        }, graphController.shadowMotionValue);
 
     },
 
@@ -506,7 +507,7 @@ CircleGraph.prototype = {
                 clearInterval(colorTextInterval);
             }
 
-        }, graphController.motionValue);
+        }, graphController.textMotionValue);
 
     },
 
