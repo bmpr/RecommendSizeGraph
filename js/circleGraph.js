@@ -3,71 +3,106 @@ var recommendSizeData = {
     isCorrectGender: true,
     recommendRate: 0,
     status: true,
-    sizes: ['XS', 'S', 'M', 'L', 'XL','XXL','XXXL']
-        //    sizes: ['XS', 'S', 'M', 'L', 'XL']
-        //    sizes: ['XS', 'S', 'M', 'L']
+    //    sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL']
+    sizes: ['XS', 'S', 'M', 'L', 'XL']
+//            sizes: ['XS', 'S', 'M', 'L']
         //    sizes: ['XS', 'S', 'M']
         //    sizes: ['XS', 'S']    
 };
 
 
-(function () {
-
-
-    var recommendedSizeListData = {
-        sizesList: recommendSizeData.sizes,
-        sizesIndex: recommendSizeData.sizes.indexOf(recommendSizeData.recommendSize),
-        sizesLength: recommendSizeData.sizes.length
+function CircleGraph(elIds, circleGraphProperties) {
+    this.elIds = elIds || {};
+    this.circleGraphProperty = circleGraphProperties || {};
+    this.textSizeRatio = 2.5;
+    
+    this.circleGraphNomalProperties = {
+        motionValue: 100,
+        shadowBlurGene: 10,
+        textSize: 16,
+        textColor: '#F6F5F3',
+        brightTextColor: '#20607A',
+        pointerText: 'ME!',
+        pointerSize: 14,
+        pointerTextColor: '#00FFB0',
+        circleColor: '#ffffff',
+        shadowReversalIn: false,
+        shadowReversalOut: true
     };
 
+    for (var value in circleGraphProperties) {
 
-    var filteredSizeList = recommendedSizeListData.sizesList.filter(function (item, index) {
-        var sizeListData = recommendedSizeListData || {};
-        
-        if (sizeListData.sizesIndex === 0) {
-            if (index < sizeListData.sizesIndex + 5) {
-                return item;
-            }
-        } else if (sizeListData.sizesIndex == 1) {
-            if (index < sizeListData.sizesIndex + 4) {
-                return item;
-            }
-        } else if (sizeListData.sizesIndex == sizeListData.sizesLength - 1) {
-            if (index > sizeListData.sizesIndex - 5) {
-                return item;
-            }
-        } else if (sizeListData.sizesIndex == sizeListData.sizesLength - 2) {
-            if (index > sizeListData.sizesIndex - 4) {
-                return item;
-            }
-        } else {
-            if (index > sizeListData.sizesIndex - 3 && index < sizeListData.sizesIndex + 3) {
-                return item;
-            }
+        if (typeof circleGraphProperties === "object" && circleGraphProperties[value] !== null && circleGraphProperties[value] !== undefined) {
+            this.circleGraphProperty[value] = circleGraphProperties[value];
+        } else if (typeof circleGraphProperties !== "object" || circleGraphProperties[value] == null || circleGraphProperties[value] == undefined) {
+            this.circleGraphProperty[value] = circleGraphNomalProperties[value];
         }
-    });
+
+    }
+
+};
 
 
-    var recommendedSizeData = {
-        sizeRate: recommendSizeData.recommendRate,
-        sizeName: recommendSizeData.recommendSize,
-        sizeIndex: filteredSizeList.indexOf(recommendSizeData.recommendSize),
-        totalSizes: filteredSizeList,
-        totalSizesLength: filteredSizeList.length
-    };
+CircleGraph.prototype = {
 
 
-    var textLocationCountList = function () {
-        var locationCount = [];
-        for (var i = 0; i < 13; i++) {
-            locationCount[i] = i + 3;
-        }
-        return locationCount;
-    };
+    recommendedSizeListData: function () {
+        var recommendedSizeListData = {
+            sizesList: recommendSizeData.sizes,
+            sizesIndex: recommendSizeData.sizes.indexOf(recommendSizeData.recommendSize),
+            sizesLength: recommendSizeData.sizes.length
+        };
+        return recommendedSizeListData;
+    },
 
 
-    var recommendedRateValue = function () {
-        var sizeData = recommendedSizeData || {};
+    filteredSizeList: function () { //3
+        var sizeListData = this.recommendedSizeListData();
+
+        var filteredSizeList = sizeListData.sizesList.filter(function (item, index) {
+
+            if (sizeListData.sizesIndex === 0) {
+                if (index < sizeListData.sizesIndex + 5) {
+                    return item;
+                }
+            } else if (sizeListData.sizesIndex == 1) {
+                if (index < sizeListData.sizesIndex + 4) {
+                    return item;
+                }
+            } else if (sizeListData.sizesIndex == sizeListData.sizesLength - 1) {
+                if (index > sizeListData.sizesIndex - 5) {
+                    return item;
+                }
+            } else if (sizeListData.sizesIndex == sizeListData.sizesLength - 2) {
+                if (index > sizeListData.sizesIndex - 4) {
+                    return item;
+                }
+            } else {
+                if (index > sizeListData.sizesIndex - 3 && index < sizeListData.sizesIndex + 3) {
+                    return item;
+                }
+            }
+        });
+        return filteredSizeList;
+    },
+
+
+    recommendedSizeData: function () { 
+        var filteredSizeList = this.filteredSizeList();
+
+        var recommendedSizeData = {
+            sizeRate: recommendSizeData.recommendRate,
+            sizeName: recommendSizeData.recommendSize,
+            sizeIndex: filteredSizeList.indexOf(recommendSizeData.recommendSize),
+            totalSizes: filteredSizeList,
+            totalSizesLength: filteredSizeList.length
+        };
+        return recommendedSizeData;
+    },
+
+
+    recommendedRateValue: function () { 
+        var sizeData = this.recommendedSizeData();
 
         if (sizeData.totalSizesLength >= 5) {
 
@@ -110,55 +145,29 @@ var recommendSizeData = {
             }
 
         }
+    },
 
-    };
 
-
-    function InitCircleGraph(canvas, circleGraphProperties) {
-        var shadowCanvas = document.getElementById(canvas.canvasShadow);
-        var textCanvas = document.getElementById(canvas.canvasText);
+    canvasContext: function () {
+        var shadowCanvas = document.getElementById(this.elIds.canvasShadow);
+        var textCanvas = document.getElementById(this.elIds.canvasText);
         var shadowContext = shadowCanvas.getContext("2d");
         var textContext = textCanvas.getContext("2d");
-        var circleGraphProperty = circleGraphProperties;
-
-        var circleGraphNomalProperties = {
-            motionValue: 200,
-            shadowBlurGene: 50,
-            textSize: 32,
-            textColor: '#F6F5F3',
-            BrightTextColor: '#20607A',
-            pointerText: 'ME!',
-            pointerSize: 28,
-            pointerTextColor: '#00FFB0',
-            circleColor: '#ffffff',
-            shadowReversalIn: false,
-            shadowReversalOut: true
-        };
-
-        for (var value in circleGraphProperties) {
-            
-            if (typeof circleGraphProperties === "object" && circleGraphProperties[value] !== null && circleGraphProperties[value] !== undefined) {
-                circleGraphProperty[value] = circleGraphProperties[value];
-            } else if (typeof circleGraphProperties !== "object" || circleGraphProperties[value] == null || circleGraphProperties[value] == undefined) {
-                circleGraphProperty[value] = circleGraphNomalProperties[value];
-            }
-            
-        }
 
         return {
             textCanvas: textCanvas,
             textContext: textContext,
             shadowCanvas: shadowCanvas,
             shadowContext: shadowContext,
-            circleGraphController: circleGraphProperty
         };
-    };
-    
+    },
 
-    function calCircleGraphLocation(canvasInfo, sizeList) {
-        var sizeData = recommendedSizeData || {};
-        
-        var piePieceAllMotion = 18 * canvasInfo.circleGraphController.motionValue;
+
+    calCircleGraphLocation: function () {
+        var canvasInfo = this.canvasContext();
+        var sizeData = this.recommendedSizeData();
+
+        var piePieceAllMotion = 18 * this.circleGraphProperty.motionValue;
         var piePieceCount = 5;
 
         if (sizeData.totalSizesLength == 3) {
@@ -167,7 +176,7 @@ var recommendSizeData = {
             piePieceCount += 5;
         }
 
-        var piePieceMotion = piePieceCount * canvasInfo.circleGraphController.motionValue;
+        var piePieceMotion = piePieceCount * this.circleGraphProperty.motionValue;
         var radian = ((2 * Math.PI) / piePieceAllMotion) * piePieceMotion;
         var calculatedsizeIndex = (Math.PI / 18) * (sizeData.sizeIndex * 6 + 3);
 
@@ -176,93 +185,28 @@ var recommendSizeData = {
         var pointerRadius = canvasInfo.textCanvas.height / 4;
 
         return {
-            canvas: canvasInfo.shadowCanvas,
-            textContext: canvasInfo.textContext,
-            shadowContext: canvasInfo.shadowContext,
             canvasHalfWidth: canvasHalfWidth,
             radian: radian,
             radius: radius,
-            sizeList: sizeList,
             pointerRadius: pointerRadius,
             calculatedsizeIndex: calculatedsizeIndex,
         };
-    }
+    },
 
 
-    function drawCircleGraphShadow(canvasInfo, rateIncreaseCount, graphlocationValueInfo) {
-        var graphInfo  = graphlocationValueInfo || {};
-        var graphController = canvasInfo.circleGraphController || {};
-        var sizeData = recommendedSizeData || {};
-        var startPoint;
-        var startValue = 0.39;
-        var blurIncrease = 0;
-        var increaseCount = rateIncreaseCount / 10;
-
-        if (sizeData.totalSizesLength == 4) {
-            startValue += 0.02 + (0.1 * sizeData.sizeIndex);
-        } else if (sizeData.totalSizesLength == 3) {
-            startValue -= 0.11;
-            startValue += (0.33 * sizeData.sizeIndex);
-        } else if (sizeData.totalSizesLength == 2) {
-            startValue -= 0.21;
-            startValue += (0.87 * sizeData.sizeIndex);
-        }
-
-        if (sizeData.sizeRate > 0) {
-            startValue += increaseCount;
-        } else if (sizeData.sizeRate < 0) {
-            startValue -= increaseCount;
-        }
-
-        startPoint = (startValue * Math.PI) + graphInfo.calculatedsizeIndex;
-
-        var pieGraphInterval = setInterval(function () {
-            graphInfo.shadowContext.clearRect(0, 0, graphInfo.canvas.width, graphInfo.canvas.height);
-
-            graphInfo.shadowContext.beginPath();
-            graphInfo.shadowContext.moveTo(graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth);
-            graphInfo.shadowContext.arc(graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth / 1.35, startPoint, startPoint + graphInfo.radian, graphController.shadowReversalIn);
-            graphInfo.shadowContext.shadowColor = "rgba(32,96,122," + blurIncrease + ")";
-            graphInfo.shadowContext.shadowBlur = graphController.shadowBlurGene;
-            graphInfo.shadowContext.closePath();
-            graphInfo.shadowContext.fillStyle = 'blue';
-            graphInfo.shadowContext.fill();
-
-            graphInfo.shadowContext.beginPath();
-            graphInfo.shadowContext.moveTo(graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth);
-            graphInfo.shadowContext.arc(graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth / 1.35, startPoint, startPoint + graphInfo.radian, graphController.shadowReversalOut);
-            graphInfo.shadowContext.shadowColor = "rgba(227,237,168," + blurIncrease + ")";
-            graphInfo.shadowContext.shadowBlur = graphController.shadowBlurGene;
-            graphInfo.shadowContext.fillStyle = graphController.circleColor;
-            graphInfo.shadowContext.fill();
-
-            graphInfo.shadowContext.beginPath();
-            graphInfo.shadowContext.arc(graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth - 70, 0, 2 * Math.PI);
-            graphInfo.shadowContext.shadowBlur = 0;
-            graphInfo.shadowContext.fillStyle = graphController.circleColor;
-            graphInfo.shadowContext.fill();
-
-            blurIncrease += 0.05;
-
-            if (blurIncrease > 1) {
-                clearInterval(pieGraphInterval);
-            }
-        }, graphController.motionValue);
-    }
-
-
-    function drawRecommendSizeText(canvasInfo, rateIncreaseCount, textLocationValueList, graphlocationValueInfo) {
-        var graphInfo  = graphlocationValueInfo || {};
-        var sizeData = recommendedSizeData || {};
-        var graphController = canvasInfo.circleGraphController || {};
+    filteredLocationValue: function () { //2
+        var sizeData = this.recommendedSizeData();
+        var recommendedRateCount = this.recommendedRateValue();
 
         var recommendedSizePointerValue;
         var recommendedSizePointerText;
-        var rateIncrease = rateIncreaseCount;
-        var rateDecrease = -rateIncreaseCount;
-
+        var textLocationValueList = [];
         var rangeCount = 3;
         var avgCount = 3;
+
+        for (var i = 0; i < 13; i++) {
+            textLocationValueList[i] = i + 3;
+        }
 
         if (sizeData.totalSizesLength == 4) {
             avgCount = 4;
@@ -291,9 +235,9 @@ var recommendSizeData = {
                 recommendedSizePointerText = item;
 
                 if (sizeData.sizeRate >= 0) {
-                    recommendedSizePointerValue = item + rateIncrease;
+                    recommendedSizePointerValue = item + recommendedRateCount;
                 } else if (sizeData.sizeRate < 0) {
-                    recommendedSizePointerValue = item + rateDecrease;
+                    recommendedSizePointerValue = item - recommendedRateCount;
                 }
             }
         });
@@ -304,212 +248,274 @@ var recommendSizeData = {
             }
         });
 
+        return {
+            rangeValue: rangeValue,
+            recommendedSizeList: recommendedSizeList,
+            recommendedSizeRangeList: recommendedSizeRangeList,
+            recommendedSizePointerText: recommendedSizePointerText,
+            recommendedSizePointerValue: recommendedSizePointerValue
+        }
 
-        this.drawCircleGraphText = function () {
-            var sizeTextAngle, dotTextAngle;
-            var sizeListLength = recommendedSizeList.length;
-            var dotListLength = recommendedSizeRangeList.length;
-            var labelCount = 0;
+    },
 
-            graphInfo.textContext.translate(graphInfo.radius, graphInfo.radius);
-            graphInfo.radius = graphInfo.radius * 0.79;
 
-            graphInfo.textContext.beginPath();
-            graphInfo.textContext.arc(0, 0, graphInfo.radius / 1.06, 0, 2 * Math.PI);
-            graphInfo.textContext.fillStyle = graphController.circleColor;
-            graphInfo.textContext.fill();
+    drawCircleGraphShadow: function () {
 
-            graphInfo.textContext.font = "" + graphController.textSize + "px arial";
-            graphInfo.textContext.textAlign = "center";
-            graphInfo.textContext.fillStyle = graphController.textColor;
+        var sizeData = this.recommendedSizeData();
+        var graphInfo = this.calCircleGraphLocation();
+        var recommendedRateCount = this.recommendedRateValue();
+        var canvasInfo = this.canvasContext();
+        var graphController = this.circleGraphProperty || {};
 
-            for (var i = 0; i < sizeListLength; i++) {
-                sizeTextAngle = (recommendedSizeList[i] + 9) * Math.PI / 9;
+        var startPoint;
+        var startValue = 0.39;
+        var blurIncrease = 0;
+        var increaseCount = recommendedRateCount / 10;
 
-                graphInfo.textContext.rotate(sizeTextAngle);
-                graphInfo.textContext.translate(0, -graphInfo.radius * 0.78);
-                graphInfo.textContext.rotate(-sizeTextAngle);
+        if (sizeData.totalSizesLength == 4) {
+            startValue += 0.02 + (0.1 * sizeData.sizeIndex);
+        } else if (sizeData.totalSizesLength == 3) {
+            startValue -= 0.11;
+            startValue += (0.33 * sizeData.sizeIndex);
+        } else if (sizeData.totalSizesLength == 2) {
+            startValue -= 0.21;
+            startValue += (0.87 * sizeData.sizeIndex);
+        }
 
-                graphInfo.textContext.fillText(graphInfo.sizeList[labelCount], 0, 0);
+        if (sizeData.sizeRate > 0) {
+            startValue += increaseCount;
+        } else if (sizeData.sizeRate < 0) {
+            startValue -= increaseCount;
+        }
 
-                graphInfo.textContext.rotate(sizeTextAngle);
-                graphInfo.textContext.translate(0, graphInfo.radius * 0.78);
-                graphInfo.textContext.rotate(-sizeTextAngle);
+        startPoint = (startValue * Math.PI) + graphInfo.calculatedsizeIndex;
 
-                labelCount++;
+        var pieGraphInterval = setInterval(function () {
+            canvasInfo.shadowContext.clearRect(0, 0, canvasInfo.shadowCanvas.width, canvasInfo.shadowCanvas.height);
+
+            canvasInfo.shadowContext.beginPath();
+            canvasInfo.shadowContext.moveTo(graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth);
+            canvasInfo.shadowContext.arc(graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth / 1.27, startPoint, startPoint + graphInfo.radian, graphController.shadowReversalIn);
+            canvasInfo.shadowContext.shadowColor = "rgba(32,96,122," + blurIncrease + ")";
+            canvasInfo.shadowContext.shadowBlur = graphController.shadowBlurGene;
+            canvasInfo.shadowContext.closePath();
+            canvasInfo.shadowContext.fillStyle = graphController.circleColor;
+            canvasInfo.shadowContext.fill();
+
+            canvasInfo.shadowContext.beginPath();
+            canvasInfo.shadowContext.moveTo(graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth);
+            canvasInfo.shadowContext.arc(graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth / 1.27, startPoint, startPoint + graphInfo.radian, graphController.shadowReversalOut);
+            canvasInfo.shadowContext.shadowColor = "rgba(227,237,168," + blurIncrease + ")";
+            canvasInfo.shadowContext.shadowBlur = graphController.shadowBlurGene;
+            canvasInfo.shadowContext.fillStyle = graphController.circleColor;
+            canvasInfo.shadowContext.fill();
+
+            canvasInfo.shadowContext.beginPath();
+            canvasInfo.shadowContext.arc(graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth, graphInfo.canvasHalfWidth / 1.28, 0, 2 * Math.PI);
+            canvasInfo.shadowContext.shadowBlur = 0;
+            canvasInfo.shadowContext.fillStyle = graphController.circleColor;
+            canvasInfo.shadowContext.fill();
+            
+            blurIncrease += 0.05;
+
+            if (blurIncrease > 1) {
+                clearInterval(pieGraphInterval);
             }
+        }, graphController.motionValue);
 
-            for (var i = 0; i < dotListLength; i++) {
-                dotTextAngle = (recommendedSizeRangeList[i] + 9) * Math.PI / 9;
-
-                graphInfo.textContext.rotate(dotTextAngle);
-                graphInfo.textContext.translate(0, -graphInfo.radius * 0.78);
-                graphInfo.textContext.rotate(-dotTextAngle);
-
-                graphInfo.textContext.fillText(".", 0, 0);
-
-                graphInfo.textContext.rotate(dotTextAngle);
-                graphInfo.textContext.translate(0, graphInfo.radius * 0.78);
-                graphInfo.textContext.rotate(-dotTextAngle);
-            }
-        };
+    },
 
 
-        this.drawCircleGraphColorText = function () {
-            var intervalCount = 0;
-            var pointerTextCount = 0;
-            var intervalStopCount = 0;
+    drawCircleGraphText: function () {
 
-            var colorTextInterval = setInterval(function () {
+        var filteredSizeList = this.filteredSizeList();
+        var graphInfo = this.calCircleGraphLocation();
+        var canvasInfo = this.canvasContext();
+        var graphController = this.circleGraphProperty || {};
+        var locationValue = this.filteredLocationValue();
 
-                var circleLocationValue = rangeValue[intervalCount];
-                var textIndex = recommendedSizeList.indexOf(circleLocationValue);
-                var lightTextAngle = (circleLocationValue + 9) * Math.PI / 9;
+        var sizeTextAngle, dotTextAngle;
+        var sizeListLength = locationValue.recommendedSizeList.length;
+        var dotListLength = locationValue.recommendedSizeRangeList.length;
+        var labelCount = 0;
 
-                var sizeTextLocation = recommendedSizeList.filter(function (item) {
-                    if (circleLocationValue == item) {
-                        return item;
+        canvasInfo.textContext.translate(graphInfo.radius, graphInfo.radius);
+        graphInfo.radius = graphInfo.radius * 0.79;
+
+        canvasInfo.textContext.beginPath();
+        canvasInfo.textContext.arc(0, 0, graphInfo.radius, 0, 2 * Math.PI);
+        canvasInfo.textContext.fillStyle = graphController.circleColor;
+        canvasInfo.textContext.fill();
+
+        canvasInfo.textContext.textAlign = "center";
+        canvasInfo.textContext.fillStyle = graphController.textColor;
+
+        for (var i = 0; i < sizeListLength; i++) {
+            sizeTextAngle = (locationValue.recommendedSizeList[i] + 9) * Math.PI / 9;
+            
+            this.drawCanvasContext(sizeTextAngle, graphInfo.radius, filteredSizeList[labelCount], graphController.textSize * this.textSizeRatio);
+            
+            labelCount++;
+        }
+
+        for (var i = 0; i < dotListLength; i++) {
+            dotTextAngle = (locationValue.recommendedSizeRangeList[i] + 9) * Math.PI / 9;
+            
+            this.drawCanvasContext(dotTextAngle, graphInfo.radius, "●", graphController.textSize * this.textSizeRatio / 2);
+        }
+
+    },
+
+    
+    drawCanvasContext : function(angle, radius, text, textSize){
+        var canvasInfo = this.canvasContext();
+        
+            canvasInfo.textContext.rotate(angle);
+            canvasInfo.textContext.translate(0, - radius * 0.82);
+            canvasInfo.textContext.rotate(-angle);
+        
+            canvasInfo.textContext.font = "" + textSize + "px arial";
+            canvasInfo.textContext.fillText(text, 0, 0);
+
+            canvasInfo.textContext.rotate(angle);
+            canvasInfo.textContext.translate(0, radius * 0.82);
+            canvasInfo.textContext.rotate(-angle);
+    },
+    
+
+    drawCircleGraphColorText: function () {
+        var canvasInfo = this.canvasContext();
+        var sizeData = this.recommendedSizeData();
+        var graphInfo = this.calCircleGraphLocation();
+        var filteredSizeList = this.filteredSizeList();
+        var locationValue = this.filteredLocationValue();
+        var graphController = this.circleGraphProperty || {};
+        var textSizeRatio = this.textSizeRatio;
+        
+        var intervalCount = 0;
+        var pointerTextCount = 0;
+        var intervalStopCount = 0;
+
+        var colorTextInterval = setInterval(function () {
+
+            var circleLocationValue = locationValue.rangeValue[intervalCount];
+            var textIndex = locationValue.recommendedSizeList.indexOf(circleLocationValue);
+            var pointerAngle = (locationValue.recommendedSizePointerText + 9) * Math.PI / 9;
+            var pointerMeAngle = (locationValue.recommendedSizePointerValue + 9) * Math.PI / 9;
+            var colorTextAngle = (circleLocationValue + 9) * Math.PI / 9;
+            var colorTextIndex = locationValue.recommendedSizeList.indexOf(locationValue.recommendedSizePointerText);
+
+            var sizeTextLocation = locationValue.recommendedSizeList.filter(function (item) {
+                if (circleLocationValue == item) {
+                    return item;
+                }
+            });
+
+            canvasInfo.textContext.rotate(colorTextAngle);
+            canvasInfo.textContext.translate(0, -graphInfo.radius * 0.65);
+            canvasInfo.textContext.rotate(-colorTextAngle);
+            
+            canvasInfo.textContext.fillStyle = graphController.brightTextColor;
+
+            if (typeof circleLocationValue !== 'undefined') {
+
+                if (sizeData.totalSizesLength == 2) {
+
+                    if (intervalCount < 13) {
+                        if (circleLocationValue == sizeTextLocation) {
+                            canvasInfo.textContext.clearRect(-20, -25, 40, 30);
+                            canvasInfo.textContext.font = "" + graphController.textSize * textSizeRatio + "px arial";
+                            canvasInfo.textContext.fillText(filteredSizeList[textIndex], 0, 0);
+                        } else {
+                            canvasInfo.textContext.clearRect(-colorTextAngle, -colorTextAngle, 20, 20);
+                            canvasInfo.textContext.font = "" + graphController.textSize * textSizeRatio / 2 + "px arial";
+                            canvasInfo.textContext.fillText("●", 0, 0);
+                        }
                     }
-                });
 
-                graphInfo.textContext.rotate(lightTextAngle);
-                graphInfo.textContext.translate(0, -graphInfo.radius * 0.78);
-                graphInfo.textContext.rotate(-lightTextAngle);
+                } else if (sizeData.totalSizesLength == 3) {
 
-                graphInfo.textContext.fillStyle = graphController.BrightTextColor;
-
-                if (typeof circleLocationValue !== 'undefined') {
-
-                    if (sizeData.totalSizesLength == 2) {
-
-                        if (intervalCount < 13) {
-                            if (circleLocationValue == sizeTextLocation) {
-                                graphInfo.textContext.clearRect(-20, -25, 40, 30);
-                                graphInfo.textContext.fillText(graphInfo.sizeList[textIndex], 0, 0);
-                            } else {
-                                graphInfo.textContext.clearRect(-lightTextAngle, -lightTextAngle, 20, 20);
-                                graphInfo.textContext.fillText(".", 0, 0);
-                            }
+                    if (intervalCount < 7) {
+                        if (circleLocationValue == sizeTextLocation) {
+                            canvasInfo.textContext.clearRect(-20, -25, 40, 30);
+                            canvasInfo.textContext.font = "" + graphController.textSize * textSizeRatio + "px arial";            
+                            canvasInfo.textContext.fillText(filteredSizeList[textIndex], 0, 0);
+                        } else {
+                            canvasInfo.textContext.clearRect(-colorTextAngle, -colorTextAngle, 20, 20);
+                            canvasInfo.textContext.font = "" + graphController.textSize * textSizeRatio / 2 + "px arial";
+                            canvasInfo.textContext.fillText("●", 0, 0);
                         }
-
-                    } else if (sizeData.totalSizesLength == 3) {
-
-                        if (intervalCount < 7) {
-                            if (circleLocationValue == sizeTextLocation) {
-                                graphInfo.textContext.clearRect(-20, -25, 40, 30);
-                                graphInfo.textContext.fillText(graphInfo.sizeList[textIndex], 0, 0);
-                            } else {
-                                graphInfo.textContext.clearRect(-lightTextAngle, -lightTextAngle, 20, 20);
-                                graphInfo.textContext.fillText(".", 0, 0);
-                            }
-                        }
-
-                    } else {
-                        if (intervalCount < 5) {
-                            if (circleLocationValue == sizeTextLocation) {
-                                graphInfo.textContext.clearRect(-20, -25, 40, 30);
-                                graphInfo.textContext.fillText(graphInfo.sizeList[textIndex], 0, 0);
-                            } else {
-                                graphInfo.textContext.clearRect(-lightTextAngle, -lightTextAngle, 20, 20);
-                                graphInfo.textContext.fillText(".", 0, 0);
-                            }
-                        }
-
                     }
-
-                    graphInfo.textContext.rotate(lightTextAngle);
-                    graphInfo.textContext.translate(0, graphInfo.radius * 0.78);
-                    graphInfo.textContext.rotate(-lightTextAngle);
-
-                    intervalCount++;
 
                 } else {
-                    pointerTextCount++;
+                    if (intervalCount < 5) {
+                        if (circleLocationValue == sizeTextLocation) {
+                            canvasInfo.textContext.clearRect(-20, -25, 40, 30);
+                            canvasInfo.textContext.font = "" + graphController.textSize * textSizeRatio + "px arial";     
+                            canvasInfo.textContext.fillText(filteredSizeList[textIndex], 0, 0);
+                        } else {
+                            canvasInfo.textContext.clearRect(-colorTextAngle, -colorTextAngle, 20, 20);
+                            canvasInfo.textContext.font = "" + graphController.textSize * textSizeRatio / 2 + "px arial";
+                            canvasInfo.textContext.fillText("●", 0, 0);
+                        }
+                    }
+
                 }
 
-                if (pointerTextCount == 1) {
-                    this.drawPointerSizeText();
-                    intervalStopCount++;
-                } else if (intervalStopCount == 1) {
-                    this.drawPointerDotText();
-                    clearInterval(colorTextInterval);
-                }
+                canvasInfo.textContext.rotate(colorTextAngle);
+                canvasInfo.textContext.translate(0, graphInfo.radius * 0.65);
+                canvasInfo.textContext.rotate(-colorTextAngle);
 
-            }, graphController.motionValue);
-        };
+                intervalCount++;
+            } else {
+                pointerTextCount++;
+            }
+
+            if (pointerTextCount == 1) {
+                canvasInfo.textContext.translate(0, graphInfo.radius / 1.54);
+                                
+                canvasInfo.textContext.rotate(pointerAngle);
+                canvasInfo.textContext.translate(0, -graphInfo.radius * 0.65);
+                canvasInfo.textContext.rotate(-pointerAngle);
+
+                canvasInfo.textContext.clearRect(-20, -25, 40, 30);
+                canvasInfo.textContext.fillStyle = graphController.pointerTextColor;
+                canvasInfo.textContext.font = "" + graphController.textSize * textSizeRatio + "px arial";                
+                canvasInfo.textContext.fillText(filteredSizeList[colorTextIndex], 0, 0);
+
+                canvasInfo.textContext.rotate(pointerAngle);
+                canvasInfo.textContext.translate(0, graphInfo.radius * 0.65);
+                canvasInfo.textContext.rotate(-pointerAngle);
+
+                intervalStopCount++;
+            } else if (intervalStopCount == 1) {
+                canvasInfo.textContext.translate(0, graphInfo.radius / 1.54);
+                
+                canvasInfo.textContext.rotate(pointerMeAngle);
+                canvasInfo.textContext.translate(0, -graphInfo.pointerRadius * 1.85);
+                canvasInfo.textContext.rotate(-pointerMeAngle);
+
+                canvasInfo.textContext.font = "" + graphController.pointerSize * textSizeRatio + "px arial";
+                canvasInfo.textContext.fillStyle = graphController.pointerTextColor;
+                canvasInfo.textContext.fillText(graphController.pointerText, 0, 5);
+
+                canvasInfo.textContext.rotate(pointerMeAngle);
+                canvasInfo.textContext.translate(0, graphInfo.pointerRadius * 1.85);
+                canvasInfo.textContext.rotate(-pointerMeAngle);
+
+                clearInterval(colorTextInterval);
+            }
+
+        }, graphController.motionValue);
+
+    },
 
 
-        this.drawPointerSizeText = function () {
-            var colorTextIndex = recommendedSizeList.indexOf(recommendedSizePointerText);
-            var pointerAngle = (recommendedSizePointerText + 9) * Math.PI / 9;
-
-            graphInfo.textContext.translate(0, graphInfo.radius / 1.28);
-
-            graphInfo.textContext.rotate(pointerAngle);
-            graphInfo.textContext.translate(0, -graphInfo.radius * 0.78);
-            graphInfo.textContext.rotate(-pointerAngle);
-
-            graphInfo.textContext.clearRect(-20, -25, 40, 30);
-            graphInfo.textContext.fillStyle = graphController.pointerTextColor;
-            graphInfo.textContext.fillText(graphInfo.sizeList[colorTextIndex], 0, 0);
-
-            graphInfo.textContext.rotate(pointerAngle);
-            graphInfo.textContext.translate(0, graphInfo.radius * 0.78);
-            graphInfo.textContext.rotate(-pointerAngle);
-        };
-
-
-        this.drawPointerDotText = function () {
-            var pointerAngle = (recommendedSizePointerValue + 9) * Math.PI / 9;
-
-            graphInfo.textContext.translate(0, graphInfo.radius / 1.28);
-
-            graphInfo.textContext.rotate(pointerAngle);
-            graphInfo.textContext.translate(0, -graphInfo.pointerRadius * 1.8);
-            graphInfo.textContext.rotate(-pointerAngle);
-
-            graphInfo.textContext.font = "" + graphController.pointerSize + "px arial";
-            graphInfo.textContext.fillStyle = graphController.pointerTextColor;
-            graphInfo.textContext.fillText(graphController.pointerText, 0, 5);
-
-            graphInfo.textContext.rotate(pointerAngle);
-            graphInfo.textContext.translate(0, graphInfo.pointerRadius * 1.8);
-            graphInfo.textContext.rotate(-pointerAngle);
-        };
-
+    drawCircleGraph: function () {
+        this.drawCircleGraphShadow();
         this.drawCircleGraphText();
         this.drawCircleGraphColorText();
-
     }
 
+};
 
-    function drawCircleGraph() {
-        var canvasInfo = new InitCircleGraph({
-            canvasShadow: 'canvasShadow',
-            canvasText: 'canvasText'
-        }, {
-            motionValue: 200,
-            shadowBlurGene: 50,
-            textSize: 32,
-            textColor: '#F6F5F3',
-            BrightTextColor: '#20607A',
-            pointerText: 'ME!',
-            pointerSize: 28,
-            pointerTextColor: '#00FFB0',
-            circleColor: '#ffffff',
-            shadowReversalIn: false,
-            shadowReversalOut: true
-        });
-
-        var textLocationValueList = textLocationCountList();
-        var rateIncreaseValue = recommendedRateValue();
-        var circleGraphLocationValue = calCircleGraphLocation(canvasInfo, filteredSizeList, recommendedSizeData.sizeName);
-
-        drawCircleGraphShadow(canvasInfo, rateIncreaseValue, circleGraphLocationValue);
-        drawRecommendSizeText(canvasInfo, rateIncreaseValue, textLocationValueList, circleGraphLocationValue);
-    }
-
-    drawCircleGraph();
-
-
-})();

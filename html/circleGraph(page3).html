@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    
-    <style>        
+
+    <style>
         #canvasText {
             width: 270px;
             height: 270px;
@@ -25,19 +25,37 @@
             top: 10%;
             left: 10%;
         }
-        
     </style>
-    
+
 </head>
 
 <body>
-   
-    <canvas id="canvasShadow" width="540" height="540"></canvas>
-    <canvas id="canvasText" width="540" height="540"></canvas>    
-    
-    
-        <script src = "../js/circleGraphTest.js"></script>    
-    <!--    <script src = "../js/circleGraph.js"></script>-->
+
+    <canvas id="canvasShadow" width="675" height="675"></canvas>
+    <canvas id="canvasText" width="675" height="675"></canvas>
+
+    <script src = "../js/circleGraph.js"></script>
+    <script>    
+        var circleGraph = new CircleGraph({
+            canvasShadow: 'canvasShadow',
+            canvasText: 'canvasText'
+        }, {
+            motionValue: 200,
+            shadowBlurGene: 50,
+            textSize: 16,
+            textColor: '#F6F5F3',
+            brightTextColor: '#20607A',
+            pointerText: 'ME!',
+            pointerSize: 14,
+            pointerTextColor: '#00FFB0',
+            circleColor: '#ffffff',
+            shadowReversalIn: false,
+            shadowReversalOut: true
+        });
+        
+        circleGraph.drawCircleGraph();       
+    </script>
 
 </body>
+
 </html>
