@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-
     <style>
         #canvasText {
             width: 270px;
@@ -15,8 +13,7 @@
             position: absolute;
             top: 10%;
             left: 10%;
-        }
-        
+        }        
         #canvasShadow {
             width: 270px;
             height: 270px;
@@ -26,9 +23,7 @@
             left: 10%;
         }
     </style>
-
 </head>
-
 <body>
 
     <canvas id="canvasShadow" width="675" height="675"></canvas>
@@ -42,7 +37,7 @@
         }, {
             textMotionValue: 300,
             shadowMotionValue: 1000,
-            shadowBlurGene: 40,
+            shadowBlurGene: 50,
             textSize: 16,
             textColor: '#F6F5F3',
             brightTextColor: '#20607A',
@@ -53,10 +48,7 @@
             shadowReversalIn: false,
             shadowReversalOut: true
         });
-        
-        circleGraph.drawCircleGraph();       
     </script>
 
 </body>
-
 </html>
