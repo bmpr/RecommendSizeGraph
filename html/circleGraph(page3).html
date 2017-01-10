@@ -21,23 +21,25 @@
             position: absolute;
             top: 10%;
             left: 10%;
+/*            filter: blur(6px); */
         }
     </style>
 </head>
 <body>
 
-    <canvas id="canvasShadow" width="675" height="675"></canvas>
+<canvas id="canvasShadow" width="675" height="675"></canvas>
     <canvas id="canvasText" width="675" height="675"></canvas>
-
+    
     <script src = "../js/circleGraph.js"></script>
+<!--    <script src = "../js/nono.js"></script>-->
     <script>    
         var circleGraph = new CircleGraph({
             canvasShadow: 'canvasShadow',
             canvasText: 'canvasText'
         }, {
             textMotionValue: 300,
-            shadowMotionValue: 1000,
-            shadowBlurGene: 50,
+            shadowMotionValue: 100,
+            shadowBlurGene: 60,
             textSize: 16,
             textColor: '#F6F5F3',
             brightTextColor: '#20607A',
@@ -46,9 +48,12 @@
             pointerTextColor: '#00FFB0',
             circleColor: '#ffffff',
             shadowReversalIn: false,
-            shadowReversalOut: true
-        });
+            shadowReversalOut: true,
+            textSizeRatio: 2.5
+        });                            
     </script>
+
+
 
 </body>
 </html>
