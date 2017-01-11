@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style>
+        @font-face {
+            font-family: 'Flexo-Medium';
+            src: url('Flexo-Medium.eot');
+            src: url('Flexo-Medium.eot?#iefix') format('embedded-opentype'), 
+                 url('Flexo-Medium.woff2') format('woff2'), 
+                 url('Flexo-Medium.woff') format('woff'), 
+                 url('Flexo-Medium.ttf') format('truetype'),
+        }        
         #canvasText {
             width: 270px;
             height: 270px;
@@ -13,7 +22,8 @@
             position: absolute;
             top: 10%;
             left: 10%;
-        }        
+        }
+        
         #canvasShadow {
             width: 270px;
             height: 270px;
@@ -21,39 +31,40 @@
             position: absolute;
             top: 10%;
             left: 10%;
-/*            filter: blur(6px); */
         }
     </style>
 </head>
+
 <body>
 
-<canvas id="canvasShadow" width="675" height="675"></canvas>
+    <canvas id="canvasShadow" width="675" height="675"></canvas>
     <canvas id="canvasText" width="675" height="675"></canvas>
-    
-    <script src = "../js/circleGraph.js"></script>
-<!--    <script src = "../js/nono.js"></script>-->
-    <script>    
+
+    <script src="../js/circleGraph.js"></script>
+
+    <script>
         var circleGraph = new CircleGraph({
             canvasShadow: 'canvasShadow',
             canvasText: 'canvasText'
         }, {
             textMotionValue: 300,
             shadowMotionValue: 100,
-            shadowBlurGene: 60,
+            shadowBlurGene: "60",
             textSize: 16,
             textColor: '#F6F5F3',
             brightTextColor: '#20607A',
             pointerText: 'ME!',
-            pointerSize: 14,
+            pointerSize: 13,
             pointerTextColor: '#00FFB0',
             circleColor: '#ffffff',
             shadowReversalIn: false,
             shadowReversalOut: true,
             textSizeRatio: 2.5
-        });                            
+        });
     </script>
 
 
 
 </body>
+
 </html>

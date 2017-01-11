@@ -1,5 +1,5 @@
 var recommendSizeData = {
-    recommendSize: 'M',
+    recommendSize: 'S',
     isCorrectGender: true,
     recommendRate: 0,
     status: true,
@@ -19,42 +19,60 @@ var CircleGraph = function (elIds, circleGraphProperties) {
         textColor: '#F6F5F3',
         brightTextColor: '#20607A',
         pointerText: 'ME!',
-        pointerSize: 14,
+        pointerSize: 13,
         pointerTextColor: '#00FFB0',
         circleColor: '#ffffff',
         shadowReversalIn: false,
         shadowReversalOut: true,
         textSizeRatio: 2.5
     };
+    
+    var listLengthCompareValue = {
+        zero : 0,
+        one : 1,
+        two : 2,
+        three : 3,
+        four : 4,
+        five : 5,
+    };
 
-    for (var value in elIds) {
-        if (typeof elIds === "object" && elIds[value] !== null && elIds[value] !== undefined) {
-            canvasId[value] = elIds[value];
+    try {
+        
+        for (var value in elIds) {
+            if (typeof elIds === "object" && elIds[value] !== null && elIds[value] !== undefined  && elIds[value] !== '') {
+                canvasId[value] = elIds[value];
+            }else{
+                throw value;
+            }
         }
-    }
-
-    for (var value in circleGraphProperties) {
-        if (typeof circleGraphProperties === "object" && circleGraphProperties[value] !== null && circleGraphProperties[value] !== undefined) {
-            circleGraphProperty[value] = circleGraphProperties[value];
-        } else if (typeof circleGraphProperties !== "object" || circleGraphProperties[value] == null || circleGraphProperties[value] == undefined) {
-            circleGraphProperty[value] = circleGraphNomalProperties[value];
+        
+        for (var value in circleGraphProperties) {
+            if (typeof circleGraphProperties === "object" && circleGraphProperties[value] !== null && circleGraphProperties[value] !== undefined && circleGraphProperties[value] !== '') {
+                circleGraphProperty[value] = circleGraphProperties[value];
+            } else{
+                throw value;
+            }
         }
-    }
 
+    } catch (error) {
+         console.log( error + ": Invalid property");
+    }
+    
+    
     var self = this;
 
     return (function () {
         var sizeListData = self.getSizeListData();
-        var recommendedSizeList = self.getRecommendSizeList(sizeListData);
+        var recommendedSizeList = self.getRecommendSizeList(sizeListData, listLengthCompareValue);
         var sizeData = self.getSizeData(recommendedSizeList);
-        var rateValue = self.gerRateValue(sizeData);
+        var rateValue = self.gerRateValue(sizeData, listLengthCompareValue);
         var canvasInfo = self.initCanvas(canvasId);
-        var circleGraphLocation = self.calCircleGraphLocation(sizeData, canvasInfo, circleGraphProperty);
-        var recommendedSizeLocationValue = self.recommendSizeLocationValue(sizeData, rateValue);
+        var circleGraphLocation = self.calCircleGraphLocation(sizeData, canvasInfo, circleGraphProperty, listLengthCompareValue);
+        var recommendedSizeLocationValue = self.recommendSizeLocationValue(sizeData, rateValue, listLengthCompareValue);
 
-        self.drawCircleGraphShadow(canvasInfo, sizeData, rateValue, circleGraphLocation, circleGraphProperty);
+        self.drawCircleGraphShadow(canvasInfo, sizeData, rateValue, circleGraphLocation, circleGraphProperty, listLengthCompareValue);
         self.drawCircleGraphText(canvasInfo, recommendedSizeList, recommendedSizeLocationValue, circleGraphLocation, circleGraphProperty);
-        self.drawCircleGraphColorText(canvasInfo, sizeData, recommendedSizeList, recommendedSizeLocationValue, circleGraphProperty, circleGraphLocation);
+        self.drawCircleGraphColorText(canvasInfo, sizeData, recommendedSizeList, recommendedSizeLocationValue, circleGraphProperty, circleGraphLocation, listLengthCompareValue);
     })();
 
 };
@@ -73,27 +91,27 @@ CircleGraph.prototype = {
     },
 
 
-    getRecommendSizeList: function (sizeListData) {
+    getRecommendSizeList: function (sizeListData, compareValue) {
         var filteredSizeList = sizeListData.sizesList.filter(function (item, index) {
 
-            if (sizeListData.sizesIndex === 0) {
-                if (index < sizeListData.sizesIndex + 5) {
+            if (sizeListData.sizesIndex === compareValue.zero) {
+                if (index < sizeListData.sizesIndex + compareValue.five) {
                     return item;
                 }
-            } else if (sizeListData.sizesIndex == 1) {
-                if (index < sizeListData.sizesIndex + 4) {
+            } else if (sizeListData.sizesIndex == compareValue.one) {
+                if (index < sizeListData.sizesIndex + compareValue.four) {
                     return item;
                 }
-            } else if (sizeListData.sizesIndex == sizeListData.sizesLength - 1) {
-                if (index > sizeListData.sizesIndex - 5) {
+            } else if (sizeListData.sizesIndex == sizeListData.sizesLength - compareValue.one) {
+                if (index > sizeListData.sizesIndex - compareValue.five) {
                     return item;
                 }
-            } else if (sizeListData.sizesIndex == sizeListData.sizesLength - 2) {
-                if (index > sizeListData.sizesIndex - 4) {
+            } else if (sizeListData.sizesIndex == sizeListData.sizesLength - compareValue.two) {
+                if (index > sizeListData.sizesIndex - compareValue.four) {
                     return item;
                 }
             } else {
-                if (index > sizeListData.sizesIndex - 3 && index < sizeListData.sizesIndex + 3) {
+                if (index > sizeListData.sizesIndex - compareValue.three && index < sizeListData.sizesIndex + compareValue.three) {
                     return item;
                 }
             }
@@ -114,42 +132,42 @@ CircleGraph.prototype = {
     },
 
 
-    gerRateValue: function (sizeData) {
-        if (sizeData.totalSizesLength >= 5) {
+    gerRateValue: function (sizeData, compareValue) {
+        if (sizeData.totalSizesLength >= compareValue.five) {
 
-            if (sizeData.sizeRate >= 3 && sizeData.sizeRate > 0 || sizeData.sizeRate < 0 && sizeData.sizeRate <= -3) {
+            if (sizeData.sizeRate >= compareValue.three && sizeData.sizeRate > compareValue.zero || sizeData.sizeRate < compareValue.zero && sizeData.sizeRate <= -compareValue.three) {
                 return 1;
             } else {
                 return 0;
             }
 
-        } else if (sizeData.totalSizesLength == 4) {
+        } else if (sizeData.totalSizesLength == compareValue.four) {
 
-            if (sizeData.sizeRate <= 3 && sizeData.sizeRate > 0 || sizeData.sizeRate < 0 && sizeData.sizeRate >= -3) {
+            if (sizeData.sizeRate <= compareValue.three && sizeData.sizeRate > compareValue.zero || sizeData.sizeRate < compareValue.zero && sizeData.sizeRate >= -compareValue.three) {
                 return 1;
-            } else if (sizeData.sizeRate >= 4 && sizeData.sizeRate > 0 || sizeData.sizeRate < 0 && sizeData.sizeRate <= -4) {
+            } else if (sizeData.sizeRate >= compareValue.four && sizeData.sizeRate > compareValue.zero || sizeData.sizeRate < compareValue.zero && sizeData.sizeRate <= -compareValue.four) {
                 return 2;
             } else {
                 return 0;
             }
 
-        } else if (sizeData.totalSizesLength == 3) {
+        } else if (sizeData.totalSizesLength == compareValue.three) {
 
-            if (sizeData.sizeRate <= 2 && sizeData.sizeRate > 0 || sizeData.sizeRate < 0 && sizeData.sizeRate >= -2) {
+            if (sizeData.sizeRate <= compareValue.two && sizeData.sizeRate > compareValue.zero || sizeData.sizeRate < compareValue.zero && sizeData.sizeRate >= -compareValue.two) {
                 return 1;
-            } else if (sizeData.sizeRate == 3 && sizeData.sizeRate > 0 || sizeData.sizeRate < 0 && sizeData.sizeRate == -3) {
+            } else if (sizeData.sizeRate == compareValue.three && sizeData.sizeRate > compareValue.zero || sizeData.sizeRate < compareValue.zero && sizeData.sizeRate == -compareValue.three) {
                 return 2;
-            } else if (sizeData.sizeRate >= 4 && sizeData.sizeRate > 0 || sizeData.sizeRate < 0 && sizeData.sizeRate <= -4) {
+            } else if (sizeData.sizeRate >= compareValue.four && sizeData.sizeRate > compareValue.zero || sizeData.sizeRate < compareValue.zero && sizeData.sizeRate <= -compareValue.four) {
                 return 3;
             } else {
                 return 0;
             }
 
-        } else if (sizeData.totalSizesLength == 2) {
+        } else if (sizeData.totalSizesLength == compareValue.two) {
 
-            if (sizeData.sizeRate > 0) {
+            if (sizeData.sizeRate > compareValue.zero) {
                 return sizeData.sizeRate;
-            } else if (sizeData.sizeRate < 0) {
+            } else if (sizeData.sizeRate < compareValue.zero) {
                 return -sizeData.sizeRate;
             } else {
                 return sizeData.sizeRate;
@@ -165,6 +183,7 @@ CircleGraph.prototype = {
         var shadowContext = shadowCanvas.getContext("2d");
         var textContext = textCanvas.getContext("2d");
 
+
         return {
             textCanvas: textCanvas,
             textContext: textContext,
@@ -174,13 +193,13 @@ CircleGraph.prototype = {
     },
 
 
-    calCircleGraphLocation: function (sizeData, canvasInfo, circleGraphProperty) {
+    calCircleGraphLocation: function (sizeData, canvasInfo, circleGraphProperty, compareValue) {
         var piePieceAllMotion = 18 * circleGraphProperty.shadowMotionValue;
         var piePieceCount = 5;
 
-        if (sizeData.totalSizesLength == 3) {
+        if (sizeData.totalSizesLength == compareValue.three) {
             piePieceCount += 2;
-        } else if (sizeData.totalSizesLength == 2) {
+        } else if (sizeData.totalSizesLength == compareValue.two) {
             piePieceCount += 5;
         }
 
@@ -202,7 +221,7 @@ CircleGraph.prototype = {
     },
 
 
-    recommendSizeLocationValue: function (sizeData, rateValue) {
+    recommendSizeLocationValue: function (sizeData, rateValue, compareValue) {
         var recommendedSizePointerValue;
         var recommendedSizePointerText;
         var textLocationValueList = [];
@@ -213,24 +232,24 @@ CircleGraph.prototype = {
             textLocationValueList[i] = i + 3;
         }
 
-        if (sizeData.totalSizesLength == 4) {
+        if (sizeData.totalSizesLength == compareValue.four) {
             avgCount = 4;
-        } else if (sizeData.totalSizesLength == 3) {
+        } else if (sizeData.totalSizesLength == compareValue.three) {
             rangeCount = 4;
             avgCount = 6;
-        } else if (sizeData.totalSizesLength == 2) {
+        } else if (sizeData.totalSizesLength == compareValue.two) {
             rangeCount = 6;
             avgCount = 12;
         }
 
         var recommendedSizeTextList = textLocationValueList.filter(function (item, index) {
-            if (index % avgCount === 0) {
+            if (index % avgCount === compareValue.zero) {
                 return item;
             }
         });
 
         var recommendedSizeRangeList = textLocationValueList.filter(function (item, index) {
-            if (index % avgCount !== 0) {
+            if (index % avgCount !== compareValue.zero) {
                 return item;
             }
         });
@@ -239,9 +258,9 @@ CircleGraph.prototype = {
             if (index == sizeData.sizeIndex) {
                 recommendedSizePointerText = item;
 
-                if (sizeData.sizeRate >= 0) {
+                if (sizeData.sizeRate >= compareValue.zero) {
                     recommendedSizePointerValue = item + rateValue;
-                } else if (sizeData.sizeRate < 0) {
+                } else if (sizeData.sizeRate < compareValue.zero) {
                     recommendedSizePointerValue = item - rateValue;
                 }
             }
@@ -264,7 +283,7 @@ CircleGraph.prototype = {
     },
 
 
-    drawCircleGraphShadow: function (canvasInfo, sizeData, rateValue, circleGraphLocation, circleGraphProperty) {
+    drawCircleGraphShadow: function (canvasInfo, sizeData, rateValue, circleGraphLocation, circleGraphProperty, compareValue) {
         var startPoint;
         var startLocationValue = 0.39;
         var blurValue = 0;
@@ -280,9 +299,9 @@ CircleGraph.prototype = {
             startLocationValue += (0.87 * sizeData.sizeIndex);
         }
 
-        if (sizeData.sizeRate > 0) {
+        if (sizeData.sizeRate > compareValue.zero) {
             startLocationValue += increaseCount;
-        } else if (sizeData.sizeRate < 0) {
+        } else if (sizeData.sizeRate < compareValue.zero) {
             startLocationValue -= increaseCount;
         }
 
@@ -334,15 +353,14 @@ CircleGraph.prototype = {
         canvasInfo.textContext.fillStyle = circleGraphProperty.circleColor;
         canvasInfo.textContext.fill();
 
-        canvasInfo.textContext.textAlign = "center";
-        canvasInfo.textContext.fillStyle = circleGraphProperty.textColor;
-
         var drawTextGraph = function (angle, text, sizeAvg) {
             canvasInfo.textContext.rotate(angle);
             canvasInfo.textContext.translate(0, -circleGraphLocation.radius * 0.8);
             canvasInfo.textContext.rotate(-angle);
 
-            canvasInfo.textContext.font = "" + circleGraphProperty.textSize * circleGraphProperty.textSizeRatio / sizeAvg + "px arial";
+            canvasInfo.textContext.textAlign = "center";
+            canvasInfo.textContext.font = "" + circleGraphProperty.textSize * circleGraphProperty.textSizeRatio / sizeAvg + "px 'Flexo-Medium'";
+            canvasInfo.textContext.fillStyle = circleGraphProperty.textColor;
             canvasInfo.textContext.fillText(text, 0, 0);
 
             canvasInfo.textContext.rotate(angle);
@@ -352,27 +370,24 @@ CircleGraph.prototype = {
 
         for (var i = 0; i < sizeListLength; i++) {
             var sizeTextAngle = (recommendedSizeLocationValue.recommendedSizeTextList[i] + 9) * Math.PI / 9;
-
             drawTextGraph(sizeTextAngle, recommendedSizeList[labelCount], 1);
             labelCount++;
         }
 
         for (var i = 0; i < dotListLength; i++) {
             var dotTextAngle = (recommendedSizeLocationValue.recommendedSizeRangeList[i] + 9) * Math.PI / 9;
-
-            drawTextGraph(dotTextAngle, "●", 2);
+            drawTextGraph(dotTextAngle, "●", 3);
         }
 
     },
 
 
-    drawCircleGraphColorText: function (canvasInfo, sizeData, recommendedSizeList, recommendedSizeLocationValue, circleGraphProperty, circleGraphLocation) {
+    drawCircleGraphColorText: function (canvasInfo, sizeData, recommendedSizeList, recommendedSizeLocationValue, circleGraphProperty, circleGraphLocation, compareValue) {
         var intervalCount = 0;
         var pointerTextCount = 0;
         var intervalStopCount = 0;
 
         var colorTextInterval = setInterval(function () {
-
             var circleLocationValue = recommendedSizeLocationValue.sizeListRange[intervalCount];
             var pointerAngle = (recommendedSizeLocationValue.recommendedSizePointerText + 9) * Math.PI / 9;
             var pointerMeAngle = (recommendedSizeLocationValue.recommendedSizePointerValue + 9) * Math.PI / 9;
@@ -389,14 +404,13 @@ CircleGraph.prototype = {
             canvasInfo.textContext.translate(0, -circleGraphLocation.radius * 0.8);
             canvasInfo.textContext.rotate(-colorTextAngle);
 
-
-            if (circleLocationValue) {
+            if (circleLocationValue !== undefined) {
                 var textIndex = recommendedSizeLocationValue.recommendedSizeTextList.indexOf(circleLocationValue);
 
-                if (sizeData.totalSizesLength == 2 && intervalCount < 13) {
+                if (sizeData.totalSizesLength == compareValue.two && intervalCount < 13) {
                     drawColorTextGraph(circleLocationValue, sizeTextLocation, textIndex, colorTextAngle);
 
-                } else if (sizeData.totalSizesLength == 3 && intervalCount < 7) {
+                } else if (sizeData.totalSizesLength == compareValue.three && intervalCount < 7) {
                     drawColorTextGraph(circleLocationValue, sizeTextLocation, textIndex, colorTextAngle);
 
                 } else if (intervalCount < 5) {
@@ -412,18 +426,16 @@ CircleGraph.prototype = {
 
             } else {
                 pointerTextCount++;
-
             }
+
 
             if (pointerTextCount == 1) {
                 drawPointTextGraph(circleGraphProperty.pointerText, pointerMeAngle, 1.85, circleGraphProperty.pointerSize, 10);
-                console.log(pointerMeAngle)
                 intervalStopCount++;
 
-            } else if (intervalStopCount == 1) { 
+            } else if (pointerTextCount == 2) {
                 drawPointTextGraph(recommendedSizeList[colorTextIndex], pointerAngle, 1.28, circleGraphProperty.textSize, 0);
                 clearInterval(colorTextInterval);
-                console.log(pointerAngle)
 
             }
 
@@ -431,9 +443,10 @@ CircleGraph.prototype = {
         }, circleGraphProperty.textMotionValue);
 
 
-        var drawColorTextGraph = function (circleLocationValue, sizeTextLocation, textIndex, colorTextAngle) {       
+        var drawColorTextGraph = function (circleLocationValue, sizeTextLocation, textIndex, colorTextAngle) {
             var motionValue = 15;
             var colorValue = 0;
+
             var textInterval = setInterval(function () {
 
                 canvasInfo.textContext.rotate(colorTextAngle);
@@ -441,14 +454,14 @@ CircleGraph.prototype = {
                 canvasInfo.textContext.rotate(-colorTextAngle);
 
                 if (circleLocationValue == sizeTextLocation) {
-//                    canvasInfo.textContext.clearRect(-25, -32, 50, 35);
-                    canvasInfo.textContext.font = "" + circleGraphProperty.textSize * circleGraphProperty.textSizeRatio + "px arial";
+                    //                    canvasInfo.textContext.clearRect(-25, -32, 50, 35);
+                    canvasInfo.textContext.font = "" + circleGraphProperty.textSize * circleGraphProperty.textSizeRatio + "px 'Flexo-Medium'";
                     canvasInfo.textContext.fillStyle = "rgba(32,96,122," + colorValue + ")";
                     canvasInfo.textContext.fillText(recommendedSizeList[textIndex], 0, 0);
 
                 } else {
-//                    canvasInfo.textContext.clearRect(-colorTextAngle - 5, -colorTextAngle - 10, 20, 20);
-                    canvasInfo.textContext.font = "" + circleGraphProperty.textSize * circleGraphProperty.textSizeRatio / 2 + "px arial";
+                    //                    canvasInfo.textContext.clearRect(-colorTextAngle - 5, -colorTextAngle - 10, 20, 20);
+                    canvasInfo.textContext.font = "" + circleGraphProperty.textSize * circleGraphProperty.textSizeRatio / 3 + "px 'Flexo-Medium'";
                     canvasInfo.textContext.fillStyle = "rgba(32,96,122," + colorValue + ")";
                     canvasInfo.textContext.fillText("●", 0, 0);
 
@@ -464,15 +477,14 @@ CircleGraph.prototype = {
                     clearInterval(textInterval);
                 }
             }, motionValue);
+
         };
 
-        
+
         var drawPointTextGraph = function (text, angle, radius, textSize, filltextLocationY) {
-//            
-//            var motionValue = 100;
-//            var colorValue = 0;
-//            var textInterval = setInterval(function () {
-            
+            var motionValue = 100;
+            var colorValue = 0;
+
             canvasInfo.textContext.translate(0, circleGraphLocation.radius / 1.25);
 
             canvasInfo.textContext.rotate(angle);
@@ -480,24 +492,17 @@ CircleGraph.prototype = {
             canvasInfo.textContext.rotate(-angle);
 
             canvasInfo.textContext.clearRect(-25, -32, 50, 35);
-            canvasInfo.textContext.font = "" + textSize * circleGraphProperty.textSizeRatio + "px arial";
+            canvasInfo.textContext.font = "" + textSize * circleGraphProperty.textSizeRatio + "px 'Flexo-Medium'";
             canvasInfo.textContext.fillStyle = circleGraphProperty.pointerTextColor;
             canvasInfo.textContext.fillText(text, 0, filltextLocationY);
 
             canvasInfo.textContext.rotate(angle);
             canvasInfo.textContext.translate(0, circleGraphLocation.pointerRadius * radius);
             canvasInfo.textContext.rotate(-angle);
-//            
-//            colorValue += 0.01 + colorValue / motionValue / 3;
-//
-//                if (colorValue > 1) {
-//                    clearInterval(textInterval);
-//                }
-//            }, motionValue);
+
         };
 
-
-    }
+    },
 
 
 };
