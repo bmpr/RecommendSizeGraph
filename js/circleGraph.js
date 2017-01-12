@@ -1,5 +1,5 @@
 var recommendSizeData = {
-    recommendSize: 'S',
+    recommendSize: 'M',
     isCorrectGender: true,
     recommendRate: 0,
     status: true,
@@ -12,56 +12,65 @@ var CircleGraph = function (elIds, circleGraphProperties) {
     var circleGraphProperty = {};
 
     var circleGraphNomalProperties = {
+        pointerText: 'ME!',
         textMotionValue: 300,
         shadowMotionValue: 100,
-        shadowBlurGene: 60,
+        colorTextMotionValue: 10,
         textSize: 16,
-        textColor: '#F6F5F3',
-        brightTextColor: '#20607A',
-        pointerText: 'ME!',
         pointerSize: 13,
-        pointerTextColor: '#00FFB0',
+        textColorOut: '#F6F5F3',
         circleColor: '#ffffff',
+        pointerColor: '#00FFB0',
+        textColorIn: '#20607A',
+        shadowColorIn: '#20607A',
+        shadowColorOut: '#EDF5DC',
+        shadowBlurGene: 50,
         shadowReversalIn: false,
         shadowReversalOut: true,
-        textSizeRatio: 2.5
+        textSizeRatio: 2.5,
+        radiusLengthValue: 0.8,
+        rotateLocationValue: 9,
+        circleColorTextLocationX: 0,
+        circleColorTextLocationY: 10,
+        motionColorStratValue: 0,
+        motionColorIncreaseValue: 0.01
     };
-    
+
     var listLengthCompareValue = {
-        zero : 0,
-        one : 1,
-        two : 2,
-        three : 3,
-        four : 4,
-        five : 5,
+        zero: 0,
+        one: 1,
+        two: 2,
+        three: 3,
+        four: 4,
+        five: 5,
     };
 
     try {
-        
-        for (var value in elIds) {
-            if (typeof elIds === "object" && elIds[value] !== null && elIds[value] !== undefined  && elIds[value] !== '') {
-                canvasId[value] = elIds[value];
-            }else{
-                throw value;
+
+        for (var idValue in elIds) {
+            if (typeof elIds === "object" && elIds[idValue] !== null && elIds[idValue] !== undefined && elIds[idValue] !== '') {
+                canvasId[idValue] = elIds[idValue];
+            } else {
+                throw idValue;
             }
         }
-        
-        for (var value in circleGraphProperties) {
-            if (typeof circleGraphProperties === "object" && circleGraphProperties[value] !== null && circleGraphProperties[value] !== undefined && circleGraphProperties[value] !== '') {
-                circleGraphProperty[value] = circleGraphProperties[value];
-            } else{
-                throw value;
+
+        for (var propertyValue in circleGraphProperties) {
+            if (typeof circleGraphProperties === "object" && circleGraphProperties[propertyValue] !== null && circleGraphProperties[propertyValue] !== undefined && circleGraphProperties[propertyValue] !== '') {
+                circleGraphProperty[propertyValue] = circleGraphProperties[propertyValue];
+            } else {
+                throw propertyValue;
             }
         }
 
     } catch (error) {
-         console.log( error + ": Invalid property");
+        console.log(error + ": Invalid property");
     }
-    
-    
+
+
     var self = this;
 
-    return (function () {
+    return (function graph() {
         var sizeListData = self.getSizeListData();
         var recommendedSizeList = self.getRecommendSizeList(sizeListData, listLengthCompareValue);
         var sizeData = self.getSizeData(recommendedSizeList);
@@ -136,31 +145,31 @@ CircleGraph.prototype = {
         if (sizeData.totalSizesLength >= compareValue.five) {
 
             if (sizeData.sizeRate >= compareValue.three && sizeData.sizeRate > compareValue.zero || sizeData.sizeRate < compareValue.zero && sizeData.sizeRate <= -compareValue.three) {
-                return 1;
+                return compareValue.one;
             } else {
-                return 0;
+                return compareValue.zero;
             }
 
         } else if (sizeData.totalSizesLength == compareValue.four) {
 
             if (sizeData.sizeRate <= compareValue.three && sizeData.sizeRate > compareValue.zero || sizeData.sizeRate < compareValue.zero && sizeData.sizeRate >= -compareValue.three) {
-                return 1;
+                return compareValue.one;
             } else if (sizeData.sizeRate >= compareValue.four && sizeData.sizeRate > compareValue.zero || sizeData.sizeRate < compareValue.zero && sizeData.sizeRate <= -compareValue.four) {
-                return 2;
+                return compareValue.two;
             } else {
-                return 0;
+                return compareValue.zero;
             }
 
         } else if (sizeData.totalSizesLength == compareValue.three) {
 
             if (sizeData.sizeRate <= compareValue.two && sizeData.sizeRate > compareValue.zero || sizeData.sizeRate < compareValue.zero && sizeData.sizeRate >= -compareValue.two) {
-                return 1;
+                return compareValue.one;
             } else if (sizeData.sizeRate == compareValue.three && sizeData.sizeRate > compareValue.zero || sizeData.sizeRate < compareValue.zero && sizeData.sizeRate == -compareValue.three) {
-                return 2;
+                return compareValue.two;
             } else if (sizeData.sizeRate >= compareValue.four && sizeData.sizeRate > compareValue.zero || sizeData.sizeRate < compareValue.zero && sizeData.sizeRate <= -compareValue.four) {
-                return 3;
+                return compareValue.three;
             } else {
-                return 0;
+                return compareValue.zero;
             }
 
         } else if (sizeData.totalSizesLength == compareValue.two) {
@@ -182,7 +191,6 @@ CircleGraph.prototype = {
         var textCanvas = document.getElementById(canvasId.canvasText);
         var shadowContext = shadowCanvas.getContext("2d");
         var textContext = textCanvas.getContext("2d");
-
 
         return {
             textCanvas: textCanvas,
@@ -278,23 +286,22 @@ CircleGraph.prototype = {
             recommendedSizeRangeList: recommendedSizeRangeList,
             recommendedSizePointerText: recommendedSizePointerText,
             recommendedSizePointerValue: recommendedSizePointerValue
-        }
-
+        };
     },
 
 
     drawCircleGraphShadow: function (canvasInfo, sizeData, rateValue, circleGraphLocation, circleGraphProperty, compareValue) {
         var startPoint;
         var startLocationValue = 0.39;
-        var blurValue = 0;
         var increaseCount = rateValue / 10;
+        var colorValue = circleGraphProperty.motionColorStratValue;
 
-        if (sizeData.totalSizesLength == 4) {
+        if (sizeData.totalSizesLength == compareValue.four) {
             startLocationValue += 0.02 + (0.1 * sizeData.sizeIndex);
-        } else if (sizeData.totalSizesLength == 3) {
+        } else if (sizeData.totalSizesLength == compareValue.three) {
             startLocationValue -= 0.11;
             startLocationValue += (0.33 * sizeData.sizeIndex);
-        } else if (sizeData.totalSizesLength == 2) {
+        } else if (sizeData.totalSizesLength == compareValue.two) {
             startLocationValue -= 0.21;
             startLocationValue += (0.87 * sizeData.sizeIndex);
         }
@@ -310,29 +317,31 @@ CircleGraph.prototype = {
         var pieGraphInterval = setInterval(function () {
             canvasInfo.shadowContext.clearRect(0, 0, canvasInfo.shadowCanvas.width, canvasInfo.shadowCanvas.height);
 
-            drawShadowGraph(startPoint, circleGraphProperty.shadowReversalIn, "rgba(32,96,122," + blurValue + ")");
-            drawShadowGraph(startPoint, circleGraphProperty.shadowReversalOut, "rgba(227,237,168," + blurValue + ")");
-
+            drawShadowGraph(startPoint, circleGraphProperty.shadowReversalIn, circleGraphProperty.shadowColorIn, colorValue);            
+            drawShadowGraph(startPoint, circleGraphProperty.shadowReversalOut, circleGraphProperty.shadowColorOut, colorValue);
+        
             canvasInfo.shadowContext.beginPath();
             canvasInfo.shadowContext.arc(circleGraphLocation.canvasHalfWidth, circleGraphLocation.canvasHalfWidth, circleGraphLocation.canvasHalfWidth / 1.32, 0, 2 * Math.PI);
-            canvasInfo.shadowContext.shadowBlur = 0;
+            canvasInfo.shadowContext.globalAlpha = 1;
+            canvasInfo.shadowContext.shadowBlur = circleGraphProperty.shadowBlurGene;
             canvasInfo.shadowContext.fillStyle = circleGraphProperty.circleColor;
             canvasInfo.shadowContext.fill();
+            
+            colorValue += circleGraphProperty.motionColorIncreaseValue + (colorValue / circleGraphProperty.shadowMotionValue * 2);
 
-            blurValue += 0.01 + (blurValue / circleGraphProperty.shadowMotionValue * 2);
-
-            if (blurValue > 1) {
+            if (colorValue > compareValue.one) {
                 clearInterval(pieGraphInterval);
             }
         }, circleGraphProperty.shadowMotionValue);
 
-        var drawShadowGraph = function (startLine, reversal, shadowColor) {
+        var drawShadowGraph = function (startLine, reversal, shadowColor, colorValue) {
             canvasInfo.shadowContext.beginPath();
             canvasInfo.shadowContext.moveTo(circleGraphLocation.canvasHalfWidth, circleGraphLocation.canvasHalfWidth);
             canvasInfo.shadowContext.arc(circleGraphLocation.canvasHalfWidth, circleGraphLocation.canvasHalfWidth, circleGraphLocation.canvasHalfWidth / 1.32, startLine, startLine + circleGraphLocation.radian, reversal);
+            canvasInfo.shadowContext.globalAlpha = colorValue;
             canvasInfo.shadowContext.shadowColor = shadowColor;
             canvasInfo.shadowContext.shadowBlur = circleGraphProperty.shadowBlurGene;
-            canvasInfo.shadowContext.closePath();
+            canvasInfo.shadowContext.closePath();            
             canvasInfo.shadowContext.fillStyle = circleGraphProperty.circleColor;
             canvasInfo.shadowContext.fill();
         };
@@ -340,13 +349,13 @@ CircleGraph.prototype = {
     },
 
 
-    drawCircleGraphText: function (canvasInfo, recommendedSizeList, recommendedSizeLocationValue, circleGraphLocation, circleGraphProperty) { //
+    drawCircleGraphText: function (canvasInfo, recommendedSizeList, recommendedSizeLocationValue, circleGraphLocation, circleGraphProperty) {
         var sizeListLength = recommendedSizeLocationValue.recommendedSizeTextList.length;
         var dotListLength = recommendedSizeLocationValue.recommendedSizeRangeList.length;
         var labelCount = 0;
 
         canvasInfo.textContext.translate(circleGraphLocation.radius, circleGraphLocation.radius);
-        circleGraphLocation.radius = circleGraphLocation.radius * 0.8;
+        circleGraphLocation.radius = circleGraphLocation.radius * circleGraphProperty.radiusLengthValue;
 
         canvasInfo.textContext.beginPath();
         canvasInfo.textContext.arc(0, 0, circleGraphLocation.radius / 1.05, 0, 2 * Math.PI);
@@ -355,27 +364,27 @@ CircleGraph.prototype = {
 
         var drawTextGraph = function (angle, text, sizeAvg) {
             canvasInfo.textContext.rotate(angle);
-            canvasInfo.textContext.translate(0, -circleGraphLocation.radius * 0.8);
+            canvasInfo.textContext.translate(0, -circleGraphLocation.radius * circleGraphProperty.radiusLengthValue);
             canvasInfo.textContext.rotate(-angle);
 
             canvasInfo.textContext.textAlign = "center";
             canvasInfo.textContext.font = "" + circleGraphProperty.textSize * circleGraphProperty.textSizeRatio / sizeAvg + "px 'Flexo-Medium'";
-            canvasInfo.textContext.fillStyle = circleGraphProperty.textColor;
-            canvasInfo.textContext.fillText(text, 0, 0);
+            canvasInfo.textContext.fillStyle = circleGraphProperty.textColorOut;
+            canvasInfo.textContext.fillText(text, circleGraphProperty.circleColorTextLocationX, circleGraphProperty.circleColorTextLocationY);
 
             canvasInfo.textContext.rotate(angle);
-            canvasInfo.textContext.translate(0, circleGraphLocation.radius * 0.8);
+            canvasInfo.textContext.translate(0, circleGraphLocation.radius * circleGraphProperty.radiusLengthValue);
             canvasInfo.textContext.rotate(-angle);
-        }
+        };
 
         for (var i = 0; i < sizeListLength; i++) {
-            var sizeTextAngle = (recommendedSizeLocationValue.recommendedSizeTextList[i] + 9) * Math.PI / 9;
+            var sizeTextAngle = (recommendedSizeLocationValue.recommendedSizeTextList[i] + circleGraphProperty.rotateLocationValue) * Math.PI / circleGraphProperty.rotateLocationValue;
             drawTextGraph(sizeTextAngle, recommendedSizeList[labelCount], 1);
             labelCount++;
         }
 
-        for (var i = 0; i < dotListLength; i++) {
-            var dotTextAngle = (recommendedSizeLocationValue.recommendedSizeRangeList[i] + 9) * Math.PI / 9;
+        for (var j = 0; j < dotListLength; j++) {
+            var dotTextAngle = (recommendedSizeLocationValue.recommendedSizeRangeList[j] + circleGraphProperty.rotateLocationValue) * Math.PI / circleGraphProperty.rotateLocationValue;
             drawTextGraph(dotTextAngle, "●", 3);
         }
 
@@ -389,9 +398,9 @@ CircleGraph.prototype = {
 
         var colorTextInterval = setInterval(function () {
             var circleLocationValue = recommendedSizeLocationValue.sizeListRange[intervalCount];
-            var pointerAngle = (recommendedSizeLocationValue.recommendedSizePointerText + 9) * Math.PI / 9;
-            var pointerMeAngle = (recommendedSizeLocationValue.recommendedSizePointerValue + 9) * Math.PI / 9;
-            var colorTextAngle = (circleLocationValue + 9) * Math.PI / 9;
+            var pointerAngle = (recommendedSizeLocationValue.recommendedSizePointerText + circleGraphProperty.rotateLocationValue) * Math.PI / circleGraphProperty.rotateLocationValue;
+            var pointerMeAngle = (recommendedSizeLocationValue.recommendedSizePointerValue + circleGraphProperty.rotateLocationValue) * Math.PI / circleGraphProperty.rotateLocationValue;
+            var colorTextAngle = (circleLocationValue + circleGraphProperty.rotateLocationValue) * Math.PI / circleGraphProperty.rotateLocationValue;
             var colorTextIndex = recommendedSizeLocationValue.recommendedSizeTextList.indexOf(recommendedSizeLocationValue.recommendedSizePointerText);
 
             var sizeTextLocation = recommendedSizeLocationValue.recommendedSizeTextList.filter(function (item) {
@@ -400,11 +409,7 @@ CircleGraph.prototype = {
                 }
             });
 
-            canvasInfo.textContext.rotate(colorTextAngle);
-            canvasInfo.textContext.translate(0, -circleGraphLocation.radius * 0.8);
-            canvasInfo.textContext.rotate(-colorTextAngle);
-
-            if (circleLocationValue !== undefined) {
+            if (circleLocationValue) {
                 var textIndex = recommendedSizeLocationValue.recommendedSizeTextList.indexOf(circleLocationValue);
 
                 if (sizeData.totalSizesLength == compareValue.two && intervalCount < 13) {
@@ -417,92 +422,88 @@ CircleGraph.prototype = {
                     drawColorTextGraph(circleLocationValue, sizeTextLocation, textIndex, colorTextAngle);
 
                 }
-
-                canvasInfo.textContext.rotate(colorTextAngle);
-                canvasInfo.textContext.translate(0, circleGraphLocation.radius * 0.8);
-                canvasInfo.textContext.rotate(-colorTextAngle);
-
                 intervalCount++;
 
             } else {
                 pointerTextCount++;
+
             }
 
-
-            if (pointerTextCount == 1) {
-                drawPointTextGraph(circleGraphProperty.pointerText, pointerMeAngle, 1.85, circleGraphProperty.pointerSize, 10);
+            if (pointerTextCount == compareValue.one) {
+                drawPointTextGraph(circleGraphProperty.pointerText, pointerMeAngle, 1.85, circleGraphProperty.pointerSize);
                 intervalStopCount++;
 
-            } else if (pointerTextCount == 2) {
-                drawPointTextGraph(recommendedSizeList[colorTextIndex], pointerAngle, 1.28, circleGraphProperty.textSize, 0);
+            } else if (pointerTextCount == compareValue.two) {
+                drawPointTextGraph(recommendedSizeList[colorTextIndex], pointerAngle, 1.28, circleGraphProperty.textSize);
                 clearInterval(colorTextInterval);
-
             }
-
 
         }, circleGraphProperty.textMotionValue);
 
 
-        var drawColorTextGraph = function (circleLocationValue, sizeTextLocation, textIndex, colorTextAngle) {
-            var motionValue = 15;
-            var colorValue = 0;
-
+        var drawColorTextGraph = function (circleLocationValue, sizeTextLocation, textIndex, colorTextAngle, intervalCount) {
+            var colorValue = circleGraphProperty.motionColorStratValue;
             var textInterval = setInterval(function () {
 
                 canvasInfo.textContext.rotate(colorTextAngle);
-                canvasInfo.textContext.translate(0, -circleGraphLocation.radius * 0.8);
+                canvasInfo.textContext.translate(0, -circleGraphLocation.radius * circleGraphProperty.radiusLengthValue);
                 canvasInfo.textContext.rotate(-colorTextAngle);
+
+                canvasInfo.textContext.globalAlpha = colorValue;
+                canvasInfo.textContext.fillStyle = circleGraphProperty.textColorIn;
 
                 if (circleLocationValue == sizeTextLocation) {
-                    //                    canvasInfo.textContext.clearRect(-25, -32, 50, 35);
+//                    canvasInfo.textContext.clearRect(-25, -32, 50, 45);
                     canvasInfo.textContext.font = "" + circleGraphProperty.textSize * circleGraphProperty.textSizeRatio + "px 'Flexo-Medium'";
-                    canvasInfo.textContext.fillStyle = "rgba(32,96,122," + colorValue + ")";
-                    canvasInfo.textContext.fillText(recommendedSizeList[textIndex], 0, 0);
+                    canvasInfo.textContext.fillText(recommendedSizeList[textIndex], circleGraphProperty.circleColorTextLocationX, circleGraphProperty.circleColorTextLocationY);
 
                 } else {
-                    //                    canvasInfo.textContext.clearRect(-colorTextAngle - 5, -colorTextAngle - 10, 20, 20);
+//                    canvasInfo.textContext.clearRect(-colorTextAngle - 5, -colorTextAngle - 10, 20, 20);
                     canvasInfo.textContext.font = "" + circleGraphProperty.textSize * circleGraphProperty.textSizeRatio / 3 + "px 'Flexo-Medium'";
-                    canvasInfo.textContext.fillStyle = "rgba(32,96,122," + colorValue + ")";
-                    canvasInfo.textContext.fillText("●", 0, 0);
+                    canvasInfo.textContext.fillText("●", circleGraphProperty.circleColorTextLocationX, circleGraphProperty.circleColorTextLocationY);
 
                 }
-
                 canvasInfo.textContext.rotate(colorTextAngle);
-                canvasInfo.textContext.translate(0, circleGraphLocation.radius * 0.8);
+                canvasInfo.textContext.translate(0, circleGraphLocation.radius * circleGraphProperty.radiusLengthValue);
                 canvasInfo.textContext.rotate(-colorTextAngle);
 
-                colorValue += 0.01 + colorValue / motionValue / 3;
+                colorValue += circleGraphProperty.motionColorIncreaseValue + colorValue / circleGraphProperty.colorTextMotionValue / 3;
 
                 if (colorValue > 1) {
                     clearInterval(textInterval);
                 }
-            }, motionValue);
 
+            }, circleGraphProperty.colorTextMotionValue);
         };
 
 
-        var drawPointTextGraph = function (text, angle, radius, textSize, filltextLocationY) {
-            var motionValue = 100;
-            var colorValue = 0;
+        var drawPointTextGraph = function (text, angle, radius, textSize) {
+            var colorValue = circleGraphProperty.motionColorStratValue;
+            var textInterval = setInterval(function () {
 
-            canvasInfo.textContext.translate(0, circleGraphLocation.radius / 1.25);
+                canvasInfo.textContext.rotate(angle);
+                canvasInfo.textContext.translate(0, -circleGraphLocation.pointerRadius * radius);
+                canvasInfo.textContext.rotate(-angle);
+                
+//                canvasInfo.textContext.clearRect(-25, -32, 50, 45);
+                canvasInfo.textContext.font = "" + textSize * circleGraphProperty.textSizeRatio + "px 'Flexo-Medium'";
+                canvasInfo.textContext.globalAlpha = colorValue;
+                canvasInfo.textContext.fillStyle = circleGraphProperty.pointerColor;
+                canvasInfo.textContext.fillText(text, circleGraphProperty.circleColorTextLocationX, circleGraphProperty.circleColorTextLocationY);
 
-            canvasInfo.textContext.rotate(angle);
-            canvasInfo.textContext.translate(0, -circleGraphLocation.pointerRadius * radius);
-            canvasInfo.textContext.rotate(-angle);
+                canvasInfo.textContext.rotate(angle);
+                canvasInfo.textContext.translate(0, circleGraphLocation.pointerRadius * radius);
+                canvasInfo.textContext.rotate(-angle);
 
-            canvasInfo.textContext.clearRect(-25, -32, 50, 35);
-            canvasInfo.textContext.font = "" + textSize * circleGraphProperty.textSizeRatio + "px 'Flexo-Medium'";
-            canvasInfo.textContext.fillStyle = circleGraphProperty.pointerTextColor;
-            canvasInfo.textContext.fillText(text, 0, filltextLocationY);
+                colorValue += circleGraphProperty.motionColorIncreaseValue + colorValue / circleGraphProperty.colorTextMotionValue / 3;
 
-            canvasInfo.textContext.rotate(angle);
-            canvasInfo.textContext.translate(0, circleGraphLocation.pointerRadius * radius);
-            canvasInfo.textContext.rotate(-angle);
+                if (colorValue > 1) {
+                    clearInterval(textInterval);
+                }
 
+            }, circleGraphProperty.colorTextMotionValue);
         };
 
     },
-
 
 };
