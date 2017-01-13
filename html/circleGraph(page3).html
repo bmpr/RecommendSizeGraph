@@ -30,18 +30,7 @@
             top: 10%;
             left: 10%;
         }
-        #test{
-            width: 170px;
-            display: inline-block;
-            position: absolute;
-            top: 10%;
-            left: 10%;
-            font-size: 12px;
-            text-align: center;
-            padding-top: 120px;
-            margin: 0 auto;
-            
-        }
+        
         
     </style>
 </head>
@@ -50,11 +39,12 @@
 
     <canvas id="canvasShadow" width="675" height="675"></canvas>
     <canvas id="canvasText" width="675" height="675"></canvas>
-    <div id="test"></div>
+
 
     <!--    <script src="../js/circleGraph.js"></script>-->
-<!--    <script src="../js/none.js"></script>-->
-    <script src="../js/test.js"></script>    
+    <script src="../js/noDot.js"></script>
+
+
     <script>
         var circleGraph = new CircleGraph({
             canvasShadow: 'canvasShadow',
@@ -62,7 +52,7 @@
         }, {
             pointerText: 'ME!',
             textMotionValue: 300,
-            shadowMotionValue: 100,
+            shadowMotionValue: 200,
             colorTextMotionValue: 15,
             textSize: 16,
             pointerSize: 13,
@@ -72,16 +62,15 @@
             textColorIn: '#20607A',
             shadowColorIn: '#20607A',
             shadowColorOut: '#EDF5DC',
-            shadowBlurGene: 50,
+            shadowBlurGene: 10,
             shadowReversalIn: false,
             shadowReversalOut: true,
             textSizeRatio: 2.5,
             radiusLengthValue: 0.8,
-            rotateLocationValue: 9,            
             circleColorTextLocationX: 0,
             circleColorTextLocationY: 10,
             motionColorStratValue: 0,
-            motionColorIncreaseValue: 0.01,
+            motionColorIncreaseValue: 0.01
         });
     </script>
 
