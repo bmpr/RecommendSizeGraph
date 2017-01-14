@@ -13,9 +13,9 @@ var CircleGraph = function (elIds, circleGraphProperties) {
 
     var circleGraphNomalProperties = {
         pointerText: 'ME!',
-        textMotionValue: 300,
+        textMotionValue: 500,
         shadowMotionValue: 100,
-        colorTextMotionValue: 10,
+        textMotionFrameValue: 15,
         textSize: 16,
         pointerSize: 13,
         textColorOut: '#F6F5F3',
@@ -29,11 +29,10 @@ var CircleGraph = function (elIds, circleGraphProperties) {
         shadowReversalOut: true,
         textSizeRatio: 2.5,
         radiusLengthValue: 0.8,
-        rotateLocationValue: 9,
         circleColorTextLocationX: 0,
         circleColorTextLocationY: 10,
         motionColorStratValue: 0,
-        motionColorIncreaseValue: 0.01
+        motionColorIncreaseValue: 0.02  
     };
 
     var listLengthCompareValue = {
@@ -70,7 +69,7 @@ var CircleGraph = function (elIds, circleGraphProperties) {
 
     var self = this;
 
-    return (function graph() {
+    return (function () {
         var sizeListData = self.getSizeListData();
         var recommendedSizeList = self.getRecommendSizeList(sizeListData, listLengthCompareValue);
         var sizeData = self.getSizeData(recommendedSizeList);
@@ -378,13 +377,13 @@ CircleGraph.prototype = {
         };
 
         for (var i = 0; i < sizeListLength; i++) {
-            var sizeTextAngle = (recommendedSizeLocationValue.recommendedSizeTextList[i] + circleGraphProperty.rotateLocationValue) * Math.PI / circleGraphProperty.rotateLocationValue;
+            var sizeTextAngle = (recommendedSizeLocationValue.recommendedSizeTextList[i] + 9) * Math.PI / 9;
             drawTextGraph(sizeTextAngle, recommendedSizeList[labelCount], 1);
             labelCount++;
         }
 
         for (var j = 0; j < dotListLength; j++) {
-            var dotTextAngle = (recommendedSizeLocationValue.recommendedSizeRangeList[j] + circleGraphProperty.rotateLocationValue) * Math.PI / circleGraphProperty.rotateLocationValue;
+            var dotTextAngle = (recommendedSizeLocationValue.recommendedSizeRangeList[j] + 9) * Math.PI / 9;
             drawTextGraph(dotTextAngle, "●", 3);
         }
 
@@ -398,9 +397,9 @@ CircleGraph.prototype = {
 
         var colorTextInterval = setInterval(function () {
             var circleLocationValue = recommendedSizeLocationValue.sizeListRange[intervalCount];
-            var pointerAngle = (recommendedSizeLocationValue.recommendedSizePointerText + circleGraphProperty.rotateLocationValue) * Math.PI / circleGraphProperty.rotateLocationValue;
-            var pointerMeAngle = (recommendedSizeLocationValue.recommendedSizePointerValue + circleGraphProperty.rotateLocationValue) * Math.PI / circleGraphProperty.rotateLocationValue;
-            var colorTextAngle = (circleLocationValue + circleGraphProperty.rotateLocationValue) * Math.PI / circleGraphProperty.rotateLocationValue;
+            var pointerAngle = (recommendedSizeLocationValue.recommendedSizePointerText + 9) * Math.PI / 9;
+            var pointerMeAngle = (recommendedSizeLocationValue.recommendedSizePointerValue + 9) * Math.PI / 9;
+            var colorTextAngle = (circleLocationValue + 9) * Math.PI / 9;
             var colorTextIndex = recommendedSizeLocationValue.recommendedSizeTextList.indexOf(recommendedSizeLocationValue.recommendedSizePointerText);
 
             var sizeTextLocation = recommendedSizeLocationValue.recommendedSizeTextList.filter(function (item) {
@@ -467,13 +466,13 @@ CircleGraph.prototype = {
                 canvasInfo.textContext.translate(0, circleGraphLocation.radius * circleGraphProperty.radiusLengthValue);
                 canvasInfo.textContext.rotate(-colorTextAngle);
 
-                colorValue += circleGraphProperty.motionColorIncreaseValue + colorValue / circleGraphProperty.colorTextMotionValue / 3;
+                colorValue += circleGraphProperty.motionColorIncreaseValue + colorValue / circleGraphProperty.textMotionFrameValue / 3;
 
                 if (colorValue > 1) {
                     clearInterval(textInterval);
                 }
 
-            }, circleGraphProperty.colorTextMotionValue);
+            }, circleGraphProperty.textMotionFrameValue);
         };
 
 
@@ -495,13 +494,13 @@ CircleGraph.prototype = {
                 canvasInfo.textContext.translate(0, circleGraphLocation.pointerRadius * radius);
                 canvasInfo.textContext.rotate(-angle);
 
-                colorValue += circleGraphProperty.motionColorIncreaseValue + colorValue / circleGraphProperty.colorTextMotionValue / 3;
+                colorValue += circleGraphProperty.motionColorIncreaseValue + colorValue / circleGraphProperty.textMotionFrameValue / 3;
 
                 if (colorValue > 1) {
                     clearInterval(textInterval);
                 }
 
-            }, circleGraphProperty.colorTextMotionValue);
+            }, circleGraphProperty.textMotionFrameValue);
         };
 
     },
