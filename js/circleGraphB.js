@@ -1,9 +1,9 @@
  var recommendSizeData = {
-     recommendSize: 'M',
+     recommendSize: 'S',
      isCorrectGender: true,
      recommendRate: 0,
      status: true,
-     sizes: ['XS', 'S', 'M', 'L']
+     sizes: ['XS', 'S', 'M']
  };
 
 

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            max-height: 100%;
+            overflow: hidden;
+        }
+        
+        #container {
+            display: block;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        #container .section_top .text_left {
+            margin-bottom: 30px;
+        }
+        
+        #container .section_top .text_left .item_name {
+            display: block;
+            padding-top: 10px;
+            padding-left: 10px;
+        }
+        
+        #container .section_top .text_left .item_price {
+            display: block;
+            padding-top: 10px;
+            padding-left: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: red;
+        }
+        
+        #container .section_top .text_left .item_number {
+            display: block;
+            padding-top: 10px;
+            padding-left: 10px;
+        }
+        
+        #container .section_top .text_right {
+            display: inline-block;
+            position: absolute;
+            top: 50px;
+            right: 0;
+        }
+        
+        #container .section_top .text_right .star {
+            display: block;
+            padding-top: 10px;
+            padding-left: 10px;
+        }
+        
+        #container .section_top .text_right .star span {
+            margin-right: 5px;
+            color: gold;
+        }
+        
+        #container .section_top .text_right .review {
+            display: block;
+            padding-top: 10px;
+            padding-left: 10px;
+            margin-right: 10px;
+        }
+        
+        #container .section_middle_cover {
+            direction: block;
+            height: 350px;
+            width: 100%;
+        }
+        
+        #container .section_middle_img {
+            width: 100%;
+            height: 100%;
+            margin-left: 3px;
+            background-image: url(https://s3.ap-northeast-2.amazonaws.com/jaem/app/172351557_COL_COL04_570.jpg);
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+        
+        #container .slide_button {
+            display: block;
+            height: 50px;
+            text-align: center;
+            font-size: 33px;
+            margin-top: 10px;
+            color: #edeef2;
+        }
+        
+        #container .slide_button .choice_button {
+            color: red;
+        }
+        
+        #container .slide_button .slide_next {
+            position: absolute;
+            right: 25px;
+            font-weight: bold;
+            color: red;
+        }
+        
+        #container .slide_button .slide_next:hover {
+            cursor: pointer;
+        }
+        
+        #container .section_bottom {
+            clear: both;
+            height: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0px 0px 1px gray;
+        }
+        
+        #container .bottom_bar {
+            display: block;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #D40000;
+            cursor: pointer;
+            text-align: center;
+            font-size: 18px;
+            color: #ffffff;
+        }
+        
+        #container .bottom_bar .bottom_bar_text {
+            display: block;
+            margin: 20px auto;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div class="section_top">
+            <div class="text_left">
+                <span class="item_name">램스울크루스웨터(긴팔)</span>
+                <span class="item_price">19,900원</span>
+                <span class="item_number">상품번호:173221</span>
+            </div>
+            <div class="text_right">
+                <span class="star">
+                    <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                </span>
+                <span class="review"><a href="#">고객 상품평 보기</a></span>
+            </div>
+        </div>
+
+        <div class="section_middle_cover">
+            <div class="section_middle_img"></div>
+        </div>
+
+        <div class="slide_button">
+            <span class="choice_button">&#149;</span><span>&#149;</span><span>&#149;</span><span>&#149;</span><span>&#149;</span>
+            <span class="slide_next">&gt;</span>
+        </div>
+        <div class="section_bottom"><span>색상: 34 BROWN</span></div>
+        <div class="bottom_bar" onclick='showRecommendSizePage(1)'><span class="bottom_bar_text">사이즈 추천 받기</span></div>
+
+    </div>
+
+    <script>
+        var recommendSizeData = {
+            recommendSize: 'S',
+            isCorrectGender: true,
+            recommendRate: 0,
+            status: true,
+            sizes: ['XS', 'S']
+        };
+
+    </script>
+</body>
+</html>

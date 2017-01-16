@@ -20,6 +20,7 @@
             position: absolute;
             top: 10%;
             left: 10%;
+
         }
         
         #canvasShadow {
@@ -29,6 +30,7 @@
             position: absolute;
             top: 10%;
             left: 10%;
+
         }
         
         
@@ -38,8 +40,8 @@
 <body>
 
     <canvas id="canvasShadow" width="675" height="675"></canvas>
-    <canvas id="canvasText" width="675" height="675"></canvas>
-
+    <canvas id="canvasText" width="675" height="675"></canvas>    
+    
 <!--        <script src="../js/circleGraph.js"></script>-->
     <script src="../js/circleGraphA.js"></script>
 <!--    <script src="../js/circleGraphB.js"></script>-->
@@ -50,15 +52,20 @@
             canvasShadow: 'canvasShadow',
             canvasText: 'canvasText'
         }, {
-         pointerText: 'ME!',
+         graphFontStyle: 'Flexo-Medium',
+         pointerMeText: 'ME!',
+         pointerFitTightText: 'TIGHT',
+         pointerFitLooseText: 'LOOSE',
          textMotionValue: 500,
-         shadowMotionValue: 200,
-         textMotionFrameValue: 12,
+         shadowMotionValue: 100,
+         textMotionFrameValue: 15,
          textSize: 16,
-         pointerSize: 13,
+         pointerTextSize: 13,
+         pointerFitTextSize: 9,
          textColorOut: '#F6F5F3',
          circleColor: '#ffffff',
          pointerColor: '#00FFB0',
+         pointerFitColor: '#95D0CC',
          textColorIn: '#20607A',
          shadowColorIn: '#20607A',
          shadowColorOut: '#EDF5DC',
@@ -66,6 +73,7 @@
          shadowReversalIn: false,
          shadowReversalOut: true,
          textSizeRatio: 2.5,
+         ShadowBlurRatio: 2.5,
          radiusLengthValue: 0.8,
          circleColorTextLocationX: 0,
          circleColorTextLocationY: 10,
