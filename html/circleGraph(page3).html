@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +11,8 @@
             font-family: 'Flexo-Medium';
             src: url('Flexo-Medium.eot');
             src: url('Flexo-Medium.eot?#iefix') format('embedded-opentype'), url('Flexo-Medium.woff2') format('woff2'), url('Flexo-Medium.woff') format('woff'), url('Flexo-Medium.ttf') format('truetype'),
-        }        
+        }
+        
         #canvasText {
             width: 270px;
             height: 270px;
@@ -18,7 +20,8 @@
             position: absolute;
             top: 10%;
             left: 10%;
-        }        
+        }
+        
         #canvasShadow {
             width: 270px;
             height: 270px;
@@ -29,41 +32,47 @@
         }
     </style>
 </head>
+
 <body>
 
     <canvas id="canvasShadow" width="675" height="675"></canvas>
     <canvas id="canvasText" width="675" height="675"></canvas>
 
-    <script src="../js/circleGraphTwoPoint.js"></script>
+    <script src="../js/circleGraphDotPoint.js"></script>
     <script>
         var circleGraph = new CircleGraph({
             canvasShadow: 'canvasShadow',
             canvasText: 'canvasText'
         }, {
-         pointerText: 'ME!',
-         textMotionValue: 500,
-         shadowMotionValue: 200,
-         textMotionFrameValue: 15,
-         textSize: 16,
-         pointerSize: 13,
-         textColorOut: '#F6F5F3',
-         circleColor: '#ffffff',
-         pointerColor: '#00FFB0',
-         textColorIn: '#20607A',
-         shadowColorIn: '#20607A',
-         shadowColorOut: '#EDF5DC',
-         shadowBlurGene: 50,
-         shadowReversalIn: false,
-         shadowReversalOut: true,
-         textSizeRatio: 2.5,
-         radiusLengthValue: 0.8,
-         circleColorTextLocationX: 0,
-         circleColorTextLocationY: 10,
-         motionColorStratValue: 0,
-         motionColorIncreaseValue: 0.02
+            graphFontStyle: 'Flexo-Medium',
+            pointerMeText: 'ME!',
+            pointerFitTightText: 'TIGHT',
+            pointerFitLooseText: 'LOOSE',
+            textMotionValue: 500,
+            shadowMotionValue: 100,
+            textMotionFrameValue: 15,
+            textSize: 16,
+            pointerTextSize: 13,
+            pointerFitTextSize: 11,
+            textColorOut: '#F6F5F3',
+            circleColor: '#ffffff',
+            pointerColor: '#00FFB0',
+            pointerFitColor: '#95D0CC',
+            textColorIn: '#20607A',
+            shadowColorIn: '#20607A',
+            shadowColorOut: '#EDF5DC',
+            shadowBlurGene: 10,
+            shadowReversalIn: false,
+            shadowReversalOut: true,
+            textSizeRatio: 2.5,
+            ShadowBlurRatio: 2.5,
+            radiusLengthValue: 0.8,
+            circleColorTextLocationX: 0,
+            circleColorTextLocationY: 10,
+            motionColorStratValue: 0,
+            motionColorIncreaseValue: 0.02
         });
     </script>
 </body>
+
 </html>
-
-
