@@ -10,7 +10,7 @@
             font-family: 'Flexo-Medium';
             src: url('Flexo-Medium.eot');
             src: url('Flexo-Medium.eot?#iefix') format('embedded-opentype'), url('Flexo-Medium.woff2') format('woff2'), url('Flexo-Medium.woff') format('woff'), url('Flexo-Medium.ttf') format('truetype'),
-        }
+        }        
         #canvasText {
             width: 270px;
             height: 270px;
@@ -18,8 +18,7 @@
             position: absolute;
             top: 10%;
             left: 10%;
-
-        }
+        }        
         #canvasShadow {
             width: 270px;
             height: 270px;
@@ -27,15 +26,14 @@
             position: absolute;
             top: 10%;
             left: 10%;
-
         }
     </style>
 </head>
 <body>
 
     <canvas id="canvasShadow" width="675" height="675"></canvas>
-    <canvas id="canvasText" width="675" height="675"></canvas>    
-    
+    <canvas id="canvasText" width="675" height="675"></canvas>
+
     <script src="../js/circleGraphTwoPoint.js"></script>
     <script>
         var circleGraph = new CircleGraph({
