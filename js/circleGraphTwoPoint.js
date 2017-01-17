@@ -1,7 +1,7 @@
  var recommendSizeData = {
      recommendSize: 'S',
      isCorrectGender: true,
-     recommendRate: 0,
+     recommendRate: 3,
      status: true,
      sizes: ['XS', 'S', 'M']
  };
