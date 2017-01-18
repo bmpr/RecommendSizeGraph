@@ -1,10 +1,11 @@
  var recommendSizeData = {
-     recommendSize: 'L',
+     recommendSize: '80',
      isCorrectGender: true,
      recommendRate: 0,
      status: true,
-     sizes: ['XS', 'S', 'M', "L", "XL"]
+     sizes: ['40', '50', '60', '70', '80', '90']
  };
+
 
 
  var CircleGraph = function (elIds, circleGraphProperties) {
@@ -59,7 +60,8 @@
 
  CircleGraph.prototype = {
 
-     //생성자 함수에서 매개변수로 받은 객체값 오류 확인
+     //**생성자 함수에서 매개변수로 받은 객체값 오류 확인
+     // - 생성자 함수 매개변수로 받은 객체 개수 확인 / 객체 속성 값 확인 후 에러 반환
      checkGraphProperties: function (elIds, circleGraphProperties, circleGraphNomalProperties, recommendSizeTalbe, listLengthCompareValue) {
 
          var propertyKeys = Object.keys(circleGraphProperties);
@@ -110,7 +112,8 @@
          this.drawCircleGraph(canvasId, recommendSizeData, recommendSizeTalbe, circleGraphProperty, listLengthCompareValue);
      },
 
-     //추천 사이즈 데이터 확인 후 그래프 실행
+     //**추천 사이즈 데이터 확인 후 그래프 실행
+     // - 추천 사이즈 종류(S,M/80,90..) 및 리스트 개수 확인 후 조건에 맞는 그래프 함수 실행
      drawCircleGraph: function (canvasId, sizeData, sizeTalbe, graphProperties, listCompareValue) {
          var comparedSizeListCount = 0;
 
@@ -147,7 +150,8 @@
 
      },
 
-     //추천 사이즈 리스트 정보 반환
+     //**추천 사이즈 리스트 정보 반환 - A
+     // - recommendSizeTalbe 값과 같고 고정 리스트 5보다 이하 시 "."문자 삽입 후 리스트 정보 반환
      getSizeListData: function (sizeTalbe, circleGraphProperty, compareValue) {
          var prop = circleGraphProperty;
          var sizesList = recommendSizeData.sizes;
@@ -194,8 +198,10 @@
          }
 
      },
-
-     // 사이즈 데이터가 "S, M, L"와 같은 문자일 경우 - 추천 사이즈 리스트와 사이즈 테이블과 비교후 존재하지 않는 사이즈는 "." 텍스트로 변환 후 리스트 반환
+     
+     //**추천 사이즈 리스트 정보 반환 - B
+     // - 사이즈 데이터 개수 5보다 초과 이거나 recommendSizeTalbe 값과 다를 경우 리스트 정보 반환
+     // - recommendSizeTalbe 값과 다르면서 리스트 5미만 시 "."문자 삽입 후 리스트 정보 반환
      getTextSizeListData: function (sizeTalbe, circleGraphProperty) {
          var prop = circleGraphProperty;
          var recommendedSizeTable = [];
@@ -229,7 +235,8 @@
          return recommendedSizeListData;
      },
 
-     //화면에 출력 할 추천 사이즈 5개 필터링
+     //**화면에 출력 할 추천 사이즈 개수 5만큼 리스트 반환
+     // - 추천 된 사이즈 리스트 내 추천사이즈 인덱스 값을 기준으로 리스트 정렬
      getRecommendSizeList: function (sizeListData, compareValue) {
 
          var filteredSizeList = sizeListData.sizesList.filter(function (item, index) {
@@ -260,7 +267,7 @@
          return filteredSizeList;
      },
 
-     // 애니메이션 효과에 필요한 추천 데이터 반환
+     //**애니메이션 효과에 필요한 추천된 데이터 값 반환
      getSizeData: function (recommendedSizeList) {
          var recommendedSizeData = {
              sizeRate: recommendSizeData.recommendRate,
@@ -273,7 +280,7 @@
          return recommendedSizeData;
      },
 
-     // 추천 사이즈 Rate에 따른 범위 변경을 위한 값 반환
+     //**추천 사이즈 Rate(상세수치)에 따른 범위 변경을 위한 값 반환
      gerRateValue: function (sizeData, compareValue) {
          if (sizeData.sizeRate >= compareValue.three && sizeData.sizeRate > compareValue.zero || sizeData.sizeRate < compareValue.zero && sizeData.sizeRate <= -compareValue.three) {
              return compareValue.one;
@@ -282,7 +289,7 @@
          }
      },
 
-     // 캔버스 초기화
+     //**캔버스 초기화
      initCanvas: function (canvasId) {
          var shadowCanvas = document.getElementById(canvasId.canvasShadow);
          var textCanvas = document.getElementById(canvasId.canvasText);
@@ -297,7 +304,7 @@
          };
      },
 
-     //추천 사이즈 텍스트 정렬 및 애니매이션 효과를 위한 캔버스 내 위치값 계산
+     //**추천 사이즈 텍스트 정렬 및 애니매이션 효과를 위한 캔버스 내 위치값 계산
      calCircleGraphLocation: function (sizeData, canvasInfo, circleGraphProperty) {
          var calculatedsizeIndex = (Math.PI / 18) * (sizeData.sizeIndex * 6 + 3);
          var canvasHalfWidth = canvasInfo.shadowCanvas.width / 2;
@@ -312,7 +319,8 @@
          };
      },
 
-     // 텍스트 컬러효과 및 애니매이션 범위설정을 위한 값 필터링
+     //**텍스트 컬러효과 및 애니매이션 범위설정을 위한 값 필터링
+     // - 그래프 내 모든 텍스트 위치값 & 사이즈 텍스트 & 추천사이즈 외(".") & 컬러 사이즈 텍스트 & 포인트 텍스트 _위치값 필터링 후 반환     
      recommendSizeLocationValue: function (sizeData, rateValue, compareValue) {
          var recommendedSizePointerValue;
          var recommendedSizePointerText;
@@ -366,7 +374,7 @@
          };
      },
 
-     //background blur 효과 그리기
+     //background blur 이미지 효과 그리기
      drawCircleGraphShadow: function (canvasInfo, sizeData, rateValue, circleGraphLocation, circleGraphProperty, compareValue, recommendedSizeLocationValue) {
          var prop = circleGraphProperty;
          var colorValue = 0;
@@ -374,7 +382,8 @@
 
          var BackgroundBlurImg = new Image();
          BackgroundBlurImg.src = "../img/Oval.png";
-
+         
+         //blur 이미지 애니매이션 실행
          var BackgroundBlurInterval = setInterval(function () {
              canvasInfo.shadowContext.save();
              canvasInfo.shadowContext.translate(135 * prop.ShadowBlurRatio, 135 * prop.ShadowBlurRatio);
@@ -402,7 +411,7 @@
          }, prop.shadowMotionValue);
      },
 
-     //추천 사이즈 범위 내 기본 텍스트 그리기
+     //추천 사이즈 범위 내 모든 텍스트 그리기(noColor)
      drawCircleGraphText: function (canvasInfo, sizeData, recommendedSizeList, recommendedSizeLocationValue, circleGraphLocation, circleGraphProperty) {
          var prop = circleGraphProperty;
          var location = circleGraphLocation;
@@ -446,7 +455,7 @@
          }
      },
 
-     //추천 사이즈 범위 내 컬러 텍스트, 포인터 텍스트 그리기
+     //추천 사이즈 범위 내 컬러 텍스트, 포인터 텍스트, 핏(loose, tight) 텍스트 그리기
      drawCircleGraphColorText: function (canvasInfo, sizeData, recommendedSizeList, recommendedSizeLocationValue, circleGraphProperty, circleGraphLocation) {
          var prop = circleGraphProperty;
          var locationValue = recommendedSizeLocationValue;
@@ -458,7 +467,8 @@
          var pointerTextCount = 0;
          var intervalCount = 0;
 
-         var colorTextInterval = setInterval(function () {
+         // 컬러,포인터 텍스트 애니매이션 실행
+         var colorTextInterval = setInterval(function () { 
              var circleLocationValue = locationValue.sizeListRange[intervalCount];
              var colorTextAngle = (circleLocationValue + angleValue) * Math.PI / angleValue;
              var colorTextIndex = locationValue.recommendedSizeTextList.indexOf(pointerText);
@@ -499,6 +509,7 @@
              }
          }, prop.textMotionValue);
 
+         //컬러 텍스트 그리기
          function drawColorTextGraph(circleLocationValue, sizeTextLocation, textIndex, colorTextAngle, intervalCount) {
              var colorValue = prop.motionColorStratValue;
              var textInterval = setInterval(function () {
@@ -533,7 +544,8 @@
 
              }, prop.textMotionFrameValue);
          };
-
+         
+         //포인터 텍스트 그리기
          function drawPointTextGraph(text, angle, radius, textSize, increasValue) {
              var colorValue = prop.motionColorStratValue;
 
@@ -560,7 +572,8 @@
 
              }, prop.textMotionFrameValue);
          };
-
+         
+         //핏(loose, tight) 텍스트 그리기
          function drawFitTextGraph(text, angleRangeValue, angleValue, radius, textSize, increasValue) {
              var pointerFitAngle = (locationValue.recommendedSizePointerValue + angleRangeValue + angleValue) * Math.PI / angleValue;
 
