@@ -30,51 +30,55 @@
             top: 10%;
             left: 10%;
         }
-        
     </style>
 </head>
 
 <body>
 
-    <canvas id="canvasShadow" width="675" height="675"></canvas>
-    <canvas id="canvasText" width="675" height="675"></canvas>    
-  
+    <canvas id="canvasShadow" width="675" height="675">
+        이 브라우저는 캔버스를 지원하지 않습니다.
+    </canvas>
+    <canvas id="canvasText" width="675" height="675">
+        이 브라우저는 캔버스를 지원하지 않습니다.
+    </canvas>
+
     <script src="../js/circleGraphDotPoint.js"></script>
-    <script>                
+    <script>
         var circleGraph = new CircleGraph({
             canvasShadow: 'canvasShadow',
             canvasText: 'canvasText'
         }, {
-         graphFontStyle: 'Flexo-Medium',
-         pointerMeText: 'ME!',
-         pointerDotText: '•',            
-         pointerFitTightText: 'TIGHT',
-         pointerFitLooseText: 'LOOSE',
-         textMotionValue: 500,
-         shadowMotionValue: 100,
-         textMotionFrameValue: 15,
-         textSize: 16,
-         pointerTextSize: 13,
-         pointerFitTextSize: 9,
-         textColorOut: '#F6F5F3',
-         circleColor: '#ffffff',
-         pointerColor: '#00FFB0',
-         pointerFitColor: '#95D0CC',
-         textColorIn: '#20607A',
-         shadowColorIn: '#20607A',
-         shadowColorOut: '#EDF5DC',
-         shadowBlurGene: 10,
-         shadowReversalIn: false,
-         shadowReversalOut: true,
-         textSizeRatio: 2.5,
-         ShadowBlurRatio: 2.5,
-         radiusLengthValue: 0.8,
-         circleColorTextLocationX: 0,
-         circleColorTextLocationY: 10,
-         motionColorStratValue: 0,
-         motionColorIncreaseValue: 0.02
-        });       
+            graphFontStyle: 'Flexo-Medium',
+            pointerMeText: 'ME!',
+            pointerDotText: '•',
+            pointerFitTightText: 'TIGHT',
+            pointerFitLooseText: 'LOOSE',
+            textMotionValue: 500,
+            shadowMotionValue: 100,
+            textMotionFrameValue: 15,
+            textSize: 16,
+            pointerTextSize: 13,
+            pointerFitTextSize: 9,
+            textColorOut: '#F6F5F3',
+            circleColor: '#ffffff',
+            pointerColor: '#00FFB0',
+            pointerFitColor: '#95D0CC',
+            textColorIn: '#20607A',
+            shadowColorIn: '#20607A',
+            shadowColorOut: '#EDF5DC',
+            shadowBlurGene: 10,
+            shadowReversalIn: false,
+            shadowReversalOut: true,
+            textSizeRatio: 2.5,
+            ShadowBlurRatio: 2.5,
+            radiusLengthValue: 0.8,
+            circleColorTextLocationX: 0,
+            circleColorTextLocationY: 10,
+            motionColorStratValue: 0,
+            motionColorIncreaseValue: 0.02
+        });
     </script>
 
 </body>
+
 </html>

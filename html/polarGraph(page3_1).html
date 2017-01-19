@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        @font-face {
+            font-family: 'Flexo-Bold';
+            src: url('Flexo-Bold.eot');
+            src:url('Flexo-Bold.eot?#iefix') format('embedded-opentype'), 
+                url('Flexo-Bold.woff2') format('woff2'), 
+                url('Flexo-Bold.woff') format('woff'),
+                url('Flexo-Bold.ttf') format('truetype'),                
+        }
+        
+        #canvasPolar {
+            width: 270px;
+            height: 270px;
+            display: inline-block;
+            position: absolute;
+            top: 10%;
+            left: 10%;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <canvas id="canvasPolar" width="675" height="675">
+        이 브라우저는 캔버스를 지원하지 않습니다.
+    </canvas>
+
+    <script>
+        var mySize = {
+            '어깨': 34,
+            '가슴': 45,
+            '허리': 76,
+            '골반': 83,
+            '엉덩이': 67,
+            '허벅지': 92
+        };
+
+        var recommendSize = {
+            XL: {
+                '어깨': 959,
+                '가슴': 66,
+                '허리': 76,
+                '골반': 13,
+                '엉덩이': 97,
+                '허벅지': 93
+            },
+            L: {
+                '어깨': 88,
+                '가슴': 757,
+                '허리': 88,
+                '골반': 83,
+                '엉덩이': 77,
+                '허벅지': 91
+            },
+            M: {
+                '어깨': 77,
+                '가슴': 85,
+                '허리': 77,
+                '골반': 633,
+                '엉덩이': 97,
+                '허벅지': 78
+            },
+            S: {
+                '어깨': 66,
+                '가슴': 88,
+                '허리': 27,
+                '골반': 53,
+                '엉덩이': 60,
+                '허벅지': 552
+            },
+            XS: {
+                '어깨': 55,
+                '가슴': 857,
+                '허리': 27,
+                '골반': 53,
+                '엉덩이': 61,
+                '허벅지': 50
+            }
+        };
+
+
+        var canvasPolar = document.getElementById("canvasPolar");
+        var PolarContext = canvasPolar.getContext("2d");
+
+
+        var canvasHalfWidth = canvasPolar.width / 2;
+        var canvasCircleWidth = canvasPolar.width / 2.7;
+        //circle & blur
+        PolarContext.beginPath();
+        PolarContext.arc(canvasHalfWidth, canvasHalfWidth, canvasCircleWidth, 0, 2 * Math.PI);
+        PolarContext.shadowColor = "#EEEDE9";
+        PolarContext.shadowBlur = 50;
+        PolarContext.fillStyle = "#E7EAEA";
+        PolarContext.fill();
+
+
+        //원 내부 라인
+        var linePointCount = 0;
+        PolarContext.beginPath();
+        PolarContext.strokeStyle = '#95D0CC';
+        PolarContext.lineWidth = 2;
+        for (var i = 0; i < 6; i++) {
+            PolarContext.moveTo(canvasHalfWidth, canvasHalfWidth);
+            PolarContext.arc(canvasHalfWidth, canvasHalfWidth, canvasCircleWidth, linePointCount * Math.PI, linePointCount * Math.PI, false);
+            linePointCount += 0.333;
+        }
+        PolarContext.stroke();
+
+
+        //---------함수로 묶을 부분------(그래프 내 텍스트(점, 부위, 치수)------------------ 시작
+
+        //원 외부 점
+        PolarContext.translate(canvasHalfWidth - 10, canvasHalfWidth + 10);
+        radius = canvasHalfWidth * 0.8;
+
+        var dotPointCount = 1;
+        for (var i = 0; i < 6; i++) {
+            var angle = dotPointCount * Math.PI / 6;
+
+            PolarContext.save();
+            PolarContext.rotate(angle);
+            PolarContext.translate(0, -radius);
+            PolarContext.rotate(-angle);
+
+            PolarContext.font = (8 * 2.5) + "px " + 'Flexo-Bold' + ""; //
+            PolarContext.fillStyle = '#20607A'; //
+            PolarContext.fillText("●", 0, 0); //
+
+            PolarContext.rotate(angle);
+            PolarContext.translate(0, radius);
+            PolarContext.rotate(-angle);
+            PolarContext.restore();
+
+            dotPointCount += 2;
+        }
+
+        //원 외부 텍스트
+        var dotPointCount = 1;
+        var bodyPartText = ['허리', '골반', '엉덩이', '허벅지', '어깨', '가슴'];
+        for (var i = 0; i < 6; i++) {
+            var angle = dotPointCount * Math.PI / 6;
+            radius = canvasHalfWidth * 0.9; //
+
+            PolarContext.save();
+            PolarContext.rotate(angle);
+            PolarContext.translate(0, -radius);
+            PolarContext.rotate(-angle);
+
+            PolarContext.font = (10 * 2.5) + "px " + 'Flexo-Bold' + ""; //
+            PolarContext.fillStyle = '#333333'; //
+            PolarContext.fillText(bodyPartText[i], -15, 0); //
+
+            PolarContext.rotate(angle);
+            PolarContext.translate(0, radius);
+            PolarContext.rotate(-angle);
+            PolarContext.restore();
+
+            dotPointCount += 2;
+        }
+
+
+        var sizeValueCount = 1;
+        for (var i = 0; i < 6; i++) {
+            var angle = sizeValueCount * Math.PI / 6;
+            radius = canvasHalfWidth * 0.6; //
+
+            PolarContext.save();
+            PolarContext.rotate(angle);
+            PolarContext.translate(0, -radius);
+            PolarContext.rotate(-angle);
+
+            PolarContext.font = (12 * 2.5) + "px " + 'Flexo-Bold' + ""; //
+            PolarContext.fillStyle = '#20607A'; //
+            PolarContext.fillText("+99", -20, 0); //
+
+            PolarContext.rotate(angle);
+            PolarContext.translate(0, radius);
+            PolarContext.rotate(-angle);
+            PolarContext.restore();
+
+            sizeValueCount += 2;
+        }
+
+        //---------함수로 묶을 부분------(그래프 내 텍스트(점, 부위, 치수)------------------ 끝
+
+        //원 내부 육각 그래프 라인 추천 부분
+        var startAngle = 0 * Math.PI / 6;
+        var degree = (Math.PI * 2) / 6; //각 면에 대한 각도를 계산한다.
+
+        //원 내부 육각 그래프 사용자 부분
+        PolarContext.save();
+        PolarContext.beginPath();
+        PolarContext.lineWidth = 6;
+        PolarContext.globalAlpha = 0.7;
+        PolarContext.fillStyle = '#95D0CC';
+        PolarContext.translate(10, -10);
+        PolarContext.rotate(startAngle);
+        PolarContext.moveTo(140, 0);
+        for (var i = 1; i < 6; i++) {
+            PolarContext.lineTo(140 * Math.cos(degree * i), 140 * Math.sin(degree * i));
+        }
+        PolarContext.closePath();
+        PolarContext.fill();
+        PolarContext.restore();    
+        
+        PolarContext.save();
+        PolarContext.beginPath();
+        PolarContext.lineWidth = 6;
+        PolarContext.strokeStyle = '#20607A';
+        PolarContext.translate(10, -10); //드로잉 좌표 공간을 다각형 중심좌표로 이동한다.
+        PolarContext.rotate(startAngle); //시작 각도를 중심으로 그리도록 하기 위하여 회전한다.
+        PolarContext.moveTo(150, 0); //다각형의 시작 위치로 이동한다.
+        for (var i = 1; i < 6; i++) { //면의 수 만큼 루프를 반복한다
+            //다음 꼭지점까지 선을 그린다.
+            PolarContext.lineTo(150 * Math.cos(degree * i), 150 * Math.sin(degree * i));
+        }
+        PolarContext.closePath();
+        PolarContext.stroke();
+        PolarContext.restore();
+
+        //----------------------------------------
+
+        //사이즈 추천 그래프 내부 사용자 정보 (사용자 사이즈 / 키,몸무게)
+        PolarContext.beginPath();
+        PolarContext.fillStyle = '#FBFBFB';
+
+        PolarContext.translate(10, -30);
+        PolarContext.font = (26 * 2.5) + "px " + 'Flexo-Bold' + "";
+        PolarContext.fillText("L", -20, 0);
+
+        PolarContext.translate(-70, 50);
+        PolarContext.font = (11 * 2.5) + "px " + 'Flexo-Bold' + "";
+        PolarContext.fillText("164cm / 44kg", -20, 0);
+        PolarContext.stroke();
+    </script>
+
+</body>
+
+</html>

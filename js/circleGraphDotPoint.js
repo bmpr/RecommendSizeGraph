@@ -1,5 +1,5 @@
  var recommendSizeData = {
-     recommendSize: '80',
+     recommendSize: '70',
      isCorrectGender: true,
      recommendRate: 0,
      status: true,
@@ -52,6 +52,7 @@
          five: 5
      };
 
+     var dataCheck = this.checkRecommendSizeServerData();
      var propertyCheck = this.checkGraphProperties(elIds, circleGraphProperties, circleGraphNomalProperties, recommendSizeTalbe, listLengthCompareValue);
 
  };
@@ -60,20 +61,38 @@
 
  CircleGraph.prototype = {
 
+     
+     //**서버에서 받아오는 객체값 오류 확인
+     // - 서버에서 받아오는 리스트에서 추천사이즈가 정확히 추천되는지 후 에러 출력
+     checkRecommendSizeServerData: function () {
+
+         var dataValueCount = 0;
+         for (var i = 0; i < recommendSizeData.sizes.length; i++) {
+             if (recommendSizeData.sizes[i] == recommendSizeData.recommendSize) {
+                 dataValueCount++;
+                 break;
+             }
+         }
+         
+         if(dataValueCount == 0){
+             throw new Error("Recommended size There is a problem with the server data value");
+         }
+
+     },
+
+
      //**생성자 함수에서 매개변수로 받은 객체값 오류 확인
-     // - 생성자 함수 매개변수로 받은 객체 개수 확인 / 객체 속성 값 확인 후 에러 반환
+     // - 생성자 함수 매개변수로 받은 객체 개수 확인 / 객체 속성 값 확인 후 에러 출력
      checkGraphProperties: function (elIds, circleGraphProperties, circleGraphNomalProperties, recommendSizeTalbe, listLengthCompareValue) {
 
-         var propertyKeys = Object.keys(circleGraphProperties);
          var nomalPropertyKeys = Object.keys(circleGraphNomalProperties);
          var propertyCheckCount = 0;
 
-         for (var i = 0; i < propertyKeys.length; i++) {
-             for (var j = 0; j < nomalPropertyKeys.length; j++) {
-                 if (propertyKeys[i] == nomalPropertyKeys[j]) {
-                     propertyCheckCount++;
-                     break;
-                 }
+         for (var value in circleGraphProperties) {
+
+             if (circleGraphNomalProperties.hasOwnProperty(value)) {
+                 propertyCheckCount++;
+
              }
          }
 
@@ -198,7 +217,7 @@
          }
 
      },
-     
+
      //**추천 사이즈 리스트 정보 반환 - B
      // - 사이즈 데이터 개수 5보다 초과 이거나 recommendSizeTalbe 값과 다를 경우 리스트 정보 반환
      // - recommendSizeTalbe 값과 다르면서 리스트 5미만 시 "."문자 삽입 후 리스트 정보 반환
@@ -382,7 +401,7 @@
 
          var BackgroundBlurImg = new Image();
          BackgroundBlurImg.src = "../img/Oval.png";
-         
+
          //blur 이미지 애니매이션 실행
          var BackgroundBlurInterval = setInterval(function () {
              canvasInfo.shadowContext.save();
@@ -468,7 +487,7 @@
          var intervalCount = 0;
 
          // 컬러,포인터 텍스트 애니매이션 실행
-         var colorTextInterval = setInterval(function () { 
+         var colorTextInterval = setInterval(function () {
              var circleLocationValue = locationValue.sizeListRange[intervalCount];
              var colorTextAngle = (circleLocationValue + angleValue) * Math.PI / angleValue;
              var colorTextIndex = locationValue.recommendedSizeTextList.indexOf(pointerText);
@@ -544,7 +563,7 @@
 
              }, prop.textMotionFrameValue);
          };
-         
+
          //포인터 텍스트 그리기
          function drawPointTextGraph(text, angle, radius, textSize, increasValue) {
              var colorValue = prop.motionColorStratValue;
@@ -572,7 +591,7 @@
 
              }, prop.textMotionFrameValue);
          };
-         
+
          //핏(loose, tight) 텍스트 그리기
          function drawFitTextGraph(text, angleRangeValue, angleValue, radius, textSize, increasValue) {
              var pointerFitAngle = (locationValue.recommendedSizePointerValue + angleRangeValue + angleValue) * Math.PI / angleValue;
