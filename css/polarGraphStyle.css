@@ -1,0 +1,51 @@
+.polarArea {
+  width: 340px;
+  height: 340px;
+  background-color: #FBFBFB;
+  padding: 0;
+  margin: 0; }
+  .polarArea #canvasPolar {
+    width: 270px;
+    height: 270px;
+    display: inline-block;
+    position: relative;
+    top: 0%;
+    left: 10%; }
+  .polarArea .recommedContent {
+    display: block;
+    width: 340px;
+    height: 20%;
+    font-size: 0; }
+    .polarArea .recommedContent .buttonLeft {
+      width: 30px;
+      height: 30px;
+      float: left;
+      margin: 2% 0 0 5%;
+      background-image: url(../img/buttonLeft.svg);
+      background-repeat: no-repeat; }
+      .polarArea .recommedContent .buttonLeft span {
+        width: 30px;
+        height: 30px;
+        display: block;
+        cursor: pointer; }
+    .polarArea .recommedContent .recommedMessage {
+      width: 180px;
+      height: 40px;
+      float: left;
+      margin: 2% 0 0 10%;
+      font-size: 12px;
+      text-align: center; }
+    .polarArea .recommedContent .buttonRight {
+      width: 30px;
+      height: 30px;
+      float: right;
+      margin: 2% 5% 0 0;
+      background-image: url(../img/buttonRight.svg);
+      background-repeat: no-repeat; }
+      .polarArea .recommedContent .buttonRight span {
+        width: 30px;
+        height: 30px;
+        display: block;
+        cursor: pointer; }
+
+/*# sourceMappingURL=polarGraphStyle.css.map */

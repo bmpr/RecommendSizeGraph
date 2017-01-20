@@ -761,7 +761,7 @@
             isCorrectGender: true,
             recommendRate: -3,
             status: true,
-            sizes: ['XS', 'S']
+            sizes: ['XS', 'S', 'M']
         };
 
         var mySize = {
@@ -1021,6 +1021,7 @@
             }
             sizeKeyCount = sizeKey[slideButton];
             calSizeGap(recommendSize[sizeKeyCount], recommendMessage[sizeKeyCount]);
+            console.log(sizeKeyCount) 
         };
 
         function calSizeGap(recommendedSize, recommendedMessage) {

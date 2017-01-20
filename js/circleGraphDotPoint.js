@@ -393,7 +393,7 @@
          };
      },
 
-     //background blur 이미지 효과 그리기
+     //**background blur 이미지 효과 그리기
      drawCircleGraphShadow: function (canvasInfo, sizeData, rateValue, circleGraphLocation, circleGraphProperty, compareValue, recommendedSizeLocationValue) {
          var prop = circleGraphProperty;
          var colorValue = 0;

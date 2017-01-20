@@ -6,96 +6,175 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-
+    <link rel="stylesheet" href="../css/polarGraphStyle.css" />
     <style>
         @font-face {
             font-family: 'Flexo-Bold';
             src: url('Flexo-Bold.eot');
-            src:url('Flexo-Bold.eot?#iefix') format('embedded-opentype'), 
-                url('Flexo-Bold.woff2') format('woff2'), 
-                url('Flexo-Bold.woff') format('woff'),
-                url('Flexo-Bold.ttf') format('truetype'),                
-        }
-        
-        #canvasPolar {
-            width: 270px;
-            height: 270px;
-            display: inline-block;
-            position: absolute;
-            top: 10%;
-            left: 10%;
+            src: url('Flexo-Bold.eot?#iefix') format('embedded-opentype'), url('Flexo-Bold.woff2') format('woff2'), url('Flexo-Bold.woff') format('woff'), url('Flexo-Bold.ttf') format('truetype'),
         }
     </style>
-
 </head>
 
 <body>
 
-    <canvas id="canvasPolar" width="675" height="675">
-        이 브라우저는 캔버스를 지원하지 않습니다.
-    </canvas>
+    <div class="polarArea">
+
+        <canvas id="canvasPolar" width="675" height="675">
+            이 브라우저는 캔버스를 지원하지 않습니다.
+        </canvas>
+
+        <div class="recommedContent">
+            <div class="buttonLeft">
+                <span onclick="changeButtonValue(false)"></span>
+            </div>
+            <div class="recommedMessage">사용자님 보다 어깨가 발달하고 허리가얇은 분은 L를 작게 입었습니다.</div>
+            <div class="buttonRight">
+                <span onclick="changeButtonValue(true)"></span>
+            </div>
+        </div>
+
+    </div>
 
     <script>
         var mySize = {
-            '어깨': 34,
-            '가슴': 45,
-            '허리': 76,
-            '골반': 83,
-            '엉덩이': 67,
-            '허벅지': 92
+            shoulderRound: 116,
+            chestRound: 93,
+            waistRound: 91,
+            pelvisRound: 88,
+            hipRound: 99,
+            thighRound: 62
         };
 
         var recommendSize = {
             XL: {
-                '어깨': 959,
-                '가슴': 66,
-                '허리': 76,
-                '골반': 13,
-                '엉덩이': 97,
-                '허벅지': 93
+                shoulderRound: 137,
+                chestRound: 105,
+                waistRound: 93,
+                pelvisRound: 92,
+                hipRound: 106,
+                thighRound: 56
             },
             L: {
-                '어깨': 88,
-                '가슴': 757,
-                '허리': 88,
-                '골반': 83,
-                '엉덩이': 77,
-                '허벅지': 91
+                shoulderRound: 124,
+                chestRound: 103,
+                waistRound: 92,
+                pelvisRound: 93,
+                hipRound: 106,
+                thighRound: 63
             },
             M: {
-                '어깨': 77,
-                '가슴': 85,
-                '허리': 77,
-                '골반': 633,
-                '엉덩이': 97,
-                '허벅지': 78
+                shoulderRound: 118,
+                chestRound: 92,
+                waistRound: 93,
+                pelvisRound: 92,
+                hipRound: 103,
+                thighRound: 53
             },
             S: {
-                '어깨': 66,
-                '가슴': 88,
-                '허리': 27,
-                '골반': 53,
-                '엉덩이': 60,
-                '허벅지': 552
+                shoulderRound: 114,
+                chestRound: 97,
+                waistRound: 85,
+                pelvisRound: 87,
+                hipRound: 100,
+                thighRound: 54
             },
             XS: {
-                '어깨': 55,
-                '가슴': 857,
-                '허리': 27,
-                '골반': 53,
-                '엉덩이': 61,
-                '허벅지': 50
+                shoulderRound: 99,
+                chestRound: 88,
+                waistRound: 70,
+                pelvisRound: 80,
+                hipRound: 93,
+                thighRound: 48
             }
         };
 
+        var bodyPartText = ['허리', '골반', '엉덩이', '허벅지', '어깨', '가슴'];
 
+        var recommendMessage = {
+            XL: '사용자님 어깨와 허리가 얇지만 XL를 루즈하게 입어요.',
+            L: '사용자님 보다 어깨가 넓고 허리가얇아 L를 넉넉하게 입어요.',
+            M: '사용자님 허벅지와 전체 길이가 맞아서 M을 입을 수 있어요.',
+            S: '사용자님 골반이 좁아서 S는 조금 타이트하게 입을 수 있어요.',
+            XS: '사용자님 어깨가 좁아서 XS는 작을수 있어요.'
+        };
+
+        //** 육각 그래프 변형에 필요한 수치 반환
+        var getGraphLengthRange = (function () {
+            var recommendSizeValue = Object.values(recommendSize);
+            var mySizeLength = Object.keys(mySize).length;
+            var recommendSizeValueLength = recommendSizeValue.length;
+            var calculatedGraphLocationVlaue = [];
+            var indexCount = 0;
+
+            for (var i = 0; i < mySizeLength; i++) {
+                var recommendSizeKey = [];
+                var oneBodyPartList = [];
+
+                for (var j = 0; j < recommendSizeValueLength; j++) {
+                    recommendSizeKey = Object.values(recommendSizeValue[j]);
+                    oneBodyPartList.push(recommendSizeKey[indexCount]); // 전체 사이즈에서 특정 부위만 새 배열 만들기    
+                }
+
+                oneBodyPartList.sort(function (a, b) {
+                    return a - b;
+                }); // 새로 만들어진 특정부위 배열 크기별 정렬.                 
+
+                var minValue = oneBodyPartList[0]; // 사이즈 최소값
+                var maxValue = oneBodyPartList[oneBodyPartList.length - 1]; // 사이즈 최대값                     
+                var mySizeList = Object.values(mySize); // 사용자 사이즈 값
+
+                calculatedGraphLocationVlaue.push((mySizeList[indexCount] - minValue) / (maxValue - minValue) * 100);
+                //해당 신체 부위 최대값에 기준한 백분율 값      
+                indexCount++;
+            }
+            return calculatedGraphLocationVlaue;
+
+        })();
+
+        // 유저사이즈 & 추천사이즈 차이값 반환
+        var calSizeGap = (function (count) {
+            var recommendSizeValue = Object.values(recommendSize);
+            var recommendSizeList = recommendSizeValue[count]; // 버튼 count 넣기
+            var recommededMessage = recommendMessage[count]; // 추천된 사이즈
+            var calculatedSizeList = []; //사이즈 부위별 key : value 형태
+
+            for (var value in mySize) {
+                calculatedSizeList[value] = mySize[value] - recommendSizeList[value];
+            }
+
+            var calculatedSizeValue = Object.values(calculatedSizeList);
+
+            return calculatedSizeValue;
+
+        })(0);
+
+
+
+        //추천 사이즈 별 이동을 위한 버튼 값 변경
+        var slideButton = 0;
+
+        function changeButtonValue(isAdd) {
+            var recommendSizeKeyLength = Object.keys(recommendSize).length - 1;
+
+            slideButton += isAdd ? 1 : -1;
+            if (slideButton - 1 == recommendSizeKeyLength) {
+                slideButton--;
+            } else if (slideButton - 1 == -2) {
+                slideButton++;
+            }
+            //버튼 증가값 1 2 3 4 5  
+            //버튼 증가값 3 2 1 0 -1
+            // 실행함수 넣기 (slideButton);
+        }
+
+        //캔버스 초기화
         var canvasPolar = document.getElementById("canvasPolar");
         var PolarContext = canvasPolar.getContext("2d");
-
-
         var canvasHalfWidth = canvasPolar.width / 2;
         var canvasCircleWidth = canvasPolar.width / 2.7;
-        //circle & blur
+
+        //원 그래프 그리고 블러 넣기
         PolarContext.beginPath();
         PolarContext.arc(canvasHalfWidth, canvasHalfWidth, canvasCircleWidth, 0, 2 * Math.PI);
         PolarContext.shadowColor = "#EEEDE9";
@@ -103,8 +182,7 @@
         PolarContext.fillStyle = "#E7EAEA";
         PolarContext.fill();
 
-
-        //원 내부 라인
+        //원 내부 신체 부위를 가리키는 라인그리기
         var linePointCount = 0;
         PolarContext.beginPath();
         PolarContext.strokeStyle = '#95D0CC';
@@ -115,6 +193,7 @@
             linePointCount += 0.333;
         }
         PolarContext.stroke();
+
 
 
         //---------함수로 묶을 부분------(그래프 내 텍스트(점, 부위, 치수)------------------ 시작
@@ -146,7 +225,6 @@
 
         //원 외부 텍스트
         var dotPointCount = 1;
-        var bodyPartText = ['허리', '골반', '엉덩이', '허벅지', '어깨', '가슴'];
         for (var i = 0; i < 6; i++) {
             var angle = dotPointCount * Math.PI / 6;
             radius = canvasHalfWidth * 0.9; //
@@ -168,11 +246,10 @@
             dotPointCount += 2;
         }
 
-
         var sizeValueCount = 1;
         for (var i = 0; i < 6; i++) {
             var angle = sizeValueCount * Math.PI / 6;
-            radius = canvasHalfWidth * 0.6; //
+            radius = canvasHalfWidth * 0.62; //
 
             PolarContext.save();
             PolarContext.rotate(angle);
@@ -205,32 +282,40 @@
         PolarContext.fillStyle = '#95D0CC';
         PolarContext.translate(10, -10);
         PolarContext.rotate(startAngle);
-        PolarContext.moveTo(140, 0);
+        PolarContext.moveTo(170, 0);
         for (var i = 1; i < 6; i++) {
-            PolarContext.lineTo(140 * Math.cos(degree * i), 140 * Math.sin(degree * i));
+            PolarContext.lineTo(170 * Math.cos(degree * i), 170 * Math.sin(degree * i));
         }
         PolarContext.closePath();
         PolarContext.fill();
-        PolarContext.restore();    
-        
-        PolarContext.save();
+        PolarContext.restore();
+
+        PolarContext.save();            
         PolarContext.beginPath();
         PolarContext.lineWidth = 6;
         PolarContext.strokeStyle = '#20607A';
         PolarContext.translate(10, -10); //드로잉 좌표 공간을 다각형 중심좌표로 이동한다.
         PolarContext.rotate(startAngle); //시작 각도를 중심으로 그리도록 하기 위하여 회전한다.
-        PolarContext.moveTo(150, 0); //다각형의 시작 위치로 이동한다.
-        for (var i = 1; i < 6; i++) { //면의 수 만큼 루프를 반복한다
-            //다음 꼭지점까지 선을 그린다.
-            PolarContext.lineTo(150 * Math.cos(degree * i), 150 * Math.sin(degree * i));
-        }
+        PolarContext.moveTo(170, 0); //다각형의 시작 위치로 이동한다.   // 골반
+
+        //** 그래프 범위 0~ 170 까지 
+        // 범위 설정 식 : 170 / 100 * "백분율로 계산되어 들어오는 값"
+//        for (var i = 1; i < 6; i++) { //면의 수 만큼 루프를 반복한다        
+//        PolarContext.lineTo(170 * Math.cos(degree * i), 170 * Math.sin(degree * i));    
+        PolarContext.lineTo(110 * Math.cos(degree * 1), 110 * Math.sin(degree * 1)); //엉덩이
+        PolarContext.lineTo(80 * Math.cos(degree * 2), 80 * Math.sin(degree * 2)); //허벅지
+        PolarContext.lineTo(140 * Math.cos(degree * 3), 140 * Math.sin(degree * 3)); //어깨
+        PolarContext.lineTo(120 * Math.cos(degree * 4), 120 * Math.sin(degree * 4)); //가슴
+        PolarContext.lineTo(150 * Math.cos(degree * 5), 150 * Math.sin(degree * 5)); //허리
+//        }
         PolarContext.closePath();
         PolarContext.stroke();
-        PolarContext.restore();
-
+        PolarContext.restore();        
+        //
+            
         //----------------------------------------
 
-        //사이즈 추천 그래프 내부 사용자 정보 (사용자 사이즈 / 키,몸무게)
+        //사이즈 추천 그래프 내부 사용자 정보 텍스트 (사용자 사이즈 / 키,몸무게)
         PolarContext.beginPath();
         PolarContext.fillStyle = '#FBFBFB';
 
@@ -240,7 +325,7 @@
 
         PolarContext.translate(-70, 50);
         PolarContext.font = (11 * 2.5) + "px " + 'Flexo-Bold' + "";
-        PolarContext.fillText("164cm / 44kg", -20, 0);
+        PolarContext.fillText("164cm / 44kg", -15, 0);
         PolarContext.stroke();
     </script>
 
