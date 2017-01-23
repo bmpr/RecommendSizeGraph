@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/polarGraphStyle.css" />
+    <style>
+        @font-face {
+            font-family: 'Flexo-Bold';
+            src: url('Flexo-Bold.eot');
+            src: url('Flexo-Bold.eot?#iefix') format('embedded-opentype'), url('Flexo-Bold.woff2') format('woff2'), url('Flexo-Bold.woff') format('woff'), url('Flexo-Bold.ttf') format('truetype'),
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="polarArea">
+
+        <canvas id="canvasPolar" width="675" height="675">
+            이 브라우저는 캔버스를 지원하지 않습니다.
+        </canvas>
+
+        <div class="recommedContent">
+            <div id="leftButton">
+                <span id="leftButtonEvent" onclick="changeButtonValue(false)"></span>
+            </div>
+            <div id="recommedMessage"></div>
+            <div id="rightButton">
+                <span id="rightButtonEvent" onclick="changeButtonValue(true)"></span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        var mySize = {
+            pelvisRound: 92,
+            hipRound: 105,
+            thighRound: 60,
+            shoulderRound: 120,
+            chestRound: 100,
+            waistRound: 91
+        };
+
+        var recommendSize = {
+            XL: {
+                pelvisRound: 100,
+                hipRound: 115,
+                thighRound: 67,
+                shoulderRound: 130,
+                chestRound: 105,
+                waistRound: 95
+            },
+            L: {
+                pelvisRound: 94,
+                hipRound: 110,
+                thighRound: 63,
+                shoulderRound: 124,
+                chestRound: 100,
+                waistRound: 92
+            },
+            M: {
+                pelvisRound: 90,
+                hipRound: 105,
+                thighRound: 57,
+                shoulderRound: 115,
+                chestRound: 95,
+                waistRound: 93
+            },
+            S: {
+                pelvisRound: 87,
+                hipRound: 100,
+                thighRound: 54,
+                shoulderRound: 110,
+                chestRound: 90,
+                waistRound: 85
+            },
+            XS: {
+                pelvisRound: 80,
+                hipRound: 95,
+                thighRound: 48,
+                shoulderRound: 100,
+                chestRound: 88,
+                waistRound: 70
+            }
+        };
+
+        var recommendMessage = {
+            XL: '사용자님 어깨와 허리가 얇지만 XL를 루즈하게 입어요.',
+            L: '사용자님 보다 어깨가 넓고 허리가얇아 L를 넉넉하게 입어요.',
+            M: '사용자님 허벅지와 전체 길이가 맞아서 M을 입을 수 있어요.',
+            S: '사용자님 골반이 좁아서 S는 조금 타이트하게 입을 수 있어요.',
+            XS: '사용자님 어깨가 좁아서 XS는 작을수 있어요.'
+        };
+
+        var bodyPartText = ['허리', '골반', '엉덩이', '허벅지', '어깨', '가슴'];
+        
+        var userBodyInfo = {
+            height: 164,
+            weight: 45
+        }
+    </script>
+
+    <!--------------------------------------------------------------------------------------------------->
+
+    <script>
+
+        //** 육각 그래프 변형에 필요한 수치 반환
+        var getGraphLengthRange = function () {
+            var recommendSizeValue = Object.values(recommendSize);
+            var mySizeLength = Object.keys(mySize).length;
+            var recommendSizeValueLength = recommendSizeValue.length;
+            var userGraphLocationVlaue = [];
+            var recommendedGraphLocationVlaue = [];
+
+            for (var i = 0; i < mySizeLength; i++) {
+                var recommendSizeKey = [];
+                var oneBodyPartList = [];
+
+                for (var j = 0; j < recommendSizeValueLength; j++) {
+                    recommendSizeKey = Object.values(recommendSizeValue[j]);
+                    oneBodyPartList.push(recommendSizeKey[i]); // 전체 사이즈에서 특정 부위만 새 배열 만들기    
+                }
+
+                oneBodyPartList.sort(function (a, b) {
+                    return a - b;
+                }); // 새로 만들어진 특정부위 배열 크기별 정렬.                 
+
+                var minValue = oneBodyPartList[0]; // 사이즈 최소값
+                var maxValue = oneBodyPartList[oneBodyPartList.length - 1]; // 사이즈 최대값                     
+                var mySizeList = Object.values(mySize); // 사용자 사이즈 값
+                var recommendedSizeList = Object.values(recommendSizeValue[sizeCount]);
+
+                userGraphLocationVlaue.push((mySizeList[i] - minValue) / (maxValue - minValue) * 100);
+
+                if (sizeCount == recommendSizeValueLength - 1) {
+                    recommendedGraphLocationVlaue.push(1);
+                } else {
+                    recommendedGraphLocationVlaue.push((recommendedSizeList[i] - minValue) / (maxValue - minValue) * 100);
+                }
+                //해당 신체 부위 최대/최소값 기준한 백분율 값      
+
+            }
+
+            return {
+                userGraphLocationVlaue: userGraphLocationVlaue,
+                recommendedGraphLocationVlaue: recommendedGraphLocationVlaue
+            }; //추천사이즈 차이값 그래프용
+        };
+
+
+        // 유저사이즈 & 추천사이즈 차이값 반환
+        var calSizeGap = function () { //(0)
+            var recommendSizeValue = Object.values(recommendSize);
+            var recommendSizeList = recommendSizeValue[sizeCount]; // 버튼 sizeCount 넣기
+            var recommededMessage = recommendMessage[sizeCount]; // 추천된 사이즈
+            var calculatedSizeList = []; //사이즈 부위별 key : value 형태
+
+            for (var value in mySize) {
+                calculatedSizeList[value] = mySize[value] - recommendSizeList[value];
+            }
+
+            var calculatedSizeValue = Object.values(calculatedSizeList);
+
+            return calculatedSizeValue; // 사이즈 차이 값 
+        };
+
+        //캔버스 초기화
+        var initCanvas = function () {
+            var canvasPolar = document.getElementById("canvasPolar");
+            var polarContext = canvasPolar.getContext("2d");
+
+            return {
+                canvasPolar: canvasPolar,
+                polarContext: polarContext
+            }
+        };
+
+        //캔버스 위치값 계산
+        var calCanvasLocationValue = function (canvasInfo) {
+            var canvasHalfWidth = canvasInfo.canvasPolar.width / 2;
+            var canvasCircleWidth = canvasInfo.canvasPolar.width / 2.7;
+
+            return {
+                canvasHalfWidth: canvasHalfWidth,
+                canvasCircleWidth: canvasCircleWidth
+            }
+        };
+
+        //원 그래프 그리고 블러 넣기
+        var drawCircleAndLine = function (canvasInfo, locstionValue) {
+
+            canvasInfo.polarContext.beginPath();
+            canvasInfo.polarContext.arc(locstionValue.canvasHalfWidth, locstionValue.canvasHalfWidth, locstionValue.canvasCircleWidth, 0, 2 * Math.PI);
+            canvasInfo.polarContext.shadowColor = "#EEEDE9";
+            canvasInfo.polarContext.shadowBlur = 50;
+            canvasInfo.polarContext.fillStyle = "#E7EAEA";
+            canvasInfo.polarContext.fill();
+
+            //원 내부 신체 부위를 가리키는 라인그리기
+            var linePointCount = 0;
+            canvasInfo.polarContext.beginPath();
+            canvasInfo.polarContext.strokeStyle = '#95D0CC';
+            canvasInfo.polarContext.lineWidth = 2;
+
+            for (var i = 0; i < 6; i++) {
+                canvasInfo.polarContext.moveTo(locstionValue.canvasHalfWidth, locstionValue.canvasHalfWidth);
+                canvasInfo.polarContext.arc(locstionValue.canvasHalfWidth, locstionValue.canvasHalfWidth, locstionValue.canvasCircleWidth, linePointCount * Math.PI, linePointCount * Math.PI, false);
+
+                linePointCount += 0.333;
+            }
+            canvasInfo.polarContext.stroke();
+        };
+
+        var drawTextAndSizeGap = function (canvasInfo, locationValue, sizeGap) {
+            //원 외부 점
+            canvasInfo.polarContext.translate(locationValue.canvasHalfWidth - 10, locationValue.canvasHalfWidth + 10);
+            radius = locationValue.canvasHalfWidth * 0.8;
+
+            var dotPointCount = 1;
+            for (var i = 0; i < 6; i++) {
+                var angle = dotPointCount * Math.PI / 6;
+
+                canvasInfo.polarContext.save();
+                canvasInfo.polarContext.rotate(angle);
+                canvasInfo.polarContext.translate(0, -radius);
+                canvasInfo.polarContext.rotate(-angle);
+
+                canvasInfo.polarContext.font = (8 * 2.5) + "px " + 'Flexo-Bold' + ""; //
+                canvasInfo.polarContext.fillStyle = '#20607A'; //
+                canvasInfo.polarContext.fillText("●", 0, 0); //
+
+                canvasInfo.polarContext.rotate(angle);
+                canvasInfo.polarContext.translate(0, radius);
+                canvasInfo.polarContext.rotate(-angle);
+                canvasInfo.polarContext.restore();
+
+                dotPointCount += 2;
+            }
+
+            //원 외부 텍스트
+            var dotPointCount = 1;
+            for (var i = 0; i < 6; i++) {
+                var angle = dotPointCount * Math.PI / 6;
+                radius = locationValue.canvasHalfWidth * 0.9; //
+
+                canvasInfo.polarContext.save();
+                canvasInfo.polarContext.rotate(angle);
+                canvasInfo.polarContext.translate(0, -radius);
+                canvasInfo.polarContext.rotate(-angle);
+
+                canvasInfo.polarContext.font = (10 * 2.5) + "px " + 'Flexo-Bold' + ""; //
+                canvasInfo.polarContext.fillStyle = '#333333'; //
+                canvasInfo.polarContext.fillText(bodyPartText[i], -15, 0); //
+
+                canvasInfo.polarContext.rotate(angle);
+                canvasInfo.polarContext.translate(0, radius);
+                canvasInfo.polarContext.rotate(-angle);
+                canvasInfo.polarContext.restore();
+
+                dotPointCount += 2;
+            }
+
+            var sizeValueCount = 1;
+            for (var i = 0; i < 6; i++) {
+                var angle = sizeValueCount * Math.PI / 6;
+                radius = locationValue.canvasHalfWidth * 0.62; //
+
+                canvasInfo.polarContext.save();
+                canvasInfo.polarContext.rotate(angle);
+                canvasInfo.polarContext.translate(0, -radius);
+                canvasInfo.polarContext.rotate(-angle);
+
+                canvasInfo.polarContext.font = (12 * 2.5) + "px " + 'Flexo-Bold' + ""; //
+                canvasInfo.polarContext.fillStyle = '#20607A'; //
+                if (sizeGap[i] >= 0) {
+                    canvasInfo.polarContext.fillText("+" + sizeGap[i], -10, 0); //    
+                } else {
+                    canvasInfo.polarContext.fillText(sizeGap[i], -10, 0); //
+                }
+                canvasInfo.polarContext.rotate(angle);
+                canvasInfo.polarContext.translate(0, radius);
+                canvasInfo.polarContext.rotate(-angle);
+                canvasInfo.polarContext.restore();
+
+                sizeValueCount += 2;
+            }
+        };
+
+        //원 내부 육각 그래프 라인 추천 부분
+        var drawUserSizeArea = function (canvasInfo, graphRange) {
+            var startAngle = 0 * Math.PI / 6;
+            var degree = (Math.PI * 2) / 6; //각 면에 대한 각도를 계산한다.
+            var userGraphStartPointValue = 1.7 * graphRange.userGraphLocationVlaue[0];
+            var graphStartPointValue = 1.7 * graphRange.recommendedGraphLocationVlaue[0];
+            var sizeText = Object.keys(recommendSize);
+
+            //원 내부 육각 그래프 사용자 부분
+            canvasInfo.polarContext.save();
+            canvasInfo.polarContext.beginPath();
+            canvasInfo.polarContext.lineWidth = 6;
+            canvasInfo.polarContext.globalAlpha = 0.7;
+            canvasInfo.polarContext.fillStyle = '#95D0CC';
+            canvasInfo.polarContext.translate(10, -10);
+            canvasInfo.polarContext.rotate(startAngle);
+            canvasInfo.polarContext.moveTo(userGraphStartPointValue, 0);
+            for (var i = 1; i < 6; i++) {
+                var graphLocationValue = 1.7 * graphRange.userGraphLocationVlaue[i];
+                canvasInfo.polarContext.lineTo(graphLocationValue * Math.cos(degree * i), graphLocationValue * Math.sin(degree * i));
+            }
+            canvasInfo.polarContext.closePath();
+            canvasInfo.polarContext.fill();
+            canvasInfo.polarContext.restore();
+            //----------/----------/----------/----------/----------/----------/----------
+            canvasInfo.polarContext.save();
+            canvasInfo.polarContext.beginPath();
+            canvasInfo.polarContext.lineWidth = 6;
+            canvasInfo.polarContext.strokeStyle = '#20607A';
+            canvasInfo.polarContext.translate(10, -10); //드로잉 좌표 공간을 다각형 중심좌표로 이동한다.
+            canvasInfo.polarContext.rotate(startAngle); //시작 각도를 중심으로 그리도록 하기 위하여 회전한다.
+            canvasInfo.polarContext.moveTo(graphStartPointValue, 0); //다각형의 시작 위치로 이동한다.   // 골반
+            //** 그래프 범위 0 ~ 170  =  1.7;
+            // 범위 설정 식 : 1.7 * "백분율로 계산되어 들어오는 값"
+            for (var i = 1; i < 6; i++) {
+                var graphLocationValue = 1.7 * graphRange.recommendedGraphLocationVlaue[i];
+                canvasInfo.polarContext.lineTo(graphLocationValue * Math.cos(degree * i), graphLocationValue * Math.sin(degree * i));
+            }
+            canvasInfo.polarContext.closePath();
+            canvasInfo.polarContext.stroke();
+            canvasInfo.polarContext.restore();
+            //----------/----------/----------/----------/----------/----------/----------
+            //사이즈 추천 그래프 내부 사용자 정보 텍스트 (사용자 사이즈 / 키,몸무게)
+            canvasInfo.polarContext.save();
+            canvasInfo.polarContext.beginPath();
+            canvasInfo.polarContext.fillStyle = '#FBFBFB';
+
+            canvasInfo.polarContext.translate(10, -30);
+            canvasInfo.polarContext.font = (26 * 2.5) + "px " + 'Flexo-Bold' + "";
+            canvasInfo.polarContext.fillText(sizeText[sizeCount], -30, 0);
+
+            canvasInfo.polarContext.translate(-70, 50);
+            canvasInfo.polarContext.font = (11 * 2.5) + "px " + 'Flexo-Bold' + "";
+            canvasInfo.polarContext.fillText(userBodyInfo.height+"cm / "+userBodyInfo.weight+"kg", -15, 0);
+            canvasInfo.polarContext.stroke();
+            canvasInfo.polarContext.restore();
+        };
+
+        var setRecommendMessage = function () {
+            var recommendedmessage = Object.values(recommendMessage);
+            document.getElementById('recommedMessage').innerHTML = recommendedmessage[sizeCount];
+
+        };
+
+        function chageButtonColor() {
+            var recommendSizeLength = Object.keys(recommendSize).length;
+
+            if (sizeCount == recommendSizeLength - 1) {
+                document.getElementById("rightButton").style.opacity = 0.3;
+                document.getElementById("rightButtonEvent").style.cursor = "default";
+            } else if (sizeCount == -1) {
+                document.getElementById("leftButton").style.opacity = 0.3;
+                document.getElementById("leftButtonEvent").style.cursor = "default";
+            } else if (sizeCount == 0) {
+                document.getElementById("leftButton").style.opacity = 0.3;
+                document.getElementById("leftButtonEvent").style.cursor = "default";
+            } else {
+                document.getElementById("rightButton").style.opacity = 1;
+                document.getElementById("leftButton").style.opacity = 1;
+                document.getElementById("rightButtonEvent").style.cursor = "pointer";
+                document.getElementById("leftButtonEvent").style.cursor = "pointer";
+            }
+        };
+
+        var drawPolarGraph = function () {
+            var canvasInfo = initCanvas();
+            var canvasLocstionValue = calCanvasLocationValue(canvasInfo);
+            var graphRange = getGraphLengthRange(sizeCount);
+            var sizeGap = calSizeGap(sizeCount);
+
+            drawCircleAndLine(canvasInfo, canvasLocstionValue);
+            drawTextAndSizeGap(canvasInfo, canvasLocstionValue, sizeGap);
+            drawUserSizeArea(canvasInfo, graphRange);
+            setRecommendMessage();
+            chageButtonColor();
+        };
+
+        
+        var sizeCount = 0;
+        //추천 사이즈 별 이동을 위한 버튼 값 변경
+        var changeButtonValue = function(isAdd) {
+            var recommendSizeKeyLength = Object.keys(recommendSize).length - 1;
+
+            sizeCount += isAdd ? 1 : -1;
+            if (sizeCount - 1 == recommendSizeKeyLength) {
+                sizeCount--;
+            } else if (sizeCount - 1 == -2) {
+                sizeCount++;
+            }
+
+            var canvasInfo = initCanvas();
+            var canvasLocstionValue = calCanvasLocationValue(canvasInfo);
+            
+            canvasInfo.polarContext.clearRect(-canvasLocstionValue.canvasHalfWidth, -canvasLocstionValue.canvasHalfWidth, canvasInfo.canvasPolar.width + 10, canvasInfo.canvasPolar.height);
+            canvasInfo.polarContext.translate(-canvasLocstionValue.canvasHalfWidth + 10, -canvasLocstionValue.canvasHalfWidth - 10);            
+            drawPolarGraph();
+
+        }
+
+        drawPolarGraph();
+    </script>
+
+</body>
+
+</html>

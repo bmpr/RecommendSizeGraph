@@ -25,12 +25,12 @@
         </canvas>
 
         <div class="recommedContent">
-            <div class="buttonLeft">
-                <span onclick="changeButtonValue(false)"></span>
+            <div id="leftButton">
+                <span id="leftButtonEvent" onclick="changeGraphContent(false)"></span>
             </div>
-            <div class="recommedMessage">사용자님 보다 어깨가 발달하고 허리가얇은 분은 L를 작게 입었습니다.</div>
-            <div class="buttonRight">
-                <span onclick="changeButtonValue(true)"></span>
+            <div id="recommedMessage"></div>
+            <div id="rightButton">
+                <span id="rightButtonEvent" onclick="changeGraphContent(true)"></span>
             </div>
         </div>
 
@@ -38,58 +38,56 @@
 
     <script>
         var mySize = {
-            shoulderRound: 116,
-            chestRound: 93,
-            waistRound: 91,
-            pelvisRound: 88,
-            hipRound: 99,
-            thighRound: 62
+            pelvisRound: 92,
+            hipRound: 105,
+            thighRound: 60,
+            shoulderRound: 120,
+            chestRound: 100,
+            waistRound: 91
         };
 
         var recommendSize = {
             XL: {
-                shoulderRound: 137,
+                pelvisRound: 100,
+                hipRound: 115,
+                thighRound: 67,
+                shoulderRound: 130,
                 chestRound: 105,
-                waistRound: 93,
-                pelvisRound: 92,
-                hipRound: 106,
-                thighRound: 56
+                waistRound: 95
             },
             L: {
+                pelvisRound: 94,
+                hipRound: 110,
+                thighRound: 63,
                 shoulderRound: 124,
-                chestRound: 103,
-                waistRound: 92,
-                pelvisRound: 93,
-                hipRound: 106,
-                thighRound: 63
+                chestRound: 100,
+                waistRound: 92
             },
             M: {
-                shoulderRound: 118,
-                chestRound: 92,
-                waistRound: 93,
-                pelvisRound: 92,
-                hipRound: 103,
-                thighRound: 53
+                pelvisRound: 90,
+                hipRound: 105,
+                thighRound: 57,
+                shoulderRound: 115,
+                chestRound: 95,
+                waistRound: 93
             },
             S: {
-                shoulderRound: 114,
-                chestRound: 97,
-                waistRound: 85,
                 pelvisRound: 87,
                 hipRound: 100,
-                thighRound: 54
+                thighRound: 54,
+                shoulderRound: 110,
+                chestRound: 90,
+                waistRound: 85
             },
             XS: {
-                shoulderRound: 99,
-                chestRound: 88,
-                waistRound: 70,
                 pelvisRound: 80,
-                hipRound: 93,
-                thighRound: 48
+                hipRound: 95,
+                thighRound: 48,
+                shoulderRound: 100,
+                chestRound: 88,
+                waistRound: 70
             }
         };
-
-        var bodyPartText = ['허리', '골반', '엉덩이', '허벅지', '어깨', '가슴'];
 
         var recommendMessage = {
             XL: '사용자님 어깨와 허리가 얇지만 XL를 루즈하게 입어요.',
@@ -99,234 +97,305 @@
             XS: '사용자님 어깨가 좁아서 XS는 작을수 있어요.'
         };
 
-        //** 육각 그래프 변형에 필요한 수치 반환
-        var getGraphLengthRange = (function () {
-            var recommendSizeValue = Object.values(recommendSize);
-            var mySizeLength = Object.keys(mySize).length;
-            var recommendSizeValueLength = recommendSizeValue.length;
-            var calculatedGraphLocationVlaue = [];
-            var indexCount = 0;
+        var bodyPartText = ['허리', '골반', '엉덩이', '허벅지', '어깨', '가슴'];
 
-            for (var i = 0; i < mySizeLength; i++) {
-                var recommendSizeKey = [];
-                var oneBodyPartList = [];
+        var userBodyInfo = {
+            height: 164,
+            weight: 45
+        }
+    </script>
 
-                for (var j = 0; j < recommendSizeValueLength; j++) {
-                    recommendSizeKey = Object.values(recommendSizeValue[j]);
-                    oneBodyPartList.push(recommendSizeKey[indexCount]); // 전체 사이즈에서 특정 부위만 새 배열 만들기    
+    <!--------------------------------------------------------------------------------------------------->
+
+    <script>
+        var PolarGraph = (function () {
+            var drawPolarGraph = function (sizeCount) {
+
+                this.drawGraph();
+            };
+
+            drawPolarGraph.prototype = {
+
+                //**그래프 실행
+                drawGraph: function () {
+                    var canvasInfo = this.initCanvas();
+                    var canvasLocstionValue = this.calCanvasLocationValue(canvasInfo);
+                    var graphRange = this.getGraphLengthRange(sizeCount);
+                    var sizeGap = this.calSizeGap(sizeCount);
+
+                    this.drawCircleAndLine(canvasInfo, canvasLocstionValue);
+                    this.drawTextAndSizeGap(canvasInfo, canvasLocstionValue, sizeGap);
+                    this.drawUserSizeArea(canvasInfo, canvasLocstionValue, graphRange);
+                    this.setRecommendMessage();
+                    this.chageButtonColor();
+                },
+
+                //** 육각 그래프 변형에 필요한 수치 반환
+                // - 신체 부위별 최대/최소 사이즈 값을 구하고, 사용자와 추천사이즈 그래프 그려질 위치값을 계산
+                getGraphLengthRange: function () {
+                    var recommendSizeValue = Object.values(recommendSize);
+                    var mySizeLength = Object.keys(mySize).length;
+                    var recommendSizeValueLength = recommendSizeValue.length;
+                    var userGraphLocationVlaue = [];
+                    var recommendedGraphLocationVlaue = [];
+
+                    for (var i = 0; i < mySizeLength; i++) {
+                        var recommendSizeKey = [];
+                        var oneBodyPartList = [];
+
+                        for (var j = 0; j < recommendSizeValueLength; j++) {
+                            recommendSizeKey = Object.values(recommendSizeValue[j]);
+                            oneBodyPartList.push(recommendSizeKey[i]);
+                        }
+
+                        oneBodyPartList.sort(function (a, b) {
+                            return a - b;
+                        });
+
+                        var minSizeValue = oneBodyPartList[0];
+                        var maxSizeValue = oneBodyPartList[oneBodyPartList.length - 1];
+                        var mySizeList = Object.values(mySize);
+                        var recommendedSizeList = Object.values(recommendSizeValue[sizeCount]);
+
+                        userGraphLocationVlaue.push((mySizeList[i] - minSizeValue) / (maxSizeValue - minSizeValue) * 100);
+
+                        if (sizeCount == recommendSizeValueLength - 1) {
+                            recommendedGraphLocationVlaue.push(1);
+                        } else {
+                            recommendedGraphLocationVlaue.push((recommendedSizeList[i] - minSizeValue) / (maxSizeValue - minSizeValue) * 100);
+                        }
+
+                    }
+
+                    return {
+                        userGraphLocationVlaue: userGraphLocationVlaue,
+                        recommendedGraphLocationVlaue: recommendedGraphLocationVlaue
+                    };
+                },
+
+                //**그래프에 나타낼 사용자 사이즈와 추천 사이즈의 차이값 계산후 반환
+                calSizeGap: function () {
+                    var recommendSizeValue = Object.values(recommendSize);
+                    var recommendSizeList = recommendSizeValue[sizeCount];
+                    var recommededMessage = recommendMessage[sizeCount];
+                    var calculatedSizeList = [];
+
+                    for (var value in mySize) {
+                        calculatedSizeList[value] = mySize[value] - recommendSizeList[value];
+                    }
+
+                    var calculatedSizeValue = Object.values(calculatedSizeList);
+
+                    return calculatedSizeValue;
+                },
+
+                //**캔버스 초기화
+                initCanvas: function () {
+                    var canvasPolar = document.getElementById("canvasPolar");
+                    var polarContext = canvasPolar.getContext("2d");
+
+                    return {
+                        canvasPolar: canvasPolar,
+                        polarContext: polarContext
+                    }
+                },
+
+                //**캔버스 위치값 계산
+                calCanvasLocationValue: function (canvasInfo) {
+                    var canvasHalfWidth = canvasInfo.canvasPolar.width / 2;
+                    var canvasCircleWidth = canvasInfo.canvasPolar.width / 2.7;
+
+                    return {
+                        canvasHalfWidth: canvasHalfWidth,
+                        canvasCircleWidth: canvasCircleWidth
+                    }
+                },
+
+                //**그래프 바탕 원과 신체부위를 나누는 선 그리기
+                drawCircleAndLine: function (canvasInfo, locstionValue) {
+                    canvasInfo.polarContext.save();
+                    canvasInfo.polarContext.beginPath();
+                    canvasInfo.polarContext.clearRect(0, 0, canvasInfo.canvasPolar.width, canvasInfo.canvasPolar.height)
+                    canvasInfo.polarContext.arc(locstionValue.canvasHalfWidth, locstionValue.canvasHalfWidth, locstionValue.canvasCircleWidth, 0, 2 * Math.PI);
+                    canvasInfo.polarContext.shadowColor = "#EEEDE9";
+                    canvasInfo.polarContext.shadowBlur = 50;
+                    canvasInfo.polarContext.fillStyle = "#E7EAEA";
+                    canvasInfo.polarContext.fill();
+
+                    var linePointCount = 0;
+
+                    canvasInfo.polarContext.beginPath();
+                    canvasInfo.polarContext.strokeStyle = '#95D0CC';
+                    canvasInfo.polarContext.lineWidth = 2;
+
+                    for (var i = 0; i < 6; i++) {
+                        canvasInfo.polarContext.moveTo(locstionValue.canvasHalfWidth, locstionValue.canvasHalfWidth);
+                        canvasInfo.polarContext.arc(locstionValue.canvasHalfWidth, locstionValue.canvasHalfWidth, locstionValue.canvasCircleWidth, linePointCount * Math.PI, linePointCount * Math.PI, false);
+
+                        linePointCount += 0.333;
+                    }
+
+                    canvasInfo.polarContext.stroke();
+                    canvasInfo.polarContext.restore();
+                },
+
+                //** 그래프 내 신체 부위 텍스트와 계산된 사이즈 차이값 그리기
+                drawTextAndSizeGap: function (canvasInfo, locationValue, sizeGap) {
+                    canvasInfo.polarContext.save();
+                    canvasInfo.polarContext.translate(locationValue.canvasHalfWidth - 10, locationValue.canvasHalfWidth + 10);
+                    
+                    drawPointerText(0.8, 8 * 2.5, '#20607A', "●", 0);
+                    drawPointerText(0.9, 10 * 2.5, '#333333', bodyPartText, -15);
+                    drawPointerText(0.62, 12 * 2.5, '#20607A', sizeGap, -10);
+                    
+                    function drawPointerText(radiusValue, fontSize, fontColor, text, textLocation) {
+                        var radius, angle;
+                        var pointCount = 1;
+                        
+                        for (var i = 0; i < 6; i++) {
+                            angle = pointCount * Math.PI / 6;
+                            radius = locationValue.canvasHalfWidth * radiusValue;
+
+                            canvasInfo.polarContext.save();
+                            canvasInfo.polarContext.rotate(angle);
+                            canvasInfo.polarContext.translate(0, -radius);
+                            canvasInfo.polarContext.rotate(-angle);
+
+                            canvasInfo.polarContext.font = fontSize + "px " + 'Flexo-Bold' + ""; //
+                            canvasInfo.polarContext.fillStyle = fontColor; //
+                            
+                            if (text[i] >= 0 && isFinite(text[i])) {
+                                canvasInfo.polarContext.fillText("+"+ text[i], textLocation, 0);  
+                            } else if(Array.isArray(text)){
+                                canvasInfo.polarContext.fillText(text[i], textLocation, 0);
+                            } else{
+                                canvasInfo.polarContext.fillText(text, textLocation, 0);
+                            }
+                            
+                            canvasInfo.polarContext.rotate(angle);
+                            canvasInfo.polarContext.translate(0, radius);
+                            canvasInfo.polarContext.rotate(-angle);
+                            canvasInfo.polarContext.restore();
+
+                            pointCount += 2;
+                        }
+                    }
+
+                    canvasInfo.polarContext.restore();
+                },
+
+                //원 내부 육각 그래프 라인 추천 부분
+                drawUserSizeArea: function (canvasInfo, locationValue, graphRange) {
+                    var startAngle = 0 * Math.PI / 6;
+                    var degree = (Math.PI * 2) / 6; //각 면에 대한 각도를 계산한다.
+                    var userGraphStartPointValue = 1.7 * graphRange.userGraphLocationVlaue[0];
+                    var graphStartPointValue = 1.7 * graphRange.recommendedGraphLocationVlaue[0];
+                    var sizeText = Object.keys(recommendSize);
+
+                    canvasInfo.polarContext.save();
+                    canvasInfo.polarContext.translate(locationValue.canvasHalfWidth - 10, locationValue.canvasHalfWidth + 10);
+
+                    //원 내부 육각 그래프 사용자 부분
+                    canvasInfo.polarContext.save();
+                    canvasInfo.polarContext.beginPath();
+                    canvasInfo.polarContext.lineWidth = 6;
+                    canvasInfo.polarContext.globalAlpha = 0.7;
+                    canvasInfo.polarContext.fillStyle = '#95D0CC';
+                    canvasInfo.polarContext.translate(10, -10);
+                    canvasInfo.polarContext.rotate(startAngle);
+                    canvasInfo.polarContext.moveTo(userGraphStartPointValue, 0);
+                    for (var i = 1; i < 6; i++) {
+                        var graphLocationValue = 1.7 * graphRange.userGraphLocationVlaue[i];
+                        canvasInfo.polarContext.lineTo(graphLocationValue * Math.cos(degree * i), graphLocationValue * Math.sin(degree * i));
+                    }
+                    canvasInfo.polarContext.closePath();
+                    canvasInfo.polarContext.fill();
+                    canvasInfo.polarContext.restore();
+                    //----------/----------/----------/----------/----------/----------/----------
+                    canvasInfo.polarContext.save();
+                    canvasInfo.polarContext.beginPath();
+                    canvasInfo.polarContext.lineWidth = 6;
+                    canvasInfo.polarContext.strokeStyle = '#20607A';
+                    canvasInfo.polarContext.translate(10, -10); //드로잉 좌표 공간을 다각형 중심좌표로 이동한다.
+                    canvasInfo.polarContext.rotate(startAngle); //시작 각도를 중심으로 그리도록 하기 위하여 회전한다.
+                    canvasInfo.polarContext.moveTo(graphStartPointValue, 0); //다각형의 시작 위치로 이동한다.   // 골반
+                    //** 그래프 범위 0 ~ 170  =  1.7;
+                    // 범위 설정 식 : 1.7 * "백분율로 계산되어 들어오는 값"
+                    for (var i = 1; i < 6; i++) {
+                        var graphLocationValue = 1.7 * graphRange.recommendedGraphLocationVlaue[i];
+                        canvasInfo.polarContext.lineTo(graphLocationValue * Math.cos(degree * i), graphLocationValue * Math.sin(degree * i));
+                    }
+                    canvasInfo.polarContext.closePath();
+                    canvasInfo.polarContext.stroke();
+                    canvasInfo.polarContext.restore();
+                    //----------/----------/----------/----------/----------/----------/----------
+                    //사이즈 추천 그래프 내부 사용자 정보 텍스트 (사용자 사이즈 / 키,몸무게)
+                    canvasInfo.polarContext.save();
+                    canvasInfo.polarContext.beginPath();
+                    canvasInfo.polarContext.fillStyle = '#FBFBFB';
+
+                    canvasInfo.polarContext.translate(10, -30);
+                    canvasInfo.polarContext.font = (26 * 2.5) + "px " + 'Flexo-Bold' + "";
+                    canvasInfo.polarContext.fillText(sizeText[sizeCount], -30, 0);
+
+                    canvasInfo.polarContext.translate(-70, 50);
+                    canvasInfo.polarContext.font = (11 * 2.5) + "px " + 'Flexo-Bold' + "";
+                    canvasInfo.polarContext.fillText(userBodyInfo.height + "cm / " + userBodyInfo.weight + "kg", -15, 0);
+                    canvasInfo.polarContext.stroke();
+                    canvasInfo.polarContext.restore();
+
+                    canvasInfo.polarContext.restore();
+                },
+
+                setRecommendMessage: function () {
+                    var recommendedmessage = Object.values(recommendMessage);
+                    document.getElementById('recommedMessage').innerHTML = recommendedmessage[sizeCount];
+
+                },
+
+                chageButtonColor: function () {
+                    var recommendSizeLength = Object.keys(recommendSize).length;
+
+                    if (sizeCount == recommendSizeLength - 1) {
+                        document.getElementById("rightButton").style.opacity = 0.3;
+                        document.getElementById("rightButtonEvent").style.cursor = "default";
+                    } else if (sizeCount == -1) {
+                        document.getElementById("leftButton").style.opacity = 0.3;
+                        document.getElementById("leftButtonEvent").style.cursor = "default";
+                    } else if (sizeCount == 0) {
+                        document.getElementById("leftButton").style.opacity = 0.3;
+                        document.getElementById("leftButtonEvent").style.cursor = "default";
+                    } else {
+                        document.getElementById("rightButton").style.opacity = 1;
+                        document.getElementById("leftButton").style.opacity = 1;
+                        document.getElementById("rightButtonEvent").style.cursor = "pointer";
+                        document.getElementById("leftButtonEvent").style.cursor = "pointer";
+                    }
                 }
 
-                oneBodyPartList.sort(function (a, b) {
-                    return a - b;
-                }); // 새로 만들어진 특정부위 배열 크기별 정렬.                 
+            };
 
-                var minValue = oneBodyPartList[0]; // 사이즈 최소값
-                var maxValue = oneBodyPartList[oneBodyPartList.length - 1]; // 사이즈 최대값                     
-                var mySizeList = Object.values(mySize); // 사용자 사이즈 값
-
-                calculatedGraphLocationVlaue.push((mySizeList[indexCount] - minValue) / (maxValue - minValue) * 100);
-                //해당 신체 부위 최대값에 기준한 백분율 값      
-                indexCount++;
-            }
-            return calculatedGraphLocationVlaue;
-
+            return drawPolarGraph;
         })();
 
-        // 유저사이즈 & 추천사이즈 차이값 반환
-        var calSizeGap = (function (count) {
-            var recommendSizeValue = Object.values(recommendSize);
-            var recommendSizeList = recommendSizeValue[count]; // 버튼 count 넣기
-            var recommededMessage = recommendMessage[count]; // 추천된 사이즈
-            var calculatedSizeList = []; //사이즈 부위별 key : value 형태
 
-            for (var value in mySize) {
-                calculatedSizeList[value] = mySize[value] - recommendSizeList[value];
-            }
-
-            var calculatedSizeValue = Object.values(calculatedSizeList);
-
-            return calculatedSizeValue;
-
-        })(0);
-
-
-
+        var sizeCount = 0;
         //추천 사이즈 별 이동을 위한 버튼 값 변경
-        var slideButton = 0;
-
-        function changeButtonValue(isAdd) {
+        function changeGraphContent(isAdd) {
             var recommendSizeKeyLength = Object.keys(recommendSize).length - 1;
 
-            slideButton += isAdd ? 1 : -1;
-            if (slideButton - 1 == recommendSizeKeyLength) {
-                slideButton--;
-            } else if (slideButton - 1 == -2) {
-                slideButton++;
+            sizeCount += isAdd ? 1 : -1;
+            if (sizeCount - 1 == recommendSizeKeyLength) {
+                sizeCount--;
+            } else if (sizeCount - 1 == -2) {
+                sizeCount++;
             }
-            //버튼 증가값 1 2 3 4 5  
-            //버튼 증가값 3 2 1 0 -1
-            // 실행함수 넣기 (slideButton);
-        }
 
-        //캔버스 초기화
-        var canvasPolar = document.getElementById("canvasPolar");
-        var PolarContext = canvasPolar.getContext("2d");
-        var canvasHalfWidth = canvasPolar.width / 2;
-        var canvasCircleWidth = canvasPolar.width / 2.7;
+            var polarGraph = new PolarGraph(sizeCount);
 
-        //원 그래프 그리고 블러 넣기
-        PolarContext.beginPath();
-        PolarContext.arc(canvasHalfWidth, canvasHalfWidth, canvasCircleWidth, 0, 2 * Math.PI);
-        PolarContext.shadowColor = "#EEEDE9";
-        PolarContext.shadowBlur = 50;
-        PolarContext.fillStyle = "#E7EAEA";
-        PolarContext.fill();
+        };
 
-        //원 내부 신체 부위를 가리키는 라인그리기
-        var linePointCount = 0;
-        PolarContext.beginPath();
-        PolarContext.strokeStyle = '#95D0CC';
-        PolarContext.lineWidth = 2;
-        for (var i = 0; i < 6; i++) {
-            PolarContext.moveTo(canvasHalfWidth, canvasHalfWidth);
-            PolarContext.arc(canvasHalfWidth, canvasHalfWidth, canvasCircleWidth, linePointCount * Math.PI, linePointCount * Math.PI, false);
-            linePointCount += 0.333;
-        }
-        PolarContext.stroke();
-
-
-
-        //---------함수로 묶을 부분------(그래프 내 텍스트(점, 부위, 치수)------------------ 시작
-
-        //원 외부 점
-        PolarContext.translate(canvasHalfWidth - 10, canvasHalfWidth + 10);
-        radius = canvasHalfWidth * 0.8;
-
-        var dotPointCount = 1;
-        for (var i = 0; i < 6; i++) {
-            var angle = dotPointCount * Math.PI / 6;
-
-            PolarContext.save();
-            PolarContext.rotate(angle);
-            PolarContext.translate(0, -radius);
-            PolarContext.rotate(-angle);
-
-            PolarContext.font = (8 * 2.5) + "px " + 'Flexo-Bold' + ""; //
-            PolarContext.fillStyle = '#20607A'; //
-            PolarContext.fillText("●", 0, 0); //
-
-            PolarContext.rotate(angle);
-            PolarContext.translate(0, radius);
-            PolarContext.rotate(-angle);
-            PolarContext.restore();
-
-            dotPointCount += 2;
-        }
-
-        //원 외부 텍스트
-        var dotPointCount = 1;
-        for (var i = 0; i < 6; i++) {
-            var angle = dotPointCount * Math.PI / 6;
-            radius = canvasHalfWidth * 0.9; //
-
-            PolarContext.save();
-            PolarContext.rotate(angle);
-            PolarContext.translate(0, -radius);
-            PolarContext.rotate(-angle);
-
-            PolarContext.font = (10 * 2.5) + "px " + 'Flexo-Bold' + ""; //
-            PolarContext.fillStyle = '#333333'; //
-            PolarContext.fillText(bodyPartText[i], -15, 0); //
-
-            PolarContext.rotate(angle);
-            PolarContext.translate(0, radius);
-            PolarContext.rotate(-angle);
-            PolarContext.restore();
-
-            dotPointCount += 2;
-        }
-
-        var sizeValueCount = 1;
-        for (var i = 0; i < 6; i++) {
-            var angle = sizeValueCount * Math.PI / 6;
-            radius = canvasHalfWidth * 0.62; //
-
-            PolarContext.save();
-            PolarContext.rotate(angle);
-            PolarContext.translate(0, -radius);
-            PolarContext.rotate(-angle);
-
-            PolarContext.font = (12 * 2.5) + "px " + 'Flexo-Bold' + ""; //
-            PolarContext.fillStyle = '#20607A'; //
-            PolarContext.fillText("+99", -20, 0); //
-
-            PolarContext.rotate(angle);
-            PolarContext.translate(0, radius);
-            PolarContext.rotate(-angle);
-            PolarContext.restore();
-
-            sizeValueCount += 2;
-        }
-
-        //---------함수로 묶을 부분------(그래프 내 텍스트(점, 부위, 치수)------------------ 끝
-
-        //원 내부 육각 그래프 라인 추천 부분
-        var startAngle = 0 * Math.PI / 6;
-        var degree = (Math.PI * 2) / 6; //각 면에 대한 각도를 계산한다.
-
-        //원 내부 육각 그래프 사용자 부분
-        PolarContext.save();
-        PolarContext.beginPath();
-        PolarContext.lineWidth = 6;
-        PolarContext.globalAlpha = 0.7;
-        PolarContext.fillStyle = '#95D0CC';
-        PolarContext.translate(10, -10);
-        PolarContext.rotate(startAngle);
-        PolarContext.moveTo(170, 0);
-        for (var i = 1; i < 6; i++) {
-            PolarContext.lineTo(170 * Math.cos(degree * i), 170 * Math.sin(degree * i));
-        }
-        PolarContext.closePath();
-        PolarContext.fill();
-        PolarContext.restore();
-
-        PolarContext.save();            
-        PolarContext.beginPath();
-        PolarContext.lineWidth = 6;
-        PolarContext.strokeStyle = '#20607A';
-        PolarContext.translate(10, -10); //드로잉 좌표 공간을 다각형 중심좌표로 이동한다.
-        PolarContext.rotate(startAngle); //시작 각도를 중심으로 그리도록 하기 위하여 회전한다.
-        PolarContext.moveTo(170, 0); //다각형의 시작 위치로 이동한다.   // 골반
-
-        //** 그래프 범위 0~ 170 까지 
-        // 범위 설정 식 : 170 / 100 * "백분율로 계산되어 들어오는 값"
-//        for (var i = 1; i < 6; i++) { //면의 수 만큼 루프를 반복한다        
-//        PolarContext.lineTo(170 * Math.cos(degree * i), 170 * Math.sin(degree * i));    
-        PolarContext.lineTo(110 * Math.cos(degree * 1), 110 * Math.sin(degree * 1)); //엉덩이
-        PolarContext.lineTo(80 * Math.cos(degree * 2), 80 * Math.sin(degree * 2)); //허벅지
-        PolarContext.lineTo(140 * Math.cos(degree * 3), 140 * Math.sin(degree * 3)); //어깨
-        PolarContext.lineTo(120 * Math.cos(degree * 4), 120 * Math.sin(degree * 4)); //가슴
-        PolarContext.lineTo(150 * Math.cos(degree * 5), 150 * Math.sin(degree * 5)); //허리
-//        }
-        PolarContext.closePath();
-        PolarContext.stroke();
-        PolarContext.restore();        
-        //
-            
-        //----------------------------------------
-
-        //사이즈 추천 그래프 내부 사용자 정보 텍스트 (사용자 사이즈 / 키,몸무게)
-        PolarContext.beginPath();
-        PolarContext.fillStyle = '#FBFBFB';
-
-        PolarContext.translate(10, -30);
-        PolarContext.font = (26 * 2.5) + "px " + 'Flexo-Bold' + "";
-        PolarContext.fillText("L", -20, 0);
-
-        PolarContext.translate(-70, 50);
-        PolarContext.font = (11 * 2.5) + "px " + 'Flexo-Bold' + "";
-        PolarContext.fillText("164cm / 44kg", -15, 0);
-        PolarContext.stroke();
+        changeGraphContent(false);
     </script>
 
 </body>

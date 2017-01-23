@@ -1,7 +1,7 @@
 .polarArea {
     width: 340px;
     height: 340px;
-    background-color: #FBFBFB;
+    background-color: '#ffffff';
     padding: 0;
     margin: 0;
     #canvasPolar {
@@ -24,19 +24,19 @@
         width: 340px;
         height: 20%;
         font-size: 0;
-        .buttonLeft {
+        #leftButton {
             width: $buttonSize;
             height: $buttonSize;
             float: left;
             margin: 2% 0 0 5%;
-            //             opacity: 0.3;
+            opacity: 1;
             background-image: url(../img/buttonLeft.svg);
             background-repeat: no-repeat;
-            span {
+            #leftButtonEvent {
                 @include button;
             }
         }
-        .recommedMessage {
+        #recommedMessage {
             width: 180px;
             height: 40px;
             float: left;
@@ -44,15 +44,15 @@
             font-size: 12px;
             text-align: center;
         }
-        .buttonRight {
+        #rightButton {
             width: $buttonSize;
             height: $buttonSize;
             float: right;
             margin: 2% 5% 0 0;
-            //             opacity: 0.3;             
+            opacity: 1;
             background-image: url(../img/buttonRight.svg);
             background-repeat: no-repeat;
-            span {
+            #rightButtonEvent {
                 @include button;
             }
         }

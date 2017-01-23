@@ -1,7 +1,7 @@
 .polarArea {
   width: 340px;
   height: 340px;
-  background-color: #FBFBFB;
+  background-color: '#ffffff';
   padding: 0;
   margin: 0; }
   .polarArea #canvasPolar {
@@ -16,33 +16,35 @@
     width: 340px;
     height: 20%;
     font-size: 0; }
-    .polarArea .recommedContent .buttonLeft {
+    .polarArea .recommedContent #leftButton {
       width: 30px;
       height: 30px;
       float: left;
       margin: 2% 0 0 5%;
+      opacity: 1;
       background-image: url(../img/buttonLeft.svg);
       background-repeat: no-repeat; }
-      .polarArea .recommedContent .buttonLeft span {
+      .polarArea .recommedContent #leftButton #leftButtonEvent {
         width: 30px;
         height: 30px;
         display: block;
         cursor: pointer; }
-    .polarArea .recommedContent .recommedMessage {
+    .polarArea .recommedContent #recommedMessage {
       width: 180px;
       height: 40px;
       float: left;
       margin: 2% 0 0 10%;
       font-size: 12px;
       text-align: center; }
-    .polarArea .recommedContent .buttonRight {
+    .polarArea .recommedContent #rightButton {
       width: 30px;
       height: 30px;
       float: right;
       margin: 2% 5% 0 0;
+      opacity: 1;
       background-image: url(../img/buttonRight.svg);
       background-repeat: no-repeat; }
-      .polarArea .recommedContent .buttonRight span {
+      .polarArea .recommedContent #rightButton #rightButtonEvent {
         width: 30px;
         height: 30px;
         display: block;
