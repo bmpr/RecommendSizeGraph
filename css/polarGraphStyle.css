@@ -1,53 +1,73 @@
-.polarArea {
-  width: 340px;
-  height: 340px;
-  background-color: '#ffffff';
-  padding: 0;
-  margin: 0; }
-  .polarArea #canvasPolar {
-    width: 270px;
-    height: 270px;
-    display: inline-block;
-    position: relative;
-    top: 0%;
-    left: 10%; }
-  .polarArea .recommedContent {
-    display: block;
-    width: 340px;
-    height: 20%;
-    font-size: 0; }
-    .polarArea .recommedContent #leftButton {
-      width: 30px;
-      height: 30px;
-      float: left;
-      margin: 2% 0 0 5%;
-      opacity: 1;
-      background-image: url(../img/buttonLeft.svg);
-      background-repeat: no-repeat; }
-      .polarArea .recommedContent #leftButton #leftButtonEvent {
-        width: 30px;
-        height: 30px;
-        display: block;
-        cursor: pointer; }
-    .polarArea .recommedContent #recommedMessage {
-      width: 180px;
-      height: 40px;
-      float: left;
-      margin: 2% 0 0 10%;
-      font-size: 12px;
-      text-align: center; }
-    .polarArea .recommedContent #rightButton {
-      width: 30px;
-      height: 30px;
-      float: right;
-      margin: 2% 5% 0 0;
-      opacity: 1;
-      background-image: url(../img/buttonRight.svg);
-      background-repeat: no-repeat; }
-      .polarArea .recommedContent #rightButton #rightButtonEvent {
-        width: 30px;
-        height: 30px;
-        display: block;
-        cursor: pointer; }
-
-/*# sourceMappingURL=polarGraphStyle.css.map */
+ @font-face {
+     font-family: 'Flexo-Bold';
+     src: url('Flexo-Bold.eot');
+     src: url('Flexo-Bold.eot?#iefix') format('embedded-opentype'), url('Flexo-Bold.woff2') format('woff2'), url('Flexo-Bold.woff') format('woff'), url('Flexo-Bold.ttf') format('truetype'),
+ }
+ 
+ .polarArea {
+     width: 340px;
+     height: 340px;
+     background-color: #FBFBFB;
+     padding: 0;
+     margin: 0;
+ }
+ 
+ .polarArea #canvasPolar {
+     width: 270px;
+     height: 270px;
+     display: inline-block;
+     position: relative;
+     top: 0%;
+     left: 10%;
+ }
+ 
+ .polarArea .recommedContent {
+     display: block;
+     width: 340px;
+     height: 20%;
+     font-size: 0;
+ }
+ 
+ .polarArea .recommedContent #leftButton {
+     width: 30px;
+     height: 30px;
+     float: left;
+     margin: 2% 0 0 5%;
+     opacity: 1;
+     background-image: url(../img/buttonLeft.svg);
+     background-repeat: no-repeat;
+ }
+ 
+ .polarArea .recommedContent #leftButton #leftButtonEvent {
+     width: 30px;
+     height: 30px;
+     display: block;
+     cursor: pointer;
+ }
+ 
+ .polarArea .recommedContent #recommedMessage {
+     width: 180px;
+     height: 40px;
+     float: left;
+     margin: 2% 0 0 10%;
+     font-size: 12px;
+     text-align: center;
+ }
+ 
+ .polarArea .recommedContent #rightButton {
+     width: 30px;
+     height: 30px;
+     float: right;
+     margin: 2% 5% 0 0;
+     opacity: 1;
+     background-image: url(../img/buttonRight.svg);
+     background-repeat: no-repeat;
+ }
+ 
+ .polarArea .recommedContent #rightButton #rightButtonEvent {
+     width: 30px;
+     height: 30px;
+     display: block;
+     cursor: pointer;
+ }
+ 
