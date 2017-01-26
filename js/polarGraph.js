@@ -113,7 +113,7 @@
          for (var count in sizeDataObject) {
              var sizeData = Object.values(sizeDataObject[count]);
 
-             for (var value in sizeData) {
+             for (var value in sizeDataObject) {
 
                  if (typeof sizeData !== "object") {
                      throw new Error(sizeData + ": not an object");
@@ -128,7 +128,7 @@
                      throw new Error(sizeData + ": object is empty");
 
                  } else if (!(isFinite(sizeData[value]))) {
-                     throw new Error(sizeData + ": property is wrong");
+                     throw new Error(sizeData + ": property is not a number");
 
                  }
              }
@@ -276,7 +276,7 @@
                  userGraphLocationVlaue.push((mySizeList[i] - minSizeValue) / (maxSizeValue - minSizeValue) * 100);
 
                  if (buttonCount == recommendSizeValueLength - 1) {
-                     recommendedGraphLocationVlaue.push(1);
+                     recommendedGraphLocationVlaue.push(3);
                  } else {
                      recommendedGraphLocationVlaue.push((recommendedSizeList[i] - minSizeValue) / (maxSizeValue - minSizeValue) * 100);
                  }
