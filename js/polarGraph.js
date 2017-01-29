@@ -1,4 +1,5 @@
- var mySize = {
+
+var mySize = {
      pelvisRound: 92,
      hipRound: 105,
      thighRound: 60,
@@ -99,7 +100,7 @@
              } else if (dataObject[value] == '') {
                  throw new Error(dataObject + ": object is empty");
 
-             } 
+             }
          }
 
      };
@@ -137,7 +138,7 @@
      };
 
 
-     var drawPolarGraph = function (elIds, graphProperties, buttonCount) {
+     var drawPolarGraph = function (elIds, graphProperties) {
 
          var graphDefaultProperties = {
              graphFontStyle: 'Flexo-Bold',
@@ -171,7 +172,9 @@
              recommendSizeGraphColor: '#20607A',
              recommendSizeGraphLineWidth: 6,
              graphFaceCount: 6,
-             userInfoTextAlign: "center"
+             userInfoTextAlign: "center",
+             animationMotionValue: 10,
+             animationMotionFrame: 30
          };
 
          var propertyCheck = this.checkGraphProperties(elIds, graphProperties, graphDefaultProperties);
@@ -230,20 +233,59 @@
          },
 
          //**그래프 실행
-         drawGraph: function (graphElIds, graphDefaultProperties) {
+         drawGraph: function (graphElIds, properties) {
              var self = this;
 
              var canvasInfo = self.initCanvas(graphElIds);
              var canvasLocstionValue = self.calCanvasLocationValue(canvasInfo);
-             var graphRange = self.getGraphLengthRange(buttonCount);
-             var sizeGap = self.calSizeGap(buttonCount);
+             var graphRange = self.getGraphLengthRange();
+             var sizeGap = self.calSizeGap();
 
-             self.drawCircleAndLine(canvasInfo, canvasLocstionValue, graphDefaultProperties);
-             self.drawTextAndSizeGap(canvasInfo, canvasLocstionValue, sizeGap, graphDefaultProperties);
-             self.drawSizeCompareGraph(canvasInfo, canvasLocstionValue, graphRange, graphDefaultProperties);
-             self.drawUserInfoText(canvasInfo, graphDefaultProperties);
+             var recommendGraphValue = [];
+             for (var i = 0; i < graphRange.nextRecommendGraphValue.length; i++) {
+                 recommendGraphValue[i] = graphRange.nextRecommendGraphValue[i] - graphRange.previousRecommendGraphValue[i];
+             }
+
+             var recommendGraphAnimationValue = recommendGraphValue.map(function (item) {
+                 return item / properties.animationMotionFrame;
+             });
+
+             var recommendedGraphValue;
+             if (buttonReverseCount === 0) {
+                 recommendedGraphValue = graphRange.previousRecommendGraphValue;
+             } else if (buttonReverseCount == 1) {
+                 recommendedGraphValue = graphRange.nextRecommendGraphValue;;
+             }
+
+             var graphShapeInterval = setInterval(function () {
+
+                 for (var i = 0; i < 6; i++) {
+                     if (buttonReverseCount === 0) {
+                         recommendedGraphValue[i] += recommendGraphAnimationValue[i]
+                     } else if (buttonReverseCount == 1) {
+                         recommendedGraphValue[i] -= recommendGraphAnimationValue[i]
+                     }
+                 }
+
+                 self.drawCircleAndLine(canvasInfo, canvasLocstionValue, properties);
+                 self.drawTextAndSizeGap(canvasInfo, canvasLocstionValue, sizeGap, properties);
+                 self.drawSizeCompareGraph(canvasInfo, canvasLocstionValue, graphRange.userGraphLocationVlaue, recommendedGraphValue, properties);
+                 self.drawUserInfoText(canvasInfo, properties);
+
+                 if (buttonReverseCount === 0) {
+                     if (recommendedGraphValue[0] <= graphRange.nextRecommendGraphValue[0]) {
+                         clearInterval(graphShapeInterval);
+                     }
+                 } else if (buttonReverseCount == 1) {
+                     if (recommendedGraphValue[0] >= graphRange.previousRecommendGraphValue[0]) {
+                         clearInterval(graphShapeInterval);
+                     }
+                 }
+
+             }, properties.animationMotionValue);
+
              self.setRecommendMessage(graphElIds);
-             self.chageButtonColor(graphElIds, graphDefaultProperties);
+             self.chageButtonColor(graphElIds, properties);
          },
 
          //** 육각 그래프 변형에 필요한 수치 반환
@@ -253,7 +295,8 @@
              var mySizeLength = Object.keys(userSize).length;
              var recommendSizeValueLength = recommendSizeValue.length;
              var userGraphLocationVlaue = [];
-             var recommendedGraphLocationVlaue = [];
+             var previousRecommendGraphValue = [];
+             var nextRecommendGraphValue = [];
 
              for (var i = 0; i < mySizeLength; i++) {
                  var recommendSizeKey = [];
@@ -271,21 +314,40 @@
                  var minSizeValue = oneBodyPartList[0];
                  var maxSizeValue = oneBodyPartList[oneBodyPartList.length - 1];
                  var mySizeList = Object.values(userSize);
-                 var recommendedSizeList = Object.values(recommendSizeValue[buttonCount]);
+                 var proviousButtonValue = 0;
+                 var buttonAddValue = 0;
+                 var nextButtonValu = 0;
+
+                 if (buttonCount > 0 && buttonCount !== 0) {
+                     proviousButtonValue = 1;
+                 }
+
+                 if (buttonReverseCount == 1) {
+                     if (buttonCount === 0) {
+                         buttonAddValue = 1;
+                     } else {
+                         nextButtonValu = 1;
+                     }
+                 }
+
+                 var previousRecommendedSizeList = Object.values(recommendSizeValue[buttonCount - proviousButtonValue + nextButtonValu]);
+                 var nextRecommendedSizeList = Object.values(recommendSizeValue[buttonCount + nextButtonValu + buttonAddValue]);
 
                  userGraphLocationVlaue.push((mySizeList[i] - minSizeValue) / (maxSizeValue - minSizeValue) * 100);
+                 previousRecommendGraphValue.push((previousRecommendedSizeList[i] - minSizeValue) / (maxSizeValue - minSizeValue) * 100);
 
                  if (buttonCount == recommendSizeValueLength - 1) {
-                     recommendedGraphLocationVlaue.push(3);
+                     nextRecommendGraphValue.push(3);
                  } else {
-                     recommendedGraphLocationVlaue.push((recommendedSizeList[i] - minSizeValue) / (maxSizeValue - minSizeValue) * 100);
+                     nextRecommendGraphValue.push((nextRecommendedSizeList[i] - minSizeValue) / (maxSizeValue - minSizeValue) * 100);
                  }
 
              }
 
              return {
                  userGraphLocationVlaue: userGraphLocationVlaue,
-                 recommendedGraphLocationVlaue: recommendedGraphLocationVlaue
+                 previousRecommendGraphValue: previousRecommendGraphValue,
+                 nextRecommendGraphValue: nextRecommendGraphValue
              };
          },
 
@@ -401,17 +463,17 @@
          },
 
          //**원 내부 육각 그래프 라인 추천 부분 그리기
-         drawSizeCompareGraph: function (canvasInfo, locationValue, graphRange, prop) {
+         drawSizeCompareGraph: function (canvasInfo, locationValue, userGraphRange, recommendGraphRange, prop) {
              var startAngle = 0 * Math.PI / prop.graphFaceCount;
              var degree = (Math.PI * 2) / prop.graphFaceCount;
-             var userGraphStartPointValue = prop.graphRangeValue * graphRange.userGraphLocationVlaue[0];
-             var graphStartPointValue = prop.graphRangeValue * graphRange.recommendedGraphLocationVlaue[0];
+             var userGraphStartPointValue = prop.graphRangeValue * userGraphRange[0];
+             var graphStartPointValue = prop.graphRangeValue * recommendGraphRange[0];
 
              canvasInfo.polarContext.save();
              canvasInfo.polarContext.translate(locationValue.canvasHalfWidth - 10, locationValue.canvasHalfWidth + 10);
 
-             drawGraphShape(prop.userGraphColor, userGraphStartPointValue, graphRange.userGraphLocationVlaue, 0);
-             drawGraphShape(prop.recommendGraphColor, graphStartPointValue, graphRange.recommendedGraphLocationVlaue, 1);
+             drawGraphShape(prop.userGraphColor, userGraphStartPointValue, userGraphRange, 0);
+             drawGraphShape(prop.recommendGraphColor, graphStartPointValue, recommendGraphRange, 1);
 
              function drawGraphShape(textColor, graphPointerValue, locationValue, shapeCount) {
                  canvasInfo.polarContext.save();
@@ -499,3 +561,4 @@
      return drawPolarGraph;
 
  })();
+

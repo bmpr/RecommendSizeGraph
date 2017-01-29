@@ -19,11 +19,11 @@
 
         <div class="recommedContent">
             <div id="leftButton">
-                <span id="leftButtonEvent" onclick="changeGraphContent(false)"></span>
+                <span id="leftButtonEvent"></span>
             </div>
             <div id="recommedMessage"></div>
             <div id="rightButton">
-                <span id="rightButtonEvent" onclick="changeGraphContent(true)"></span>
+                <span id="rightButtonEvent"></span>
             </div>
         </div>
 
@@ -31,26 +31,24 @@
 
     <script src="../js/polarGraph.js"></script>
     <script>
+        
         var buttonCount = 0;
-        //추천 사이즈 별 이동을 위한 버튼 값 변경
-        function changeGraphContent(isAdd) {
-            var recommendSizeKeyLength = Object.keys(recommendSize).length - 1;
+        var buttonReverseCount = 0;
 
-            buttonCount += isAdd ? 1 : -1;
-            if (buttonCount - 1 == recommendSizeKeyLength) {
-                buttonCount--;
-            } else if (buttonCount - 1 == -2) {
-                buttonCount++;
-            }
+        (function () {
 
-            var polarGraph = new PolarGraph({
+            var polarGraph = {};
+
+            var elIds = {
                 canvasPolar: 'canvasPolar',
                 recommedMessage: 'recommedMessage',
                 leftButton: 'leftButton',
                 rightButton: 'rightButton',
                 leftButtonEvent: 'leftButtonEvent',
                 rightButtonEvent: 'rightButtonEvent'
-            }, {
+            }
+
+            var properties = {
                 graphFontStyle: 'Flexo-Bold',
                 userGraphColor: '#95D0CC',
                 recommendGraphColor: '#20607A',
@@ -81,13 +79,70 @@
                 userSizeGraphGlobalAlpha: 0.8,
                 recommendSizeGraphColor: '#20607A',
                 recommendSizeGraphLineWidth: 6,
-                graphFaceCount : 6,
-                userInfoTextAlign: "center" 
-            }, buttonCount);
+                graphFaceCount: 6,
+                userInfoTextAlign: "center",
+                animationMotionValue: 10,
+                animationMotionFrame: 30
+            }
 
-        }
+            
+            var rightButton = document.getElementById(elIds.rightButtonEvent);
+            
+            rightButton.addEventListener('click', function event() {
+                var recommendSizeKeyLength = Object.keys(recommendSize).length - 1;
 
-        changeGraphContent(false);
+                buttonCount += 1;
+                buttonReverseCount = 0;
+
+                if (buttonCount - 1 !== recommendSizeKeyLength) {
+                    pauseEventListener(rightButton, event);
+                }
+
+                if (buttonCount - 1 == recommendSizeKeyLength) {
+                    buttonCount--;
+                }
+            });
+
+
+            var leftButton = document.getElementById(elIds.leftButtonEvent);
+            
+            leftButton.addEventListener('click', function event() {
+
+                buttonCount += -1;
+                buttonReverseCount = 1;
+
+                if (buttonCount + 1 !== 0) {
+                    pauseEventListener(leftButton, event);
+                }
+
+                if (buttonCount - 1 == -2) {
+                    buttonCount++;
+                }
+            });
+
+
+            var pauseEventListener = function (buttonLocation, eventName) {
+                polarGraph = new PolarGraph(elIds, properties);
+
+                var eventCount = 0;
+                var eventStopInterval = setInterval(function () {
+                    buttonLocation.removeEventListener('click', eventName);
+                    eventCount++;
+
+                    if (eventCount > properties.animationMotionFrame * 2) {
+                        clearInterval(eventStopInterval);
+                        buttonLocation.addEventListener('click', eventName);
+                    }
+                });
+            }
+
+
+            window.onload = function () {
+                polarGraph = new PolarGraph(elIds, properties);
+            };
+
+        })();
+        
     </script>
 
 </body>
