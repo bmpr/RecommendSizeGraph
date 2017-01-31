@@ -31,7 +31,6 @@
 
     <script src="../js/polarGraph.js"></script>
     <script>
-        
         var buttonCount = 0;
         var buttonReverseCount = 0;
 
@@ -82,12 +81,17 @@
                 graphFaceCount: 6,
                 userInfoTextAlign: "center",
                 animationMotionValue: 10,
-                animationMotionFrame: 30
+                animationMotionFrame: 40,
+                animationEasyInRange: 3,
+                animationEasyOutRange: 6,
+                animationEasySpeed : 3,
+                animationInOutSpeed: 50,
+                animationCenterSpeed: 10
             }
 
-            
+
             var rightButton = document.getElementById(elIds.rightButtonEvent);
-            
+
             rightButton.addEventListener('click', function event() {
                 var recommendSizeKeyLength = Object.keys(recommendSize).length - 1;
 
@@ -105,7 +109,7 @@
 
 
             var leftButton = document.getElementById(elIds.leftButtonEvent);
-            
+
             leftButton.addEventListener('click', function event() {
 
                 buttonCount += -1;
@@ -142,7 +146,6 @@
             };
 
         })();
-        
     </script>
 
 </body>

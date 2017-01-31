@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/freeSizeGraphStyle.css" />
+    <style>
+        @font-face {
+            font-family: 'Flexo-Bold';
+            src: url('Flexo-Bold.eot');
+            src: url('Flexo-Bold.eot?#iefix') format('embedded-opentype'), url('Flexo-Bold.woff2') format('woff2'), url('Flexo-Bold.woff') format('woff'), url('Flexo-Bold.ttf') format('truetype'),
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="canvasFreeSize" width="625" height="625">
+        이 브라우저는 캔버스를 지원하지 않습니다.
+    </canvas>
+
+    <script>
+        var canvasFreeSize = document.getElementById("canvasFreeSize");
+        var freeSizeContext = canvasFreeSize.getContext("2d");
+        var freeSizeGraphImg = new Image(); // 이미지 생성
+
+        var canvasHalfWidth = canvasFreeSize.width / 2;
+        var canvasRatio = 2.5;
+
+        // 클립핑 된 그래프 영역
+        freeSizeContext.save(); // - 클립 시작 영역
+
+        freeSizeContext.beginPath();
+        freeSizeContext.arc(canvasHalfWidth, canvasHalfWidth, 100 * canvasRatio, 0, 2 * Math.PI);
+        freeSizeContext.strokeStyle = '#ffffff'
+        freeSizeContext.stroke();
+        freeSizeContext.clip();
+
+        // 클립 외 바탕부분
+        freeSizeContext.beginPath();
+        freeSizeContext.fillStyle = '#F3F3F0';
+        freeSizeContext.fillRect(0, 0, canvasFreeSize.width, canvasFreeSize.height);
+        freeSizeContext.fill();
+
+        var imgWidth = 196 * canvasRatio;
+        var imgHeight = 159 * canvasRatio;
+
+        //이미지 넣기
+        freeSizeGraphImg.src = "../img/freeSizeImg.png";
+        freeSizeContext.drawImage(freeSizeGraphImg, (canvasFreeSize.width - imgWidth) / 2, (canvasFreeSize.height - imgHeight) / 1.25, imgWidth, imgHeight);
+
+        // 그래프 내 라인
+        var circleAreaDivesion = canvasFreeSize.width / 12;
+
+        freeSizeContext.beginPath();
+        freeSizeContext.globalAlpha = 0.6;
+
+        for (var i = 0; i < 12; i++) {
+            freeSizeContext.moveTo(circleAreaDivesion * i, 0);
+            freeSizeContext.lineTo(circleAreaDivesion * i, canvasFreeSize.height);
+        }
+
+        freeSizeContext.lineWidth = 2;
+        freeSizeContext.strokeStyle = '#F3F3F0';
+        freeSizeContext.stroke();
+
+        //그래프 내 ME 라인        
+        freeSizeContext.beginPath();
+        freeSizeContext.globalAlpha = 1;
+
+        freeSizeContext.moveTo(circleAreaDivesion * 8, 0);
+        freeSizeContext.lineTo(circleAreaDivesion * 8, canvasFreeSize.height);
+
+        freeSizeContext.lineWidth = 2;
+        freeSizeContext.strokeStyle = '#ffffff';
+        freeSizeContext.stroke();
+
+        freeSizeContext.restore(); // - 클립 끝 영역
+
+
+        freeSizeContext.save();
+        //그래프 내 % 텍스트
+        freeSizeContext.beginPath();
+        freeSizeContext.fillStyle = '#FBFBFB';
+        freeSizeContext.font = (25 * canvasRatio) + "px 'Flexo-Bold'";
+        freeSizeContext.fillText('67%', canvasHalfWidth / 1.2, canvasHalfWidth * 1.2);
+        freeSizeContext.fill();
+
+        
+        //그래프 내 추천 컬러 라인
+        freeSizeContext.beginPath();
+        freeSizeContext.globalAlpha = 1;
+
+        freeSizeContext.moveTo(circleAreaDivesion * 2, 0); // 라인 1
+        freeSizeContext.lineTo(circleAreaDivesion * 2, canvasFreeSize.height);
+
+        freeSizeContext.moveTo(circleAreaDivesion * 10, 0); // 라인 2
+        freeSizeContext.lineTo(circleAreaDivesion * 10, canvasFreeSize.height);
+
+        freeSizeContext.lineWidth = 2;
+        freeSizeContext.strokeStyle = '#00FFB0';
+        freeSizeContext.stroke();
+
+        
+        //그래프 내 ME 텍스트
+        freeSizeContext.beginPath();
+        freeSizeContext.fillStyle = '#00FFB0';
+        freeSizeContext.font = (14 * canvasRatio) + "px 'Flexo-Bold'";
+        freeSizeContext.fillText('ME!', (circleAreaDivesion * 8) - (circleAreaDivesion / 2), circleAreaDivesion);
+        freeSizeContext.fill();
+
+        freeSizeContext.restore();
+    </script>
+</body>
+
+</html>
