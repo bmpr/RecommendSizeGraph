@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="196px" height="159px" viewBox="0 0 196 159" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41.1 (35376) - http://www.bohemiancoding.com/sketch -->
+    <title>Page 1</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="195.2298 158.749 0 158.749 0 0.0004 195.2298 0.0004"></polygon>
+        <linearGradient x1="0%" y1="0%" x2="0%" y2="141.478066%" id="linearGradient-3">
+            <stop stop-color="#20607A" offset="0%"></stop>
+            <stop stop-color="#44A1B3" offset="41.8009827%"></stop>
+            <stop stop-color="#95D0CC" offset="63.3561222%"></stop>
+            <stop stop-color="#EDF2D0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.9">
+        <g id="Artboard" transform="translate(-1065.000000, -1449.000000)">
+            <g id="Page-1" style="mix-blend-mode: multiply;" transform="translate(1065.000000, 1449.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Clip-2"></g>
+                <path d="M-0.0002,80.5634 C9.9548,125.2994 49.8788,158.7494 97.6138,158.7494 C145.3508,158.7494 185.2758,125.3014 195.2298,80.5634 C146.1028,66.6104 131.7788,0.0004 97.6138,0.0004 C63.4488,0.0004 49.1258,66.6084 -0.0002,80.5634" id="Fill-1" fill="url(#linearGradient-3)" mask="url(#mask-2)"></path>
+            </g>
+        </g>
+    </g>
+</svg>

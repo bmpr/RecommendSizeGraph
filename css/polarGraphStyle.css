@@ -1,10 +1,11 @@
- @font-face {
+
+@font-face {
      font-family: 'Flexo-Bold';
      src: url('Flexo-Bold.eot');
      src: url('Flexo-Bold.eot?#iefix') format('embedded-opentype'), url('Flexo-Bold.woff2') format('woff2'), url('Flexo-Bold.woff') format('woff'), url('Flexo-Bold.ttf') format('truetype'),
  }
  
- .polarArea {
+ .graph_content {
      width: 340px;
      height: 340px;
      background-color: #FBFBFB;
@@ -12,7 +13,7 @@
      margin: 0;
  }
  
- .polarArea #canvasPolar {
+ .graph_content #canvas_polar {
      width: 270px;
      height: 270px;
      display: inline-block;
@@ -21,14 +22,14 @@
      left: 10%;
  }
  
- .polarArea .recommedContent {
+ .graph_content .recomm_area {
      display: block;
      width: 340px;
      height: 20%;
      font-size: 0;
  }
  
- .polarArea .recommedContent #leftButton {
+ .graph_content .recomm_area #btn_left {
      width: 30px;
      height: 30px;
      float: left;
@@ -38,14 +39,14 @@
      background-repeat: no-repeat;
  }
  
- .polarArea .recommedContent #leftButton #leftButtonEvent {
+ .graph_content .recomm_area #btn_left #btn_event_left {
      width: 30px;
      height: 30px;
      display: block;
      cursor: pointer;
  }
  
- .polarArea .recommedContent #recommedMessage {
+ .graph_content .recomm_area #msg_recomm {
      width: 180px;
      height: 40px;
      float: left;
@@ -54,7 +55,7 @@
      text-align: center;
  }
  
- .polarArea .recommedContent #rightButton {
+ .graph_content .recomm_area #btn_right {
      width: 30px;
      height: 30px;
      float: right;
@@ -64,10 +65,9 @@
      background-repeat: no-repeat;
  }
  
- .polarArea .recommedContent #rightButton #rightButtonEvent {
+ .graph_content .recomm_area #btn_right #btn_event_right {
      width: 30px;
      height: 30px;
      display: block;
      cursor: pointer;
  }
- 

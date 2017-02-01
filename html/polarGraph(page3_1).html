@@ -6,24 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link rel="stylesheet" href="../css/polarGraphStyle.css" />
+
+    <link rel="stylesheet" type="text/css" href="../css/polarGraphStyle.css" />
 </head>
 
 <body>
 
-    <div class="polarArea">
+    <div class="graph_content">
 
-        <canvas id="canvasPolar" width="675" height="675">
+        <canvas id="canvas_polar" width="675" height="675">
             이 브라우저는 캔버스를 지원하지 않습니다.
         </canvas>
 
-        <div class="recommedContent">
-            <div id="leftButton">
-                <span id="leftButtonEvent"></span>
+        <div class="recomm_area">
+            <div id="btn_left">
+                <span id="btn_event_left"></span>
             </div>
-            <div id="recommedMessage"></div>
-            <div id="rightButton">
-                <span id="rightButtonEvent"></span>
+            <div id="msg_recomm"></div>
+            <div id="btn_right">
+                <span id="btn_event_right"></span>
             </div>
         </div>
 
@@ -31,115 +32,112 @@
 
     <script src="../js/polarGraph.js"></script>
     <script>
-        var buttonCount = 0;
-        var buttonReverseCount = 0;
+        var buttonCount = 0,
+            buttonReverseCount = 0;
 
         (function () {
 
             var polarGraph = {};
 
             var elIds = {
-                canvasPolar: 'canvasPolar',
-                recommedMessage: 'recommedMessage',
-                leftButton: 'leftButton',
-                rightButton: 'rightButton',
-                leftButtonEvent: 'leftButtonEvent',
-                rightButtonEvent: 'rightButtonEvent'
-            }
+                    canvasPolar: 'canvas_polar',
+                    recommedMessage: 'msg_recomm',
+                    buttonLeft: 'btn_left',
+                    buttonRight: 'btn_right',
+                    buttonLeftEvent: 'btn_event_left',
+                    buttonRightEvent: 'btn_event_right'
+                },
+                properties = {
+                    graphFontStyle: 'arial',
+                    userGraphColor: '#95D0CC',
+                    recommendGraphColor: '#20607A',
+                    circleFillColor: '#E7EAEA',
+                    circleShadowColor: '#EEEDE9',
+                    circleShadowBlur: 50,
+                    graphRangeValue: 1.8,
+                    dotText: '●',
+                    dotFontSize: 8,
+                    dotFontColor: '#20607A',
+                    dotFontLocationValue: 0.8,
+                    bodyPartFontSize: 10,
+                    bodyPartFontColor: '#333333',
+                    bodyPartLineColor: '#95D0CC',
+                    bodyPartLineWidth: 2,
+                    bodyPartLocationValue: 0.9,
+                    sizeGapFontSize: 12,
+                    sizeGapFontColor: '#20607A',
+                    sizeGapFontLocationValue: 0.62,
+                    recommendSizeFontSize: 24,
+                    userInfoFontSize: 11,
+                    userInfoFontColor: '#FBFBFB',
+                    buttonOpacity: 0.3,
+                    buttonCursorIn: 'pointer',
+                    buttonCursorOut: 'default',
+                    fontRatio: 2.5,
+                    userSizeGraphColor: '#95D0CC',
+                    userSizeGraphGlobalAlpha: 0.8,
+                    recommendSizeGraphColor: '#20607A',
+                    recommendSizeGraphLineWidth: 6,
+                    graphFaceCount: 6,
+                    userInfoTextAlign: "center",
+                    animationMotionValue: 10,
+                    animationMotionFrame: 40,
+                    animationEasyInRange: 3,
+                    animationEasyOutRange: 6,
+                    animationEasySpeed: 3,
+                    animationInOutSpeed: 50,
+                    animationCenterSpeed: 10
+                };
 
-            var properties = {
-                graphFontStyle: 'Flexo-Bold',
-                userGraphColor: '#95D0CC',
-                recommendGraphColor: '#20607A',
-                circleFillColor: '#E7EAEA',
-                circleShadowColor: '#EEEDE9',
-                circleShadowBlur: 50,
-                graphRangeValue: 1.8,
-                dotText: '●',
-                dotFontSize: 8,
-                dotFontColor: '#20607A',
-                dotFontLocationValue: 0.8,
-                bodyPartFontSize: 10,
-                bodyPartFontColor: '#333333',
-                bodyPartLineColor: '#95D0CC',
-                bodyPartLineWidth: 2,
-                bodyPartLocationValue: 0.9,
-                sizeGapFontSize: 12,
-                sizeGapFontColor: '#20607A',
-                sizeGapFontLocationValue: 0.62,
-                recommendSizeFontSize: 24,
-                userInfoFontSize: 11,
-                userInfoFontColor: '#FBFBFB',
-                buttonOpacity: 0.3,
-                buttonCursorIn: 'pointer',
-                buttonCursorOut: 'default',
-                fontRatio: 2.5,
-                userSizeGraphColor: '#95D0CC',
-                userSizeGraphGlobalAlpha: 0.8,
-                recommendSizeGraphColor: '#20607A',
-                recommendSizeGraphLineWidth: 6,
-                graphFaceCount: 6,
-                userInfoTextAlign: "center",
-                animationMotionValue: 10,
-                animationMotionFrame: 40,
-                animationEasyInRange: 3,
-                animationEasyOutRange: 6,
-                animationEasySpeed : 3,
-                animationInOutSpeed: 50,
-                animationCenterSpeed: 10
-            }
+            var buttonRight = document.getElementById(elIds.buttonRightEvent);
+            buttonRight.addEventListener('click', onClickRightEventHandler);
 
-
-            var rightButton = document.getElementById(elIds.rightButtonEvent);
-
-            rightButton.addEventListener('click', function event() {
+            function onClickRightEventHandler() {
                 var recommendSizeKeyLength = Object.keys(recommendSize).length - 1;
 
                 buttonCount += 1;
                 buttonReverseCount = 0;
 
                 if (buttonCount - 1 !== recommendSizeKeyLength) {
-                    pauseEventListener(rightButton, event);
+                    pauseEventHandler(buttonRight, onClickRightEventHandler);
                 }
 
                 if (buttonCount - 1 == recommendSizeKeyLength) {
                     buttonCount--;
                 }
-            });
+            }
 
+            var buttonLeft = document.getElementById(elIds.buttonLeftEvent);
+            buttonLeft.addEventListener('click', onClickLeftEventHandler);
 
-            var leftButton = document.getElementById(elIds.leftButtonEvent);
-
-            leftButton.addEventListener('click', function event() {
+            function onClickLeftEventHandler() {
 
                 buttonCount += -1;
                 buttonReverseCount = 1;
 
                 if (buttonCount + 1 !== 0) {
-                    pauseEventListener(leftButton, event);
+                    pauseEventHandler(buttonLeft, onClickLeftEventHandler);
                 }
 
                 if (buttonCount - 1 == -2) {
                     buttonCount++;
                 }
-            });
+            }
 
-
-            var pauseEventListener = function (buttonLocation, eventName) {
+            function pauseEventHandler(buttonLocation, eventHandler) {
                 polarGraph = new PolarGraph(elIds, properties);
 
                 var eventCount = 0;
                 var eventStopInterval = setInterval(function () {
-                    buttonLocation.removeEventListener('click', eventName);
+                    buttonLocation.removeEventListener('click', eventHandler);
                     eventCount++;
 
                     if (eventCount > properties.animationMotionFrame * 2) {
                         clearInterval(eventStopInterval);
-                        buttonLocation.addEventListener('click', eventName);
+                        buttonLocation.addEventListener('click', eventHandler);
                     }
                 });
             }
-
 
             window.onload = function () {
                 polarGraph = new PolarGraph(elIds, properties);

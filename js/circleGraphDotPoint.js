@@ -33,7 +33,7 @@
          shadowReversalIn: false,
          shadowReversalOut: true,
          textSizeRatio: 2.5,
-         ShadowBlurRatio: 2.5,
+         ShadowBlurRatio: 2.5, 
          radiusLengthValue: 0.8,
          circleColorTextLocationX: 0,
          circleColorTextLocationY: 10,

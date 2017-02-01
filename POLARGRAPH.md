@@ -32,3 +32,7 @@
 
 실행한 이벤트가 효과가 종료되기 전에 다음 이벤트 효과가 중복되어 나타나는 이슈
   - 이벤트 버튼을 빠르게 재 클릭시 그래프 효과가 중복되어 나타남 => `setInterval()`활용하여 실행되는 이벤트의 종료 시점까지 `removeEventListener()` 적용
+
+
+Safari, IE.. 브라우저에서 동작하지 이슈
+`Object.values()` IE, Safari.. 지원안됨. `Object.keys().map()`로 대체
