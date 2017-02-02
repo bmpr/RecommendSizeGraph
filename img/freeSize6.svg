@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="350px" height="209px" viewBox="0 0 350 209" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41.1 (35376) - http://www.bohemiancoding.com/sketch -->
+    <title>Page 1</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="0%" y2="141.478066%" id="linearGradient-1">
+            <stop stop-color="#20607A" offset="0%"></stop>
+            <stop stop-color="#44A1B3" offset="24.9387519%"></stop>
+            <stop stop-color="#95D0CC" offset="52.8169759%"></stop>
+            <stop stop-color="#EDF2D0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-168.000000, -859.000000)" fill="url(#linearGradient-1)">
+            <path d="M168,942.471 C192.596,1015.2 261.713,1067.449 342.745,1067.449 C423.766,1067.449 492.527,1015.182 517.133,942.471 C513.825,942.471 510.518,942.427 507.212,942.338 C494.463,941.993 481.731,940.979 469.094,939.264 C457.71,937.72 446.403,935.608 435.235,932.916 C425.177,930.492 415.23,927.599 405.446,924.234 C396.832,921.271 388.343,917.942 380.019,914.243 C372.937,911.097 365.975,907.683 359.161,903.993 C353.602,900.982 348.14,897.787 342.807,894.39 C338.854,891.873 334.97,889.246 331.185,886.483 C328.894,884.811 326.635,883.092 324.441,881.293 C322.176,879.435 319.961,877.518 317.692,875.662 C308.202,867.901 297.253,859.363 284.375,859.363 C246.212,859.363 232.807,942.471 168,942.471 Z" id="Page-1" style="mix-blend-mode: multiply;"></path>
+        </g>
+    </g>
+</svg>

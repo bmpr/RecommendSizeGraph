@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="233px" height="167px" viewBox="0 0 233 167" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 41.1 (35376) - http://www.bohemiancoding.com/sketch -->
+    <title>Page 1</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="0%" x2="0%" y2="141.478066%" id="linearGradient-1">
+            <stop stop-color="#20607A" offset="0%"></stop>
+            <stop stop-color="#44A1B3" offset="24.9387519%"></stop>
+            <stop stop-color="#95D0CC" offset="52.8169759%"></stop>
+            <stop stop-color="#EDF2D0" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-1161.000000, -858.000000)" fill="url(#linearGradient-1)">
+            <path d="M1161,941.599 C1177.397,990.083 1223.474,1024.626 1277.494,1024.626 C1331.507,1024.626 1377.347,990.072 1393.75,941.599 C1328.943,941.599 1315.538,858.491 1277.375,858.491 C1239.212,858.491 1225.807,941.599 1161,941.599 Z" id="Page-1" style="mix-blend-mode: multiply;"></path>
+        </g>
+    </g>
+</svg>

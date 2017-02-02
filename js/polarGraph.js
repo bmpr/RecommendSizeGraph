@@ -262,7 +262,7 @@ PolarGraph.prototype = {
                 easySpeed = properties.animationEasySpeed;
 
             for (var i = 0; i < properties.graphFaceCount; i++) {
-                if (animationEasyCount > (animationEasyLocationValue) * easyInRange && animationEasyCount <= (animationEasyLocationValue) * easyOutRange) {
+                if (animationEasyCount > (animationEasyLocationValue) * easyInRange && animationEasyCount <= (animationEasyLocationValue) * easyOutRange) { 
                     easyAddCount = (recommendGraphAnimationValue[i]) * (animationEasyCount / centerSpeed);
 
                 } else {

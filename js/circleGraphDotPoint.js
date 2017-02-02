@@ -1,5 +1,5 @@
  var recommendSizeData = {
-     recommendSize: '70',
+     recommendSize: '80',
      isCorrectGender: true,
      recommendRate: 0,
      status: true,

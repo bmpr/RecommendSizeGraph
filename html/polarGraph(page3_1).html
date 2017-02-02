@@ -131,12 +131,14 @@
                 var eventStopInterval = setInterval(function () {
                     buttonLocation.removeEventListener('click', eventHandler);
                     eventCount++;
+                    console.log(eventCount);
 
                     if (eventCount > properties.animationMotionFrame * 2) {
                         clearInterval(eventStopInterval);
                         buttonLocation.addEventListener('click', eventHandler);
                     }
-                });
+                    
+                },0);
             }
 
             window.onload = function () {

@@ -24,129 +24,168 @@
 
     <script>
         var data = {
-            graphType: 3, // 0 ~ 5 
-            direction: 'left', // left, right
-            percent: 80 // 0 ~ 100%
+            graphType: 1, // 0 ~ 5 
+            direction: 'right', // left, right
+            percent: 50 // 0 ~ 100%
         };
-        
-        
+
         var canvasFreeSize = document.getElementById("canvasFreeSize");
         var freeSizeContext = canvasFreeSize.getContext("2d");
-        var freeSizeGraphImg = new Image(); // 이미지 생성
-
+        
         var canvasHalfWidth = canvasFreeSize.width / 2;
+        var circleAreaDivesion = canvasFreeSize.width / 12;
         var canvasRatio = 2.5;
-        
-        
+        var recommendTextCount = 0;
         
         // 클립핑 된 그래프 영역
-        freeSizeContext.save(); // - 클립 시작 영역
 
-        freeSizeContext.beginPath();
-        freeSizeContext.arc(canvasHalfWidth, canvasHalfWidth, 100 * canvasRatio, 0, 2 * Math.PI);
-        freeSizeContext.strokeStyle = '#ffffff'
-        freeSizeContext.stroke();
-        freeSizeContext.clip();
+        var drawBackground = function () {
 
-        // 클립 외 바탕부분
-        freeSizeContext.beginPath();
-        freeSizeContext.fillStyle = '#F3F3F0';
-        freeSizeContext.fillRect(0, 0, canvasFreeSize.width, canvasFreeSize.height);
-        freeSizeContext.fill();
+            freeSizeContext.beginPath();
+            freeSizeContext.arc(canvasHalfWidth, canvasHalfWidth, 100 * canvasRatio, 0, 2 * Math.PI);
+            freeSizeContext.strokeStyle = '#ffffff'
+            freeSizeContext.stroke();
+                        freeSizeContext.clip();
 
-        var imgWidth = 196 * canvasRatio;
-        var imgHeight = 159 * canvasRatio;
+            // 클립 외 바탕부분
+            freeSizeContext.beginPath();
+            freeSizeContext.fillStyle = '#F3F3F0';
+            freeSizeContext.fillRect(0, 0, canvasFreeSize.width, canvasFreeSize.height);
+            freeSizeContext.fill();
 
-        
-        
-        
-        //이미지 넣기
-        freeSizeGraphImg.src = "../img/freeSizeImg"+data.graphType+".svg";
-        freeSizeContext.drawImage(freeSizeGraphImg, (canvasFreeSize.width - imgWidth) / 2, (canvasFreeSize.height - imgHeight) / 1.25, imgWidth, imgHeight);
-
-        
-        // 그래프 내 배경 라인
-        var circleAreaDivesion = canvasFreeSize.width / 12;
-
-        freeSizeContext.beginPath();
-        freeSizeContext.globalAlpha = 0.2;
-
-        for (var i = 0; i < 12; i++) {
-            freeSizeContext.moveTo(circleAreaDivesion * i, 0);
-            freeSizeContext.lineTo(circleAreaDivesion * i, canvasFreeSize.height);
-        }
-
-        freeSizeContext.lineWidth = 2;
-        freeSizeContext.strokeStyle = '#F3F3F0';
-        freeSizeContext.stroke();
-        
-        
-        
-        //그래프 내 ME 라인        
-        freeSizeContext.beginPath();
-        freeSizeContext.globalAlpha = 1;
-
-        var lineLocationValue = (5 / 100) * data.percent;
-        var leftLine = 1 + lineLocationValue;
-        var rightLine = 11 - lineLocationValue;
-
-        if (data.direction == 'left') {
-            freeSizeContext.moveTo(circleAreaDivesion * leftLine, 0);
-            freeSizeContext.lineTo(circleAreaDivesion * leftLine, canvasFreeSize.height);
-        } else {
-            freeSizeContext.moveTo(circleAreaDivesion * rightLine, 0);
-            freeSizeContext.lineTo(circleAreaDivesion * rightLine, canvasFreeSize.height);
-        }
-
-        freeSizeContext.lineWidth = 2;
-        freeSizeContext.strokeStyle = '#ffffff';
-        freeSizeContext.stroke();
-
-        freeSizeContext.restore(); // - 클립 끝 영역
-
-        
-
-        //그래프 내 % 텍스트
-        freeSizeContext.beginPath();
-        freeSizeContext.fillStyle = '#FBFBFB';
-        freeSizeContext.font = (25 * canvasRatio) + "px 'Flexo-Bold'";
-        freeSizeContext.textAlign = 'center';
-        freeSizeContext.fillText(data.percent + '%', canvasHalfWidth, canvasHalfWidth * 1.2);
-        freeSizeContext.fill();
+            var imgWidth = 196 * canvasRatio;
+            var imgHeight = 159 * canvasRatio;
+            var freeSizeGraphImg = new Image(); // 이미지 생성
+            
+            freeSizeGraphImg.src = "../img/freeSize" + data.graphType + ".svg";
+            freeSizeContext.drawImage(freeSizeGraphImg, (canvasFreeSize.width - imgWidth) / 2, (canvasFreeSize.height - imgHeight) / 1.25, imgWidth, imgHeight);
 
 
-        //그래프 내 추천 컬러 라인
-        freeSizeContext.beginPath();
-        freeSizeContext.globalAlpha = 1;
+            // 그래프 내 배경 라인
+            freeSizeContext.save();
+            freeSizeContext.beginPath();
+            freeSizeContext.globalAlpha = 0.5;
 
-        freeSizeContext.moveTo(circleAreaDivesion * 2, 0); // 라인 1
-        freeSizeContext.lineTo(circleAreaDivesion * 2, canvasFreeSize.height);
+            for (var i = 0; i < 12; i++) {
+                freeSizeContext.moveTo(circleAreaDivesion * i, 0);
+                freeSizeContext.lineTo(circleAreaDivesion * i, canvasFreeSize.height);
+            }
 
-        freeSizeContext.moveTo(circleAreaDivesion * 10, 0); // 라인 2
-        freeSizeContext.lineTo(circleAreaDivesion * 10, canvasFreeSize.height);
+            freeSizeContext.lineWidth = 2;
+            freeSizeContext.strokeStyle = '#EBEBE8';
+            freeSizeContext.stroke();
+            freeSizeContext.restore();
 
-        freeSizeContext.lineWidth = 2;
-        freeSizeContext.strokeStyle = '#00FFB0';
-        freeSizeContext.stroke();
+            //00% 텍스트
+            freeSizeContext.beginPath();
+            freeSizeContext.fillStyle = '#FBFBFB';
+            freeSizeContext.font = (25 * canvasRatio) + "px 'Flexo-Bold'";
+            freeSizeContext.textAlign = 'center';
+            freeSizeContext.fillText(data.percent + '%', canvasHalfWidth, canvasHalfWidth * 1.2);
+            freeSizeContext.fill();
+            
+        };
 
-        
-        
-        
-        //그래프 내 ME 텍스트
-        freeSizeContext.beginPath();
-        freeSizeContext.fillStyle = '#00FFB0';
-        freeSizeContext.textAlign = 'center';
-        freeSizeContext.font = (14 * canvasRatio) + "px 'Flexo-Bold'";
+        //라인 그리기
+        var drawRecommedLine = function () {
+            
+            var lineLocationValue = (5 / 100) * data.percent,
+                lineLength = 12,
+                leftLine = 1 + lineLocationValue,
+                rightLine = (lineLength - 1) - lineLocationValue,
+                lineUpCount = 0,
+                moveLineCount = 0,
+                motionValue = 10,
+                lineHeightDivision = canvasFreeSize.height / 10;
 
-        if (data.direction == 'left') {
-            freeSizeContext.fillText('ME!', (circleAreaDivesion * leftLine), circleAreaDivesion);
-        } else {
-            freeSizeContext.fillText('ME!', (circleAreaDivesion * rightLine), circleAreaDivesion);
-        }
+            //추천라인 상하 이동
+            var lineInterval = setInterval(function () {
+                var bothEndLine = canvasFreeSize.height - lineHeightDivision;
 
-        freeSizeContext.fill();
+                //                freeSizeContext.clearRect(0, 0, canvasFreeSize.width, canvasFreeSize.height);
+                drawBackground();
 
-        
+                freeSizeContext.beginPath();
+                freeSizeContext.globalAlpha = 1;
+                freeSizeContext.moveTo(circleAreaDivesion * (lineLength / 2), bothEndLine);
+                freeSizeContext.lineTo(circleAreaDivesion * (lineLength / 2), bothEndLine - lineUpCount);
+                freeSizeContext.lineWidth = 4;
+                freeSizeContext.strokeStyle = '#ffffff';
+                freeSizeContext.stroke();
+
+                if (lineHeightDivision * 8 < bothEndLine - lineUpCount || lineHeightDivision * 3 > bothEndLine - lineUpCount) {
+                    lineUpCount += canvasRatio / motionValue + canvasRatio;
+
+                } else {
+                    lineUpCount += canvasRatio / motionValue + (canvasRatio * 2.5);
+
+                }
+
+                if (bothEndLine - lineUpCount <= lineHeightDivision) {
+                    clearInterval(lineInterval);
+                    moveLineAnimation();
+                }
+            }, motionValue);
+
+            //추천라인 좌우 이동
+            var moveLineAnimation = function () {
+                var lineChangeValue = 0;
+                var bothLineInterval = setInterval(function () {
+                    //                    freeSizeContext.clearRect(0, 0, canvasFreeSize.width, canvasFreeSize.height);
+                    drawBackground();
+
+                    freeSizeContext.beginPath();
+                    if (data.direction == 'left') {
+                        freeSizeContext.moveTo(circleAreaDivesion * (lineLength / 2) - lineChangeValue, 0);
+                        freeSizeContext.lineTo(circleAreaDivesion * (lineLength / 2) - lineChangeValue, canvasFreeSize.height);
+
+                    } else {
+                        freeSizeContext.moveTo(circleAreaDivesion * (lineLength / 2) + lineChangeValue, 0);
+                        freeSizeContext.lineTo(circleAreaDivesion * (lineLength / 2) + lineChangeValue, canvasFreeSize.height);
+                    }
+
+                    freeSizeContext.lineWidth = 4;
+                    freeSizeContext.strokeStyle = '#ffffff';
+                    freeSizeContext.stroke();
+
+                    lineChangeValue += 0.1 + lineChangeValue / motionValue;
+
+                    if (data.direction == 'left' && circleAreaDivesion * (lineLength / 2) - lineChangeValue <= circleAreaDivesion * leftLine) {
+                        clearInterval(bothLineInterval);
+                        drawMeColorText();
+
+                    } else if (data.direction !== 'left' && circleAreaDivesion * (lineLength / 2) + lineChangeValue >= circleAreaDivesion * rightLine) {
+                        clearInterval(bothLineInterval);
+                        drawMeColorText();
+                    }
+                }, motionValue);
+
+            };
+
+            //ME 텍스트 그리기
+            var drawMeColorText = function () {
+                freeSizeContext.save();
+                freeSizeContext.beginPath();
+                freeSizeContext.fillStyle = '#00FFB0';
+                freeSizeContext.textAlign = 'center';
+                freeSizeContext.font = (14 * canvasRatio) + "px 'Flexo-Bold'";
+
+                if (data.direction == 'left') {
+                    freeSizeContext.clearRect((circleAreaDivesion * leftLine) - (14 * canvasRatio), 0, (14 * canvasRatio) * 2, (14 * canvasRatio) * 2);
+                    freeSizeContext.fillText('ME!', (circleAreaDivesion * leftLine), circleAreaDivesion);
+
+                } else {
+                    freeSizeContext.fillText('ME!', (circleAreaDivesion * rightLine), circleAreaDivesion);
+
+                }
+                
+                freeSizeContext.fill();
+                freeSizeContext.restore();
+            }
+
+        };
+
+        drawRecommedLine();
         
     </script>
 </body>
