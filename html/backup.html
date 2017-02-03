@@ -6,57 +6,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="../css/freeSizeGraphStyle.css" />
     <style>
         @font-face {
             font-family: 'Flexo-Bold';
             src: url('Flexo-Bold.eot');
             src: url('Flexo-Bold.eot?#iefix') format('embedded-opentype'), url('Flexo-Bold.woff2') format('woff2'), url('Flexo-Bold.woff') format('woff'), url('Flexo-Bold.ttf') format('truetype'),
         }
-        
-        #canvas_graph_free {
-            position: absolute;
-            top: 5%;
-            left: 5%;
-            width: 250px;
-            height: 250px;
-            padding: 0;
-            margin: 0;
-        }
-        
-        #canvas_text {
-            position: absolute;
-            top: 5%;
-            left: 5%;
-            width: 250px;
-            height: 250px;
-            padding: 0;
-            margin: 0;
-        }
     </style>
 </head>
 
 <body>
 
-    <div style="display:none">
-        <img id="img_Graph" src="../img/freeSize1.svg" />
-    </div>
-
-    <canvas id="canvas_graph_free" width="625" height="625">
-        이 브라우저는 캔버스를 지원하지 않습니다.
-    </canvas>
-    
-    <canvas id="canvas_text" width="625" height="625">
+    <canvas id="canvasFreeSize" width="625" height="625">
         이 브라우저는 캔버스를 지원하지 않습니다.
     </canvas>
 
+   <div style = "display:none">
+       <img id="img_Graph" src="../img/freeSize1.svg"/>       
+   </div>
+   
     <script>
         var data = {
-            graphType: 1,
-            direction: 'left', 
-            percent: 50 
+            graphType: 1, // 0 ~ 5 
+            direction: 'left', // left, right
+            percent: 50 // 0 ~ 100%
         };
 
         var FreeSizeGraph = function (elId, graphProperties) {
+
             var graphDefaultProperties = {
                 lineCount: 12,
                 centerLineValue: 6,
@@ -67,10 +45,8 @@
                 circleColor: '#F3F3F0',
                 imgLineColor: '#EBEBE8',
                 percentTextColor: '#FBFBFB',
-                recommendTextColor: '#00FFB0',
                 recommendTextSize: 14,
-                recommendText: 'Me!',
-                percentTextSize: 25,
+                percentfontSize: 25,
                 textAlign: 'center',
                 imgLineWidth: 2,
                 recommendLineWidth: 4,
@@ -82,7 +58,7 @@
                 easyInOutSpeed: 3,
                 easyCenterSpeed: 7
             }
-
+            
             var runGraph = this.drawFreeSizeGraph(elId, graphProperties);
         };
 
@@ -91,21 +67,17 @@
             drawFreeSizeGraph: function (elId, graphProperties) {
                 var canvasInfo = this.initCanvas(elId),
                     canvasLocationValues = this.calCanvasLocationValue(canvasInfo, graphProperties),
-                    graphBackground = this.drawGraphBackground(canvasInfo, canvasLocationValues, graphProperties, 0),
+                    graphBackground = this.drawGraphBackground(canvasInfo, canvasLocationValues, graphProperties),
                     lineAnimation = this.drawRecommendLineUp(canvasInfo, canvasLocationValues, graphProperties);
             },
 
             initCanvas: function (elId) {
-                var canvasFreeSize = document.getElementById(elId.canvas_graph_free),
+                var canvasFreeSize = document.getElementById(elId),
                     freeSizeContext = canvasFreeSize.getContext("2d");
-                var canvasMeText = document.getElementById(elId.canvas_text),
-                    meTextContext = canvasMeText.getContext("2d");
 
                 return {
                     canvasFreeSize: canvasFreeSize,
-                    freeSizeContext: freeSizeContext,
-                    canvasMeText: canvasMeText,
-                    meTextContext: meTextContext
+                    freeSizeContext: freeSizeContext
                 }
             },
 
@@ -132,11 +104,11 @@
                     imgHeight = 160 * graphProperties.canvasRatio; // 데이터 값 확정 후 사이즈 변경예정.
 
                 freeSizeGraphImg = document.getElementById("img_Graph");
-                canvasInfo.freeSizeContext.drawImage(freeSizeGraphImg, (canvasInfo.canvasFreeSize.width - imgWidth) / 2, (canvasInfo.canvasFreeSize.height - imgHeight) / 1.2, imgWidth, imgHeight);
+                canvasInfo.freeSizeContext.drawImage(freeSizeGraphImg, (canvasInfo.canvasFreeSize.width - imgWidth) / 2, (canvasInfo.canvasFreeSize.height - imgHeight) / 1.2, imgWidth, imgHeight);         
             },
 
             // 클립핑 된 그래프 영역
-            drawGraphBackground: function (canvasInfo, canvasLocationValues, graphProperties, lineChangeValue) {
+            drawGraphBackground: function (canvasInfo, canvasLocationValues, graphProperties) {
                 canvasInfo.freeSizeContext.beginPath();
                 canvasInfo.freeSizeContext.arc(canvasLocationValues.canvasHalfWidth, canvasLocationValues.canvasHalfWidth, graphProperties.circleRadius * graphProperties.canvasRatio, 0, 2 * Math.PI);
                 canvasInfo.freeSizeContext.strokeStyle = graphProperties.recommendLineColor;
@@ -147,7 +119,7 @@
                 canvasInfo.freeSizeContext.fillStyle = graphProperties.circleColor;
                 canvasInfo.freeSizeContext.fillRect(0, canvasLocationValues.lineHeightDivision, canvasInfo.canvasFreeSize.width, canvasInfo.canvasFreeSize.height);
                 canvasInfo.freeSizeContext.fill();
-
+                
                 this.drawRecommendImg(canvasInfo, graphProperties);
 
                 canvasInfo.freeSizeContext.save();
@@ -166,7 +138,7 @@
 
                 canvasInfo.freeSizeContext.beginPath();
                 canvasInfo.freeSizeContext.fillStyle = graphProperties.percentTextColor;
-                canvasInfo.freeSizeContext.font = (graphProperties.percentTextSize * graphProperties.canvasRatio) + "px " + graphProperties.fontStyle + "";
+                canvasInfo.freeSizeContext.font = (graphProperties.percentfontSize * graphProperties.canvasRatio) + "px " + graphProperties.fontStyle + "";
                 canvasInfo.freeSizeContext.textAlign = graphProperties.textAlign;
                 canvasInfo.freeSizeContext.fillText(data.percent + '%', canvasLocationValues.canvasHalfWidth, canvasLocationValues.canvasHalfWidth * 1.2);
                 canvasInfo.freeSizeContext.fill();
@@ -179,7 +151,6 @@
                 var self = this;
                 var lineInterval = setInterval(function () {
                     var bothEndLine = canvasInfo.canvasFreeSize.height - canvasLocationValues.lineHeightDivision;
-                    self.drawGraphBackground(canvasInfo, canvasLocationValues, graphProperties, 0);
 
                     canvasInfo.freeSizeContext.beginPath();
                     canvasInfo.freeSizeContext.globalAlpha = graphProperties.recommendLineGeneValue;
@@ -210,17 +181,18 @@
                 var lineChangeValue = 0;
                 var self = this;
                 var bothLineInterval = setInterval(function () {
-                    self.drawGraphBackground(canvasInfo, canvasLocationValues, graphProperties, lineChangeValue);
-
+//                    canvasInfo.freeSizeContext.clearRect(0, canvasLocationValues.lineHeightDivision, canvasInfo.canvasFreeSize.width, canvasInfo.canvasFreeSize.height);
+                    self.drawGraphBackground(canvasInfo, canvasLocationValues, graphProperties);
+                    
                     canvasInfo.freeSizeContext.save();
                     canvasInfo.freeSizeContext.beginPath();
 
                     if (data.direction == 'left') {
-                        canvasInfo.freeSizeContext.moveTo(canvasLocationValues.circleAreaDivesion * (graphProperties.centerLineValue) - lineChangeValue, canvasLocationValues.lineHeightDivision);
+                        canvasInfo.freeSizeContext.moveTo(canvasLocationValues.circleAreaDivesion * (graphProperties.centerLineValue) - lineChangeValue, 0);
                         canvasInfo.freeSizeContext.lineTo(canvasLocationValues.circleAreaDivesion * (graphProperties.centerLineValue) - lineChangeValue, canvasInfo.canvasFreeSize.height);
 
                     } else {
-                        canvasInfo.freeSizeContext.moveTo(canvasLocationValues.circleAreaDivesion * (graphProperties.centerLineValue) + lineChangeValue, canvasLocationValues.lineHeightDivision);
+                        canvasInfo.freeSizeContext.moveTo(canvasLocationValues.circleAreaDivesion * (graphProperties.centerLineValue) + lineChangeValue, 0);
                         canvasInfo.freeSizeContext.lineTo(canvasLocationValues.circleAreaDivesion * (graphProperties.centerLineValue) + lineChangeValue, canvasInfo.canvasFreeSize.height);
                     }
 
@@ -229,46 +201,22 @@
                     canvasInfo.freeSizeContext.stroke();
                     canvasInfo.freeSizeContext.restore();
 
-                    lineChangeValue += 0.1 + (lineChangeValue / graphProperties.motionValue);
+                    lineChangeValue += 0.1 + lineChangeValue / graphProperties.motionValue;
 
                     if (data.direction == 'left' && canvasLocationValues.circleAreaDivesion * (graphProperties.centerLineValue) - lineChangeValue <= canvasLocationValues.circleAreaDivesion * canvasLocationValues.leftLine) {
                         clearInterval(bothLineInterval);
-                        self.drawMeColorText(canvasInfo, canvasLocationValues, graphProperties);
 
                     } else if (data.direction !== 'left' && canvasLocationValues.circleAreaDivesion * (graphProperties.centerLineValue) + lineChangeValue >= canvasLocationValues.circleAreaDivesion * canvasLocationValues.rightLine) {
                         clearInterval(bothLineInterval);
-                        self.drawMeColorText(canvasInfo, canvasLocationValues, graphProperties);
 
                     }
                 }, graphProperties.motionValue);
-            },
-
-            drawMeColorText: function (canvasInfo, canvasLocationValues, graphProperties) {
-                canvasInfo.meTextContext.save();
-                canvasInfo.meTextContext.beginPath();
-                canvasInfo.meTextContext.fillStyle = graphProperties.recommendTextColor;
-                canvasInfo.meTextContext.textAlign = graphProperties.textAlign;
-                canvasInfo.meTextContext.font = (graphProperties.recommendTextSize * graphProperties.canvasRatio) + "px " + graphProperties.fontStyle + "";
-
-                if (data.direction == 'left') {
-                    canvasInfo.meTextContext.clearRect((canvasLocationValues.circleAreaDivesion * canvasLocationValues.leftLine) - (graphProperties.recommendTextSize * canvasLocationValues.canvasRatio), 0, (graphProperties.recommendTextSize * canvasLocationValues.canvasRatio) * 2, (graphProperties.recommendTextSize * canvasLocationValues.canvasRatio) * 2);
-                    canvasInfo.meTextContext.fillText(graphProperties.recommendText, (canvasLocationValues.circleAreaDivesion * canvasLocationValues.leftLine), canvasLocationValues.circleAreaDivesion);
-
-                } else {
-                    canvasInfo.meTextContext.clearRect((canvasLocationValues.circleAreaDivesion * canvasLocationValues.rightLine) - (graphProperties.recommendTextSize * canvasLocationValues.canvasRatio), 0, (graphProperties.recommendTextSize * canvasLocationValues.canvasRatio) * 2, (graphProperties.recommendTextSize * canvasLocationValues.canvasRatio) * 2);
-                    canvasInfo.meTextContext.fillText(graphProperties.recommendText, (canvasLocationValues.circleAreaDivesion * canvasLocationValues.rightLine), canvasLocationValues.circleAreaDivesion);
-
-                }
-                canvasInfo.meTextContext.fill();
-                canvasInfo.meTextContext.restore();
             }
 
         };
 
-        var freeSizeGraph = new FreeSizeGraph({
-            canvas_graph_free: "canvas_graph_free",
-            canvas_text: "canvas_text"
-        }, {
+        
+        var freeSizeGraph = new FreeSizeGraph("canvasFreeSize", {
             lineCount: 12,
             centerLineValue: 6,
             canvasRatio: 2.5,
@@ -278,10 +226,8 @@
             circleColor: '#F3F3F0',
             imgLineColor: '#EBEBE8',
             percentTextColor: '#FBFBFB',
-            recommendTextColor: '#00FFB0',
             recommendTextSize: 14,
-            recommendText: 'ME!',
-            percentTextSize: 25,
+            percentfontSize: 25,
             textAlign: 'center',
             imgLineWidth: 2,
             recommendLineWidth: 4,
@@ -293,6 +239,37 @@
             easyInOutSpeed: 3,
             easyCenterSpeed: 7
         });
+        
+        
+        
+            var drawMeColorText = function (globalAlphaValue) { 
+            var lineLocationValue = (5 / 100) * data.percent,
+                lineLength = 12,
+                leftLine = 1 + lineLocationValue,
+                rightLine = (lineLength - 1) - lineLocationValue;
+            freeSizeContext.save();
+            freeSizeContext.beginPath();
+            freeSizeContext.fillStyle = '#00FFB0';
+            freeSizeContext.textAlign = 'center';
+
+//            freeSizeContext.globalAlpha = 1;
+            freeSizeContext.font = (14 * canvasRatio) + "px 'Flexo-Bold'";
+
+            if (data.direction == 'left') {
+                freeSizeContext.clearRect((circleAreaDivesion * leftLine) - (14 * canvasRatio), 0, (14 * canvasRatio) * 2, (14 * canvasRatio) * 2);
+                if(globalAlphaValue >=0.9){
+                freeSizeContext.fillText('ME!', (circleAreaDivesion * leftLine), circleAreaDivesion);    
+                }                
+
+            } else {
+                freeSizeContext.clearRect((circleAreaDivesion * rightLine) - (14 * canvasRatio), 0, (14 * canvasRatio) * 2, (14 * canvasRatio) * 2);
+                freeSizeContext.fillText('ME!', (circleAreaDivesion * rightLine), circleAreaDivesion);
+
+            }
+
+            freeSizeContext.fill();
+            freeSizeContext.restore();
+        }
     </script>
 </body>
 

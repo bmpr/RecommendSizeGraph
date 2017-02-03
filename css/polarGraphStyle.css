@@ -4,7 +4,7 @@
      src: url('Flexo-Bold.eot');
      src: url('Flexo-Bold.eot?#iefix') format('embedded-opentype'), url('Flexo-Bold.woff2') format('woff2'), url('Flexo-Bold.woff') format('woff'), url('Flexo-Bold.ttf') format('truetype'),
  }
- 
+
  .graph_content {
      width: 340px;
      height: 340px;
@@ -53,6 +53,7 @@
      margin: 2% 0 0 10%;
      font-size: 12px;
      text-align: center;
+     font-family: 'Flexo-Bold';
  }
  
  .graph_content .recomm_area #btn_right {
