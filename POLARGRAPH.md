@@ -36,3 +36,4 @@
 
 Safari, IE.. 브라우저에서 동작하지 이슈
 `Object.values()` IE, Safari.. 지원안됨. `Object.keys().map()`로 대체
+

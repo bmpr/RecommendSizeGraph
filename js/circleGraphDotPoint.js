@@ -7,7 +7,6 @@
  };
 
 
-
  var CircleGraph = function (elIds, circleGraphProperties) {
 
      var circleGraphNomalProperties = {
@@ -33,7 +32,7 @@
          shadowReversalIn: false,
          shadowReversalOut: true,
          textSizeRatio: 2.5,
-         ShadowBlurRatio: 2.5, 
+         ShadowBlurRatio: 2.5,
          radiusLengthValue: 0.8,
          circleColorTextLocationX: 0,
          circleColorTextLocationY: 10,
@@ -52,84 +51,67 @@
          five: 5
      };
 
-     var dataCheck = this.checkRecommendSizeServerData();
-     var propertyCheck = this.checkGraphProperties(elIds, circleGraphProperties, circleGraphNomalProperties, recommendSizeTalbe, listLengthCompareValue);
+     var dataValueCount = 0;
+     for (var i = 0; i < recommendSizeData.sizes.length; i++) {
+         if (recommendSizeData.sizes[i] == recommendSizeData.recommendSize) {
+             dataValueCount++;
+             break;
+         }
+     }
+
+     if (dataValueCount == 0) {
+         throw new Error("Recommended size There is a problem with the server data value");
+     }
+
+     var nomalPropertyKeys = Object.keys(circleGraphNomalProperties);
+     var propertyCheckCount = 0;
+
+     for (var value in circleGraphProperties) {
+
+         if (circleGraphNomalProperties.hasOwnProperty(value)) {
+             propertyCheckCount++;
+
+         }
+     }
+
+     var canvasId = {};
+     var circleGraphProperty = {};
+
+     if (nomalPropertyKeys.length == propertyCheckCount) {
+
+         for (var idValue in elIds) {
+
+             if (typeof elIds === "object" && elIds[idValue] !== null && elIds[idValue] !== undefined && elIds[idValue] !== '') {
+                 canvasId[idValue] = elIds[idValue];
+
+             } else {
+                 throw new Error("elIds: Invalid property");
+
+             }
+         }
+
+         for (var propertyValue in circleGraphProperties) {
+
+             if (typeof circleGraphProperties === "object" && circleGraphProperties[propertyValue] !== null && circleGraphProperties[propertyValue] !== undefined && circleGraphProperties[propertyValue] !== '') {
+                 circleGraphProperty[propertyValue] = circleGraphProperties[propertyValue];
+
+             } else {
+                 throw new Error("circleGraphProperties: Invalid property");
+
+             }
+         }
+
+     } else {
+         throw new Error("circleGraph() : count of properties is different");
+
+     }
+
+     var runGraph = this.drawCircleGraph(canvasId, recommendSizeData, recommendSizeTalbe, circleGraphProperty, listLengthCompareValue);
 
  };
 
 
-
  CircleGraph.prototype = {
-
-     
-     //**서버에서 받아오는 객체값 오류 확인
-     // - 서버에서 받아오는 리스트에서 추천사이즈가 정확히 추천되는지 후 에러 출력
-     checkRecommendSizeServerData: function () {
-
-         var dataValueCount = 0;
-         for (var i = 0; i < recommendSizeData.sizes.length; i++) {
-             if (recommendSizeData.sizes[i] == recommendSizeData.recommendSize) {
-                 dataValueCount++;
-                 break;
-             }
-         }
-         
-         if(dataValueCount == 0){
-             throw new Error("Recommended size There is a problem with the server data value");
-         }
-
-     },
-
-
-     //**생성자 함수에서 매개변수로 받은 객체값 오류 확인
-     // - 생성자 함수 매개변수로 받은 객체 개수 확인 / 객체 속성 값 확인 후 에러 출력
-     checkGraphProperties: function (elIds, circleGraphProperties, circleGraphNomalProperties, recommendSizeTalbe, listLengthCompareValue) {
-
-         var nomalPropertyKeys = Object.keys(circleGraphNomalProperties);
-         var propertyCheckCount = 0;
-
-         for (var value in circleGraphProperties) {
-
-             if (circleGraphNomalProperties.hasOwnProperty(value)) {
-                 propertyCheckCount++;
-
-             }
-         }
-
-         var canvasId = {};
-         var circleGraphProperty = {};
-
-         if (nomalPropertyKeys.length == propertyCheckCount) {
-
-             for (var idValue in elIds) {
-
-                 if (typeof elIds === "object" && elIds[idValue] !== null && elIds[idValue] !== undefined && elIds[idValue] !== '') {
-                     canvasId[idValue] = elIds[idValue];
-
-                 } else {
-                     throw new Error("elIds: Invalid property");
-
-                 }
-             }
-
-             for (var propertyValue in circleGraphProperties) {
-
-                 if (typeof circleGraphProperties === "object" && circleGraphProperties[propertyValue] !== null && circleGraphProperties[propertyValue] !== undefined && circleGraphProperties[propertyValue] !== '') {
-                     circleGraphProperty[propertyValue] = circleGraphProperties[propertyValue];
-
-                 } else {
-                     throw new Error("circleGraphProperties: Invalid property");
-
-                 }
-             }
-
-         } else {
-             throw new Error("circleGraph() : count of properties is different");
-
-         }
-
-         this.drawCircleGraph(canvasId, recommendSizeData, recommendSizeTalbe, circleGraphProperty, listLengthCompareValue);
-     },
 
      //**추천 사이즈 데이터 확인 후 그래프 실행
      // - 추천 사이즈 종류(S,M/80,90..) 및 리스트 개수 확인 후 조건에 맞는 그래프 함수 실행
