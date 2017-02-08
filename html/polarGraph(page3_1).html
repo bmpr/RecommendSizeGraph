@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
-    <link rel="stylesheet" type="text/css" href="../css/polarGraphStyle.css" />
+    <link rel="stylesheet" type="text/css" href="/css/polarGraphStyle.css" />
 </head>
 
 <body>
@@ -29,9 +29,76 @@
         </div>
 
     </div>
-
-    <script src="../js/polarGraph.js"></script>
+ 
+    <script src="/js/polarGraph.min.js"></script>
     <script>
+        var mySize = {
+            pelvisRound: 92,
+            hipRound: 105,
+            thighRound: 60,
+            shoulderRound: 120,
+            chestRound: 99,
+            waistRound: 92
+        };
+
+        var recommendSize = {
+            XL: {
+                pelvisRound: 100,
+                hipRound: 115,
+                thighRound: 67,
+                shoulderRound: 130,
+                chestRound: 105,
+                waistRound: 100
+            },
+            L: {
+                pelvisRound: 94,
+                hipRound: 110,
+                thighRound: 63,
+                shoulderRound: 124,
+                chestRound: 100,
+                waistRound: 95
+            },
+            M: {
+                pelvisRound: 90,
+                hipRound: 105,
+                thighRound: 60,
+                shoulderRound: 115,
+                chestRound: 95,
+                waistRound: 90
+            },
+            S: {
+                pelvisRound: 87,
+                hipRound: 100,
+                thighRound: 57,
+                shoulderRound: 110,
+                chestRound: 90,
+                waistRound: 85
+            },
+            XS: {
+                pelvisRound: 80,
+                hipRound: 95,
+                thighRound: 53,
+                shoulderRound: 100,
+                chestRound: 80,
+                waistRound: 80
+            }
+        };
+
+        var bodyPartName = ['허리', '골반', '엉덩이', '허벅지', '어깨', '가슴'];
+
+        var recommendMessage = {
+            XL: '사용자님 어깨와 허리가 얇지만 XL를 루즈하게 입어요.',
+            L: '사용자님 보다 어깨가 넓고 허리가얇아 L를 넉넉하게 입어요.',
+            M: '사용자님 허벅지와 전체 길이가 맞아서 M을 입을 수 있어요.',
+            S: '사용자님 골반이 좁아서 S는 조금 타이트하게 입을 수 있어요.',
+            XS: '사용자님 어깨가 좁아서 XS는 작을수 있어요.'
+        };
+
+        var userBodyInfomation = {
+            height: 164,
+            weight: 62
+        };
+
         var buttonCount = 0,
             buttonReverseCount = 0;
 
@@ -137,8 +204,8 @@
                         clearInterval(eventStopInterval);
                         buttonLocation.addEventListener('click', eventHandler);
                     }
-                    
-                },0);
+
+                }, 0);
             }
 
             window.onload = function () {

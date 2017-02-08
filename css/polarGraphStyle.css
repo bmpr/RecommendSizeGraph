@@ -35,7 +35,7 @@
      float: left;
      margin: 2% 0 0 5%;
      opacity: 1;
-     background-image: url(../img/buttonLeft.svg);
+     background-image: url(/img/buttonLeft.svg);
      background-repeat: no-repeat;
  }
  
@@ -62,7 +62,7 @@
      float: right;
      margin: 2% 5% 0 0;
      opacity: 1;
-     background-image: url(../img/buttonRight.svg);
+     background-image: url(/img/buttonRight.svg);
      background-repeat: no-repeat;
  }
  

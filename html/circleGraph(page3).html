@@ -12,38 +12,34 @@
             src: url('Flexo-Medium.eot');
             src: url('Flexo-Medium.eot?#iefix') format('embedded-opentype'), url('Flexo-Medium.woff2') format('woff2'), url('Flexo-Medium.woff') format('woff'), url('Flexo-Medium.ttf') format('truetype'),
         }
-        
-        #canvasText {
-            width: 270px;
-            height: 270px;
-            display: inline-block;
-            position: absolute;
-            top: 10%;
-            left: 10%;
-        }
-        
-        #canvasShadow {
-            width: 270px;
-            height: 270px;
-            display: inline-block;
-            position: absolute;
-            top: 10%;
-            left: 10%;
-        }
     </style>
+
 </head>
 
 <body>
 
-    <canvas id="canvasShadow" width="675" height="675">
-        이 브라우저는 캔버스를 지원하지 않습니다.
-    </canvas>
-    <canvas id="canvasText" width="675" height="675">
-        이 브라우저는 캔버스를 지원하지 않습니다.
-    </canvas>
+    <div id="area_graph" style="position: absolute; width:270px; height:270px;">
 
-    <script src="../js/circleGraphDotPoint.js"></script>
+        <canvas id="canvasShadow" width="675" height="675" style="width: 270px; height: 270px; position: relative; top: 0; left: 0;">
+            이 브라우저는 캔버스를 지원하지 않습니다.
+        </canvas>
+
+        <canvas id="canvasText" width="675" height="675" style="width: 270px; height: 270px; position: inherit; top: 0; left: 0;">
+            이 브라우저는 캔버스를 지원하지 않습니다.
+        </canvas>
+
+    </div>
+
+    <script src="/js/circleGraphDotPoint.min.js"></script>
     <script>
+        var recommendSizeData = {
+            recommendSize: '80',
+            isCorrectGender: true,
+            recommendRate: 0,
+            status: true,
+            sizes: ['40', '50', '60', '70', '80', '90']
+        };
+
         var circleGraph = new CircleGraph({
             canvasShadow: 'canvasShadow',
             canvasText: 'canvasText'
@@ -77,6 +73,8 @@
             motionColorStratValue: 0,
             motionColorIncreaseValue: 0.02
         });
+
+        circleGraph.runGraphColorEffect();
     </script>
 
 </body>
