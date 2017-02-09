@@ -1,6 +1,6 @@
         var data = {
             graphType: 1,
-            direction: 'left',
+            direction: 0,
             percent: 50
         };
 
@@ -213,7 +213,7 @@
                         canvasInfo.freeSizeContext.save();
                         canvasInfo.freeSizeContext.beginPath();
 
-                        if (data.direction == 'left') {
+                        if (data.direction == 0) {
                             canvasInfo.freeSizeContext.moveTo(canvasLocationValues.movingLineValue - lineChangeValue, canvasLocationValues.lineHeightDivision);
                             canvasInfo.freeSizeContext.lineTo(canvasLocationValues.movingLineValue - lineChangeValue, canvasInfo.canvasFreeSize.height);
 
@@ -229,11 +229,11 @@
 
                         lineChangeValue += 0.1 + (lineChangeValue / graphProperties.motionValue);
 
-                        if (data.direction == 'left' && canvasLocationValues.movingLineValue - lineChangeValue <= canvasLocationValues.leftStopLine) {
+                        if (data.direction == 0 && canvasLocationValues.movingLineValue - lineChangeValue <= canvasLocationValues.leftStopLine) {
                             clearInterval(bothLineInterval);
                             self.drawMeColorText(canvasInfo, canvasLocationValues, graphProperties);
 
-                        } else if (data.direction !== 'left' && canvasLocationValues.movingLineValue + lineChangeValue >= rightStopLine.rightStopLine) {
+                        } else if (data.direction !== 0 && canvasLocationValues.movingLineValue + lineChangeValue >= rightStopLine.rightStopLine) {
                             clearInterval(bothLineInterval);
                             self.drawMeColorText(canvasInfo, canvasLocationValues, graphProperties);
 
@@ -251,7 +251,7 @@
 
                     var textClearSize = graphProperties.recommendTextSize * canvasLocationValues.canvasRatio * 2;
 
-                    if (data.direction == 'left') {
+                    if (data.direction == 0) {
                         canvasInfo.meTextContext.clearRect(canvasLocationValues.leftStopLine - textClearSize, 0, textClearSize, textClearSize);
                         canvasInfo.meTextContext.fillText(graphProperties.recommendText, canvasLocationValues.leftStopLine, canvasLocationValues.circleAreaDivesion);
 

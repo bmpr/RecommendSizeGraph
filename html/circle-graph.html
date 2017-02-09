@@ -30,15 +30,22 @@
 
     </div>
 
-    <script src="/js/circleGraphDotPoint.min.js"></script>
+    <script src="../js/circleGraphDotPoint.js"></script>
     <script>
         var recommendSizeData = {
-            recommendSize: '80',
+            recommendSize: '50',
             isCorrectGender: true,
             recommendRate: 0,
             status: true,
             sizes: ['40', '50', '60', '70', '80', '90']
-        };
+        }
+        var recommendSizeData1 = {
+            recommendSize: 'S',
+            isCorrectGender: true,
+            recommendRate: 0,
+            status: true,
+            sizes: ['XS', 'S', 'M', 'L', 'XL']
+        }
 
         var circleGraph = new CircleGraph({
             canvasShadow: 'canvasShadow',
@@ -74,7 +81,8 @@
             motionColorIncreaseValue: 0.02
         });
 
-        circleGraph.runGraphColorEffect();
+        circleGraph.runGraphColorEffect(recommendSizeData);  // run graph
+        //circleGraph.clearGraphColorEffect();  //  clear graph
     </script>
 
 </body>
