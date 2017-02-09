@@ -46,7 +46,7 @@ var CircleGraph = (function () {
             isCorrectGender: true,
             recommendRate: 0,
             status: true,
-            sizes: ['•', '•', '•', '•', '•', '•']
+            sizes: ['•', '•', '•', '•', '•']
         };
 
         recommendSizeTable = ['XS', 'S', 'M', "L", "XL"];
@@ -136,15 +136,15 @@ var CircleGraph = (function () {
                     throw new Error("elIds: Invalid property");
 
                 }
-            }        
-            
-            graphEventValue = this.drawCircleGraph(canvasId, recommendedSizeData, recommendSizeTable, circleGraphProperty, listLengthCompareValue);            
-            
+            }
+
+            graphEventValue = this.drawCircleGraph(canvasId, recommendedSizeData, recommendSizeTable, circleGraphProperty, listLengthCompareValue);
+
             var graphShadow = this.drawCircleGraphShadow(graphEventValue.canvasInfo, graphEventValue.rateValue, graphEventValue.circleGraphLocation, graphEventValue.graphProperties, graphEventValue.listCompareValue, graphEventValue.recommendedSizeLocationValue);
 
-            
+
             var graphColorText = this.drawCircleGraphColorText(graphEventValue.canvasInfo, graphEventValue.sizesData, graphEventValue.recommendedSizeList, graphEventValue.recommendedSizeLocationValue, graphEventValue.graphProperties, graphEventValue.circleGraphLocation);
-                        
+
         },
 
         //**그래프 효과 리셋
@@ -158,17 +158,15 @@ var CircleGraph = (function () {
         clearCircleGraph: function (canvasInfo, circleGraphLocation, graphProperties, canvasId, recommendedSizeData, recommendSizeTable, circleGraphProperty, listLengthCompareValue) {
 
             canvasInfo.textContext.save();
-            canvasInfo.textContext.clearRect(-circleGraphLocation.canvasHalfWidth, -circleGraphLocation.canvasHalfWidth, canvasInfo.textCanvas.width, canvasInfo.textCanvas.width);
+            canvasInfo.textContext.clearRect(0, 0, canvasInfo.textCanvas.width, canvasInfo.textCanvas.width);
             canvasInfo.textContext.restore();
 
             canvasInfo.shadowContext.save();
             canvasInfo.shadowContext.clearRect(0, 0, canvasInfo.shadowCanvas.width, canvasInfo.shadowCanvas.width);
             canvasInfo.shadowContext.restore();
 
-            canvasInfo.textContext.save();            
-            canvasInfo.textContext.translate(-circleGraphLocation.canvasHalfWidth, -circleGraphLocation.canvasHalfWidth);            
+            canvasInfo.textContext.save();
             canvasInfo.textContext.globalAlpha = 1;
-            
             this.drawCircleGraph(canvasId, recommendedSizeData, recommendSizeTable, circleGraphProperty, listLengthCompareValue);
             canvasInfo.textContext.restore();
         },
@@ -492,17 +490,19 @@ var CircleGraph = (function () {
             var dotListLength = recommendedSizeLocationValue.recommendedSizeRangeList.length;
             var labelCount = 0;
 
+            canvasInfo.textContext.save();
             canvasInfo.textContext.translate(location.radius, location.radius);
             location.radius = location.radius * prop.radiusLengthValue;
 
-            canvasInfo.textContext.save();
             canvasInfo.textContext.clearRect(0, 0, canvasInfo.textCanvas.width, canvasInfo.textCanvas.height);
             canvasInfo.textContext.beginPath();
             canvasInfo.textContext.arc(0, 0, location.radius / 1.05, 0, 2 * Math.PI);
             canvasInfo.textContext.fillStyle = prop.circleColor;
             canvasInfo.textContext.fill();
 
+
             var drawTextGraph = function (angle, text, sizeAvg) {
+                canvasInfo.textContext.save();
                 canvasInfo.textContext.rotate(angle);
                 canvasInfo.textContext.translate(0, -location.radius * prop.radiusLengthValue);
                 canvasInfo.textContext.rotate(-angle);
@@ -515,8 +515,9 @@ var CircleGraph = (function () {
                 canvasInfo.textContext.rotate(angle);
                 canvasInfo.textContext.translate(0, location.radius * prop.radiusLengthValue);
                 canvasInfo.textContext.rotate(-angle);
+                canvasInfo.textContext.restore();
             };
-            canvasInfo.textContext.restore();
+
 
             for (var i = 0; i < sizeListLength; i++) {
                 var sizeTextAngle = (recommendedSizeLocationValue.recommendedSizeTextList[i] + angleValue) * Math.PI / angleValue;
@@ -528,11 +529,12 @@ var CircleGraph = (function () {
                 var dotTextAngle = (recommendedSizeLocationValue.recommendedSizeRangeList[j] + angleValue) * Math.PI / angleValue;
                 drawTextGraph(dotTextAngle, "●", 3);
             }
-            
+            canvasInfo.textContext.restore();
         },
 
         //추천 사이즈 범위 내 컬러 텍스트, 포인터 텍스트, 핏(loose, tight) 텍스트 그리기
         drawCircleGraphColorText: function (canvasInfo, sizeData, recommendedSizeList, recommendedSizeLocationValue, circleGraphProperty, circleGraphLocation) {
+            var radiusValue = canvasInfo.textCanvas.height / 2;
             var prop = circleGraphProperty;
             var locationValue = recommendedSizeLocationValue;
             var angleValue = recommendedSizeLocationValue.listStrainAngleValue;
@@ -547,7 +549,7 @@ var CircleGraph = (function () {
             // 컬러,포인터 텍스트 애니매이션 실행
             var colorTextInterval = setInterval(function () {
                 var circleLocationValue = locationValue.sizeListRange[intervalCount];
-                var colorTextAngle = (circleLocationValue + angleValue) * Math.PI / angleValue;
+                var colorTextAngle = (circleLocationValue + angleValue) * Math.PI / angleValue; 
                 var colorTextIndex = locationValue.recommendedSizeTextList.indexOf(pointerText);
                 var pointerAngle = (pointerText + angleValue) * Math.PI / angleValue;
                 var pointerMeAngle = (locationValue.recommendedSizePointerValue + angleValue) * Math.PI / angleValue;
@@ -561,7 +563,7 @@ var CircleGraph = (function () {
                 if (circleLocationValue && intervalCount < 5) {
                     var textIndex = locationValue.recommendedSizeTextList.indexOf(circleLocationValue);
 
-                    drawColorTextGraph(circleLocationValue, sizeTextLocation, textIndex, colorTextAngle);
+                    drawColorTextGraph(canvasInfo, circleLocationValue, sizeTextLocation, textIndex, colorTextAngle);
 
                     if (sizeData.sizeIndex < 4) {
                         drawFitTextGraph(prop.pointerFitLooseText, 2, angleValue, rotateLength, prop.pointerFitTextSize, pointerLocationValueY);
@@ -588,9 +590,11 @@ var CircleGraph = (function () {
             }, prop.textMotionValue);
 
             //컬러 텍스트 그리기
-            function drawColorTextGraph(circleLocationValue, sizeTextLocation, textIndex, colorTextAngle) {
+            function drawColorTextGraph(canvasInfo, circleLocationValue, sizeTextLocation, textIndex, colorTextAngle) {
                 var colorValue = prop.motionColorStratValue;
                 var textInterval = setInterval(function () {
+                    canvasInfo.textContext.save();
+                    canvasInfo.textContext.translate(radiusValue, radiusValue);
 
                     canvasInfo.textContext.rotate(colorTextAngle);
                     canvasInfo.textContext.translate(0, -circleGraphLocation.radius * prop.radiusLengthValue);
@@ -601,18 +605,19 @@ var CircleGraph = (function () {
                         canvasInfo.textContext.globalAlpha = colorValue;
                         canvasInfo.textContext.clearRect(-25, -25, 50, 45);
                         canvasInfo.textContext.font = prop.textSize * prop.textSizeRatio + "px " + prop.graphFontStyle + "";
-                        canvasInfo.textContext.fillText(recommendedSizeList[textIndex], prop.circleColorTextLocationX, prop.circleColorTextLocationY);
+                        canvasInfo.textContext.fillText(recommendedSizeList[textIndex], prop.circleColorTextLocationX-25, prop.circleColorTextLocationY);
 
                     } else {
                         canvasInfo.textContext.globalAlpha = colorValue;
                         canvasInfo.textContext.clearRect(-colorTextAngle - 5, -colorTextAngle, 20, 20);
                         canvasInfo.textContext.font = prop.textSize * prop.textSizeRatio / 3 + "px " + prop.graphFontStyle + "";
-                        canvasInfo.textContext.fillText("●", prop.circleColorTextLocationX, prop.circleColorTextLocationY);
+                        canvasInfo.textContext.fillText("●", prop.circleColorTextLocationX-5, prop.circleColorTextLocationY);
 
                     }
                     canvasInfo.textContext.rotate(colorTextAngle);
                     canvasInfo.textContext.translate(0, circleGraphLocation.radius * prop.radiusLengthValue);
                     canvasInfo.textContext.rotate(-colorTextAngle);
+                    canvasInfo.textContext.restore();
 
                     colorValue += prop.motionColorIncreaseValue + colorValue / prop.textMotionFrameValue / 3;
 
@@ -628,6 +633,9 @@ var CircleGraph = (function () {
                 var colorValue = prop.motionColorStratValue;
 
                 var textInterval = setInterval(function () {
+                    canvasInfo.textContext.save();
+                    canvasInfo.textContext.translate(radiusValue, radiusValue);
+
                     canvasInfo.textContext.rotate(angle);
                     canvasInfo.textContext.translate(0, -circleGraphLocation.pointerRadius * radius);
                     canvasInfo.textContext.rotate(-angle);
@@ -636,12 +644,12 @@ var CircleGraph = (function () {
                     canvasInfo.textContext.font = textSize * prop.textSizeRatio + "px " + prop.graphFontStyle + "";
                     canvasInfo.textContext.globalAlpha = colorValue;
                     canvasInfo.textContext.fillStyle = prop.pointerColor;
-                    canvasInfo.textContext.fillText(text, prop.circleColorTextLocationX, prop.circleColorTextLocationY + increasValue);
+                    canvasInfo.textContext.fillText(text, prop.circleColorTextLocationX-25, prop.circleColorTextLocationY + increasValue);
 
                     canvasInfo.textContext.rotate(angle);
                     canvasInfo.textContext.translate(0, circleGraphLocation.pointerRadius * radius);
                     canvasInfo.textContext.rotate(-angle);
-
+                    canvasInfo.textContext.restore();
                     colorValue += prop.motionColorIncreaseValue + colorValue / prop.textMotionFrameValue / 3;
 
                     if (colorValue > 1) {
@@ -654,7 +662,9 @@ var CircleGraph = (function () {
             //핏(loose, tight) 텍스트 그리기
             function drawFitTextGraph(text, angleRangeValue, angleValue, radius, textSize, increasValue) {
                 var pointerFitAngle = (locationValue.recommendedSizePointerValue + angleRangeValue + angleValue) * Math.PI / angleValue;
-
+                canvasInfo.textContext.save();
+                canvasInfo.textContext.translate(radiusValue, radiusValue);
+                
                 canvasInfo.textContext.rotate(pointerFitAngle);
                 canvasInfo.textContext.translate(0, -circleGraphLocation.pointerRadius * radius);
                 canvasInfo.textContext.rotate(-pointerFitAngle);
@@ -662,11 +672,12 @@ var CircleGraph = (function () {
                 canvasInfo.textContext.clearRect(-35, 0, 70, 30);
                 canvasInfo.textContext.font = textSize * prop.textSizeRatio + "px " + prop.graphFontStyle + "";
                 canvasInfo.textContext.fillStyle = prop.pointerFitColor;
-                canvasInfo.textContext.fillText(text, prop.circleColorTextLocationX, prop.circleColorTextLocationY + increasValue);
+                canvasInfo.textContext.fillText(text, prop.circleColorTextLocationX-35, prop.circleColorTextLocationY + increasValue);
 
                 canvasInfo.textContext.rotate(pointerFitAngle);
                 canvasInfo.textContext.translate(0, circleGraphLocation.pointerRadius * radius);
                 canvasInfo.textContext.rotate(-pointerFitAngle);
+                canvasInfo.textContext.restore();
             };
 
         },
